@@ -1,4 +1,8 @@
 step:
+    output all the lines in progress.txt file
+
+
+step:
     parsing of the file, with printing "step: step text..."
 
 
