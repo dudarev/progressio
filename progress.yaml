@@ -1,6 +1,17 @@
 ---
 
 step:
+    title: "accept argument clean"
+    done: True
+
+---
+
+step:
+    title: "print only steps that are done if option clean is specified"
+    
+---
+
+step:
     title: "move what is done to progress.history.yaml with option --clean"
 
 ---
