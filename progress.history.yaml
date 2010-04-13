@@ -1,0 +1,24 @@
+---
+step:
+    done: true
+    title: accept argument clean
+---
+step:
+    done: true
+    title: print only steps that are done if option clean is specified
+---
+step:
+    done: true
+    title: output all the lines in progress.txt file
+---
+step:
+    done: true
+    title: 'parsing of the file, with printing "step: step text..."'
+---
+step:
+    done: true
+    title: move what is done to progress.history.yaml with command 'clean'
+---
+task:
+    done: true
+    title: move done steps and tasks to progress.yaml.history
