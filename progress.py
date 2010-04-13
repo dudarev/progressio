@@ -1,8 +1,15 @@
 #!/usr/bin/python
+import sys, os
 import yaml
-import sys
 
 def main():
+
+    progress_file_name = 'progress.yaml'
+    if not os.path.exists(progress_file_name):
+        f = open(progress_file_name, 'w')
+        f.close()
+        print 'created %s file' % progress_file_name
+        return
 
     args = sys.argv
     command = None
