@@ -4,6 +4,7 @@ step:
 ---
 step:
     title: add progress.history.yaml to git repo
+    done: true
 ---
 step:
     title: write one line description in README
