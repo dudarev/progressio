@@ -22,3 +22,15 @@ step:
 task:
     done: true
     title: move done steps and tasks to progress.yaml.history
+---
+step:
+    done: true
+    title: if progress.yaml file does not exist - create it
+---
+step:
+    done: true
+    title: add progress.history.yaml to git repo
+---
+step:
+    done: true
+    title: write one line description in README
