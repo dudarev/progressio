@@ -34,3 +34,11 @@ step:
 step:
     done: true
     title: write one line description in README
+---
+step:
+    done: true
+    title: shortcut on the desktop
+---
+step:
+    done: true
+    title: icon for project

@@ -1,15 +1,13 @@
 ---
 step:
-    title: shortcut on the desktop
----
-step:
-    title: icon for project
----
-step:
     title: generate html file with 'html' command that repeats printed output
 ---
+step:
+    title: add step with title key -t
+---
 issue:
-    title: when only step is specified (not title or other fields) it returns error, need to return warning
+    title: when only step is specified (not title or other fields) it returns error,
+        need to return warning
 ---
 task:
     title: task or step can be added from command line
