@@ -1,9 +1,9 @@
 ---
 step:
-    title: generate html file with 'html' command that repeats printed output
+    title: add step with title key -t
 ---
 step:
-    title: add step with title key -t
+    title: write more detailed description in README
 ---
 issue:
     title: when only step is specified (not title or other fields) it returns error,

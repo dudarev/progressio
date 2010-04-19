@@ -42,3 +42,7 @@ step:
 step:
     done: true
     title: icon for project
+---
+step:
+    done: true
+    title: generate html file with 'html' command that repeats printed output
