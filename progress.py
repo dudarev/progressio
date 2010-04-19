@@ -2,6 +2,15 @@
 import sys, os
 import yaml
 
+def html():
+    print "creating html"
+    f = open("progress.html", "w")
+    for i in yaml.load_all(open('progress.yaml')):
+        key = i.keys()[0]
+        done = i[key].get("done",False)
+        if not done and i[key].has_key('title'):
+            f.write("%s: %s<br/>\n" % (key,i[key]['title']))
+
 def main():
 
     progress_file_name = 'progress.yaml'
@@ -38,6 +47,10 @@ def main():
         for i in not_done_list:
             yaml.dump(i,stream,**dump_options)
         stream.close()
+        return
+
+    if command == "html":
+        html()
         return
 
     for i in yaml.load_all(open('progress.yaml')):
