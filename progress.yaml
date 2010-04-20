@@ -1,5 +1,23 @@
 ---
 step:
+    title: html command accepts option -c - clean and then create html
+---
+step:
+    title: in html other fields are outputed with space
+---
+step:
+    title: space between steps, tasks, versions, and goals
+---
+step:
+    title: "new command 'add' is accepted"
+---
+step:
+    title: "option -t for command 'add' is parsed"
+---
+step:
+    title: new step is saved to file
+---
+task:
     title: add step with title key -t
 ---
 step:
