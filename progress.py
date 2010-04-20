@@ -4,12 +4,29 @@ import yaml
 
 def html():
     print "creating html"
-    f = open("progress.html", "w")
+    
+    fields_list = ['step', 'task', 'issue', 'version', 'goal', 'other']
+    fields = {'step': [], 'task': [], 'issue': [], 'version': [], 'goal': [], 'other': []}
+
+    # add to fields
     for i in yaml.load_all(open('progress.yaml')):
         key = i.keys()[0]
-        done = i[key].get("done",False)
-        if not done and i[key].has_key('title'):
-            f.write("%s: %s<br/>\n" % (key,i[key]['title']))
+        if key in fields:
+            fields[key].append(i[key])
+        else:
+            fields['other'].append(i[key])
+
+    file = open("progress.html", "w")
+    for f in fields_list:
+        for i in fields[f]:
+            done = i.get("done",False)
+            if not done and i.has_key('title'):
+                file.write("%s: %s<br/>\n" % (f,i['title']))
+                for k in i.keys():
+                    if not k == 'title':
+                        file.write("&nbsp;&nbsp;&nbsp;&nbsp;%s: %s<br/>\n" % (k,i[k]))
+        if fields[f]:
+            file.write("<br/>")
 
 def main():
 

@@ -1,12 +1,15 @@
 ---
 step:
     title: html command accepts option -c - clean and then create html
+    comment: think about it - if done is true, the item is not outputed
 ---
 step:
     title: in html other fields are outputed with space
+    done: true
 ---
 step:
     title: space between steps, tasks, versions, and goals
+    done: true
 ---
 step:
     title: "new command 'add' is accepted"
@@ -36,6 +39,3 @@ task:
 task:
     title: design on paragraph with step and tasks (red, yellow, green) - (step, task,
         goal)
----
-task:
-    title: extend README with one line description and several lines description
