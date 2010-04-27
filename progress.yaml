@@ -1,5 +1,8 @@
 ---
 step:
+    title: copy to /usr/local/bin
+---
+step:
     title: refactor clean into separate function
 ---
 step:
