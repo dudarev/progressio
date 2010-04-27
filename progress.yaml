@@ -1,27 +1,10 @@
 ---
 step:
-    title: html command accepts option -c - clean and then create html
+    title: refactor clean into separate function
+---
+step:
     comment: think about it - if done is true, the item is not outputed
----
-step:
-    title: in html other fields are outputed with space
-    done: true
----
-step:
-    title: space between steps, tasks, versions, and goals
-    done: true
----
-step:
-    title: "new command 'add' is accepted"
----
-step:
-    title: "option -t for command 'add' is parsed"
----
-step:
-    title: new step is saved to file
----
-task:
-    title: add step with title key -t
+    title: html command accepts option -c - clean and then create html
 ---
 step:
     title: write more detailed description in README

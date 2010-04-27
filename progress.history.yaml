@@ -46,3 +46,31 @@ step:
 step:
     done: true
     title: generate html file with 'html' command that repeats printed output
+---
+step:
+    done: true
+    title: in html other fields are outputed with space
+---
+step:
+    done: true
+    title: space between steps, tasks, versions, and goals
+---
+step:
+    done: true
+    title: test that adding a step works
+---
+step:
+    done: true
+    title: new command 'add' is accepted
+---
+step:
+    done: true
+    title: option -t for command 'add' is parsed
+---
+step:
+    done: true
+    title: new step is saved to file
+---
+task:
+    done: true
+    title: add step with title key -t

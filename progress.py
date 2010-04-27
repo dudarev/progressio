@@ -2,6 +2,26 @@
 import sys, os
 import yaml
 
+def add():
+    "add a step/task/goal..."
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-t", "--title", dest="title")
+    (opts, args) = parser.parse_args(sys.argv[2:])
+    if not getattr(opts,"title"):
+        print "specify title with option -t"
+        return
+    print "title:",opts.title
+    items_list = [i for i in yaml.load_all(open('progress.yaml'))]
+    # prepend new item in the beginning
+    items_list = [{'step':{'title':opts.title}}] + items_list
+    stream = open('progress.yaml','w')
+    dump_options = {'indent':4,'default_flow_style':False, 'explicit_start':'---'}
+    for i in items_list:
+        yaml.dump(i,stream,**dump_options)
+    stream.close()
+    return
+
 def html():
     print "creating html"
     
@@ -68,6 +88,10 @@ def main():
 
     if command == "html":
         html()
+        return
+
+    if command == "add":
+        add()
         return
 
     for i in yaml.load_all(open('progress.yaml')):
