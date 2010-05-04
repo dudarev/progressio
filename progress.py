@@ -22,6 +22,16 @@ def add():
     stream.close()
     return
 
+def done():
+    "mark an item done"
+    try:
+        print "will mark itme %d done" % int(sys.argv[2])
+    except IndexError:
+        print "you need to specify an item number"
+    except ValueError:
+        print "you need to specify an item number as integer"
+    return
+
 def html():
     print "creating html"
     
@@ -39,8 +49,8 @@ def html():
     file = open("progress.html", "w")
     for f in fields_list:
         for i in fields[f]:
-            done = i.get("done",False)
-            if not done and i.has_key('title'):
+            is_done = i.get("done",False)
+            if not is_done and i.has_key('title'):
                 file.write("%s: %s<br/>\n" % (f,i['title']))
                 for k in i.keys():
                     if not k == 'title':
@@ -68,8 +78,8 @@ def main():
         not_done_list = []
         for i in yaml.load_all(open('progress.yaml')):
             key = i.keys()[0]
-            done = i[key].get("done",False)
-            if done and i[key].has_key('title'):
+            is_done = i[key].get("done",False)
+            if is_done and i[key].has_key('title'):
                 print "%s: %s" % (key,i[key]['title'])
                 done_list.append(i)
             else:
@@ -94,11 +104,15 @@ def main():
         add()
         return
 
+    if command == "done":
+        done()
+        return
+
     count = 1
     for i in yaml.load_all(open('progress.yaml')):
         key = i.keys()[0]
-        done = i[key].get("done",False)
-        if not done and i[key].has_key('title'):
+        is_done = i[key].get("done",False)
+        if not is_done and i[key].has_key('title'):
             print "%2d - %s: %s" % (count, key, i[key]['title'])
             count += 1
 

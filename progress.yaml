@@ -1,6 +1,7 @@
 ---
 step:
     title: accept command done
+    done: true
 ---
 step:
     title: use a number to mark a step done
