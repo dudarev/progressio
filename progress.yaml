@@ -1,6 +1,22 @@
 ---
 step:
-    title: copy to /usr/local/bin
+    title: accept command done
+---
+step:
+    title: use a number to mark a step done
+---
+task:
+    title: mark step done from command line
+---
+step:
+    title: numbers next to step
+    done: true
+---
+step:
+    title: when making html issues go right after steps
+---
+step:
+    title: 'option -i in command ''add'' to add item: step, goal, version, task'
 ---
 step:
     title: refactor clean into separate function
