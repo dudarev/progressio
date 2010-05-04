@@ -1,17 +1,19 @@
 ---
 step:
-    title: accept command done
     done: true
+    title: accept command done
 ---
 step:
+    done: true
     title: use a number to mark a step done
 ---
 task:
+    done: true
     title: mark step done from command line
 ---
 step:
-    title: numbers next to step
     done: true
+    title: numbers next to step
 ---
 step:
     title: when making html issues go right after steps

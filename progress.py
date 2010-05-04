@@ -2,6 +2,16 @@
 import sys, os
 import yaml
 
+def load_items():
+    return [i for i in yaml.load_all(open('progress.yaml'))]
+
+def save_items(items):
+    stream = open('progress.yaml','w')
+    dump_options = {'indent':4,'default_flow_style':False, 'explicit_start':'---'}
+    for i in items:
+        yaml.dump(i,stream,**dump_options)
+    stream.close()
+
 def add():
     "add a step/task/goal..."
     from optparse import OptionParser
@@ -12,20 +22,29 @@ def add():
         print "specify title with option -t"
         return
     print "title:",opts.title
-    items_list = [i for i in yaml.load_all(open('progress.yaml'))]
+    items_list = load_items()
     # prepend new item in the beginning
     items_list = [{'step':{'title':opts.title}}] + items_list
-    stream = open('progress.yaml','w')
-    dump_options = {'indent':4,'default_flow_style':False, 'explicit_start':'---'}
-    for i in items_list:
-        yaml.dump(i,stream,**dump_options)
-    stream.close()
+    save_items(items_list)
     return
 
 def done():
     "mark an item done"
     try:
         print "will mark itme %d done" % int(sys.argv[2])
+        count_done = int(sys.argv[2])
+        count = 1
+        items = load_items()
+        for i in items:
+            key = i.keys()[0]
+            is_done = i[key].get("done",False)
+            if not is_done and i[key].has_key('title'):
+                if count == count_done:
+                    print "%2d - %s: %s" % (count, key, i[key]['title'])
+                    i[key]['done'] = True
+                    save_items(items)
+                    return
+                count += 1
     except IndexError:
         print "you need to specify an item number"
     except ValueError:
@@ -109,7 +128,7 @@ def main():
         return
 
     count = 1
-    for i in yaml.load_all(open('progress.yaml')):
+    for i in load_items():
         key = i.keys()[0]
         is_done = i[key].get("done",False)
         if not is_done and i[key].has_key('title'):
