@@ -78,3 +78,31 @@ task:
 step:
     done: true
     title: copy to /usr/local/bin
+---
+step:
+    done: true
+    title: accept command done
+---
+step:
+    done: true
+    title: use a number to mark a step done
+---
+task:
+    done: true
+    title: mark step done from command line
+---
+step:
+    done: true
+    title: numbers next to step
+---
+step:
+    done: true
+    title: when making html issues go right after steps
+---
+step:
+    done: true
+    title: 'option -i in command ''add'' to add item: step, goal, version, task'
+---
+step:
+    done: true
+    title: refactor clean into separate function

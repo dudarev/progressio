@@ -1,31 +1,5 @@
 ---
 step:
-    done: true
-    title: accept command done
----
-step:
-    done: true
-    title: use a number to mark a step done
----
-task:
-    done: true
-    title: mark step done from command line
----
-step:
-    done: true
-    title: numbers next to step
----
-step:
-    done: true
-    title: when making html issues go right after steps
----
-step:
-    title: 'option -i in command ''add'' to add item: step, goal, version, task'
----
-step:
-    title: refactor clean into separate function
----
-step:
     comment: think about it - if done is true, the item is not outputed
     title: html command accepts option -c - clean and then create html
 ---
