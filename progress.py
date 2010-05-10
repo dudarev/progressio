@@ -17,14 +17,18 @@ def add():
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-t", "--title", dest="title")
+    parser.add_option("-i", "--item", dest="type")
     (opts, args) = parser.parse_args(sys.argv[2:])
     if not getattr(opts,"title"):
         print "specify title with option -t"
         return
-    print "title:",opts.title
+    print "title:", opts.title
+    print "item type:", opts.type
     items_list = load_items()
     # prepend new item in the beginning
-    items_list = [{'step':{'title':opts.title}}] + items_list
+    if not opts.type:
+        opts.type = 'step'
+    items_list = [{opts.type:{'title':opts.title}}] + items_list
     save_items(items_list)
     return
 
@@ -54,8 +58,8 @@ def done():
 def html():
     print "creating html"
     
-    fields_list = ['step', 'task', 'issue', 'version', 'goal', 'other']
-    fields = {'step': [], 'task': [], 'issue': [], 'version': [], 'goal': [], 'other': []}
+    fields_list = ['step', 'issue', 'task', 'version', 'goal', 'other']
+    fields = {'step': [], 'issue': [], 'task': [], 'version': [], 'goal': [], 'other': []}
 
     # add to fields
     for i in yaml.load_all(open('progress.yaml')):

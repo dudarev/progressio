@@ -16,6 +16,7 @@ step:
     title: numbers next to step
 ---
 step:
+    done: true
     title: when making html issues go right after steps
 ---
 step:
