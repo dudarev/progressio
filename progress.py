@@ -58,7 +58,7 @@ def clean():
 def done():
     "mark an item done"
     try:
-        print "will mark itme %d done" % int(sys.argv[2])
+        print "will mark item %d done" % int(sys.argv[2])
         count_done = int(sys.argv[2])
         count = 1
         items = load_items()
@@ -105,7 +105,6 @@ def html():
             file.write("<br/>")
 
 def main():
-
     progress_file_name = 'progress.yaml'
     if not os.path.exists(progress_file_name):
         f = open(progress_file_name, 'w')

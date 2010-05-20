@@ -1,7 +1,12 @@
 ---
+issue:
+    done: true
+    title: 'typo: itme'
+---
 step:
-    comment: think about it - if done is true, the item is not outputed
+    comment: thought about it - not needed
     title: html command accepts option -c - clean and then create html
+    done: true
 ---
 step:
     title: write more detailed description in README
