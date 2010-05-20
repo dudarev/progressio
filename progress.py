@@ -75,6 +75,7 @@ def done():
                 if count == count_done:
                     print "%2d - %s: %s" % (count, key, i[key]['title'])
                     i[key]['done'] = True
+                    i[key]['done_at'] = time.strftime('%a %b %d %H:%M:%S %Y %Z')
                     save_items(items)
                     return
                 count += 1
