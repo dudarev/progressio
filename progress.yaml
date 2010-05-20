@@ -1,12 +1,23 @@
 ---
+step:
+    added_at: Thu May 20 15:03:54 2010 EEST
+    title: test
+---
+step:
+    title: time done is added
+---
+step:
+    done: true
+    title: time added is added
+---
 issue:
     done: true
     title: 'typo: itme'
 ---
 step:
     comment: thought about it - not needed
-    title: html command accepts option -c - clean and then create html
     done: true
+    title: html command accepts option -c - clean and then create html
 ---
 step:
     title: write more detailed description in README

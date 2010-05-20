@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys, os
 import yaml
+import time
 
 def load_items():
     return [i for i in yaml.load_all(open('progress.yaml'))]
@@ -28,7 +29,12 @@ def add():
     # prepend new item in the beginning
     if not opts.type:
         opts.type = 'step'
-    items_list = [{opts.type:{'title':opts.title}}] + items_list
+    items_list = [{
+                opts.type: {
+                    'title': opts.title,
+                    'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z')
+                }
+            }] + items_list
     save_items(items_list)
     return
 
