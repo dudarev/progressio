@@ -1,5 +1,13 @@
 ---
 step:
+    added_at: Fri May 28 13:10:40 2010 EEST
+    done: true
+    done_at: Fri May 28 13:14:50 2010 EEST
+    title: new count function - returns number of done items in progress.yaml
+---
+step:
+    done: true
+    done_at: Thu May 20 15:09:22 2010 EEST
     title: time done is added
 ---
 step:
@@ -19,6 +27,8 @@ step:
     title: write more detailed description in README
 ---
 issue:
+    done: true
+    done_at: Thu May 20 15:10:54 2010 EEST
     title: when only step is specified (not title or other fields) it returns error,
         need to return warning
 ---

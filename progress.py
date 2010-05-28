@@ -61,6 +61,19 @@ def clean():
     stream.close()
     return
 
+def count():
+    count_done = 0
+    count_total = 0
+    for i in yaml.load_all(open('progress.yaml')):
+        count_total += 1
+        key = i.keys()[0]
+        is_done = i[key].get("done",False)
+        if is_done:
+            count_done += 1
+    print "done: ",count_done
+    print "total items: ",count_total
+    return
+
 def done():
     "mark an item done"
     try:
@@ -141,13 +154,17 @@ def main():
         done()
         return
 
-    count = 1
+    if command == "count":
+        count()
+        return
+
+    item_count = 1
     for i in load_items():
         key = i.keys()[0]
         is_done = i[key].get("done",False)
         if not is_done and i[key].has_key('title'):
-            print "%2d - %s: %s" % (count, key, i[key]['title'])
-            count += 1
+            print "%2d - %s: %s" % (item_count, key, i[key]['title'])
+            item_count += 1
 
 if __name__ == "__main__":
     main()
