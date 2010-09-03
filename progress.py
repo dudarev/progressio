@@ -127,6 +127,10 @@ def html():
 def main():
     progress_file_name = 'progress.yaml'
     if not os.path.exists(progress_file_name):
+        sys.stdout.write("progress.yaml does not exist. Create? y/n [n] ")
+        choice = raw_input().lower()
+        if choice == '' or choice == 'n':
+            return
         f = open(progress_file_name, 'w')
         f.close()
         print 'created %s file' % progress_file_name

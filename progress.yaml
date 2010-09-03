@@ -1,5 +1,11 @@
 ---
 step:
+    added_at: Thu Aug 26 17:09:45 2010 EEST
+    done: true
+    done_at: Fri Sep 03 09:44:13 2010 EEST
+    title: in no progress.yaml exist, ask if to create (default no)
+---
+step:
     added_at: Fri May 28 13:10:40 2010 EEST
     done: true
     done_at: Fri May 28 13:14:50 2010 EEST
