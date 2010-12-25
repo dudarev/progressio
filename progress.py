@@ -98,6 +98,18 @@ def done():
         print "you need to specify an item number as integer"
     return
 
+def help():
+    "print help"
+    print "usage: p [COMMAND [ARGS]]"
+    print ""
+    print "  add    [-i [(step,task,issue)]] -t TITLE"
+    print "  clean  clean progress.yaml, move done items to progress.yaml.history"
+    print "  count  count items done and to be done"
+    print "  done   [n] - mark item n done"
+    print "  help   print help"
+    print "  html   generate progress.html"
+    return
+
 def html():
     print "creating html"
     
@@ -140,7 +152,6 @@ def main():
     command = None
     if len(args) > 1:
         command = args[1]
-        print command
 
     if command == 'clean':
         clean()
@@ -160,6 +171,10 @@ def main():
 
     if command == "count":
         count()
+        return
+
+    if command in ["help", "-h", "--help", "-help"]:
+        help()
         return
 
     item_count = 1
