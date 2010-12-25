@@ -1,5 +1,18 @@
 A file-based project management and bug-tracking tool.
 
+
+usage: p [COMMAND [ARGS]]
+
+    typing just 'p' will output all items to do
+    
+    add    [-i [(step,task,issue)]] -t TITLE
+    clean  clean progress.yaml, move done items to progress.yaml.history
+    count  count items done and to be done
+    done   [n] - mark item n done
+    help   print help
+    html   generate progress.html
+    
+
 Inspirations:
 
 "A journey of a thousand miles begins with a single step." 
