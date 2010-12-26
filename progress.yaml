@@ -1,6 +1,8 @@
 ---
 step:
     added_at: Sun Dec 26 12:32:37 2010 EET
+    done: true
+    done_at: Sun Dec 26 12:46:45 2010 EET
     title: add default item type to command add when printing
 ---
 step:

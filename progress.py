@@ -18,7 +18,7 @@ def add():
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-t", "--title", dest="title")
-    parser.add_option("-i", "--item", dest="type")
+    parser.add_option("-i", "--item", dest="type", default="step")
     (opts, args) = parser.parse_args(sys.argv[2:])
     if not getattr(opts,"title"):
         print "specify title with option -t"
@@ -27,8 +27,6 @@ def add():
     print "item type:", opts.type
     items_list = load_items()
     # prepend new item in the beginning
-    if not opts.type:
-        opts.type = 'step'
     items_list = [{
                 opts.type: {
                     'title': opts.title,
