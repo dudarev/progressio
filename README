@@ -11,6 +11,7 @@ usage: p [COMMAND [ARGS]]
     done   [n] - mark item n done
     help   print help
     html   generate progress.html
+    log    [-i item_type] [-d] - log items
     
 
 Inspirations:

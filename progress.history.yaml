@@ -175,3 +175,10 @@ step:
     done: true
     done_at: Sat Dec 25 13:25:14 2010 EET
     title: write more detailed description in README
+---
+step:
+    added_at: Sat Dec 25 13:29:41 2010 EET
+    done: true
+    done_at: Sun Dec 26 12:34:35 2010 EET
+    title: add log command, that may output only steps, tasks, goals, issues, items
+        done

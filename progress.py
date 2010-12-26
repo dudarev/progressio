@@ -108,7 +108,7 @@ def help():
     print "  done   [n] - mark item n done"
     print "  help   print help"
     print "  html   generate progress.html"
-    return
+    print "  log    [-i item_type] [-d] - log items"
 
 def html():
     print "creating html"
