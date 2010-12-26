@@ -136,6 +136,24 @@ def html():
         if fields[f]:
             file.write("<br/>")
 
+def log():
+    "log [-i item_type] [-d]"
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-i", "--item", dest="type", default="all")
+    parser.add_option('-d', dest='print_done', default=False, action='store_true')
+    (opts, args) = parser.parse_args(sys.argv[2:])
+    print "item type:", opts.type
+    print "print done:", opts.print_done
+    item_count = 1
+    for i in load_items():
+        key = i.keys()[0]
+        is_done = i[key].get("done",False)
+        if is_done==opts.print_done and i[key].has_key('title'):
+            if opts.type=="all" or opts.type==key:
+                print "%2d - %s: %s" % (item_count, key, i[key]['title'])
+                item_count += 1
+
 def main():
     progress_file_name = 'progress.yaml'
     if not os.path.exists(progress_file_name):
@@ -175,6 +193,10 @@ def main():
 
     if command in ["help", "-h", "--help", "-help"]:
         help()
+        return
+
+    if command == "log":
+        log()
         return
 
     item_count = 1
