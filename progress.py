@@ -113,6 +113,7 @@ def html():
     
     fields_list = ['step', 'issue', 'task', 'version', 'goal', 'other']
     fields = {'step': [], 'issue': [], 'task': [], 'version': [], 'goal': [], 'other': []}
+    ignore_keys = ('added_at', 'title')
 
     # add to fields
     for i in yaml.load_all(open('progress.yaml')):
@@ -123,13 +124,15 @@ def html():
             fields['other'].append(i[key])
 
     file = open("progress.html", "w")
+    file.write("""<style> body { padding: 1em; } </style>""")
     for f in fields_list:
+        file.write("""<h2>%ss</h2>""" % f)
         for i in fields[f]:
             is_done = i.get("done",False)
             if not is_done and i.has_key('title'):
-                file.write("%s: %s<br/>\n" % (f,i['title']))
+                file.write("%s<br/>\n" % i['title'])
                 for k in i.keys():
-                    if not k == 'title':
+                    if not k in ignore_keys:
                         file.write("&nbsp;&nbsp;&nbsp;&nbsp;%s: %s<br/>\n" % (k,i[k]))
         if fields[f]:
             file.write("<br/>")
