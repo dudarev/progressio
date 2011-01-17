@@ -2,6 +2,22 @@
 import sys, os
 import yaml
 import time
+import string
+
+PROGRESS_INFO_FILE_NAME = 'progress.info.yaml'
+BASE_FOR_ID = 36
+
+def base_encode(num, base, dd=False):
+    """http://www.daniweb.com/forums/thread159163.html
+    to convert back  int(string, 36)
+    """
+    if not 2 <= base <= 36:
+        raise ValueError, 'The base number must be between 2 and 36.'
+    if not dd:
+        dd = dict(zip(range(36), list(string.digits+string.ascii_lowercase)))
+    if num < base: return dd[num]
+    num, rem = divmod(num, base)
+    return base_encode(num, base, dd)+dd[rem]
 
 def load_items():
     return [i for i in yaml.load_all(open('progress.yaml'))]
@@ -11,6 +27,17 @@ def save_items(items):
     dump_options = {'indent':4,'default_flow_style':False, 'explicit_start':'---'}
     for i in items:
         yaml.dump(i,stream,**dump_options)
+    stream.close()
+
+def load_info():
+    if not os.path.exists(PROGRESS_INFO_FILE_NAME):
+        return {} 
+    return yaml.load(open(PROGRESS_INFO_FILE_NAME))
+
+def save_info(info):
+    stream = open(PROGRESS_INFO_FILE_NAME,'w')
+    dump_options = {'indent':4,'default_flow_style':False}
+    yaml.dump(info,stream,**dump_options)
     stream.close()
 
 def add():
@@ -26,14 +53,22 @@ def add():
     print "title:", opts.title
     print "item type:", opts.type
     items_list = load_items()
+    info = load_info()
+    print 'info.get = ', info.get('last_id', '-1')
+    last_id = int(info.get('last_id','-1'), BASE_FOR_ID)
+    print 'last_id', last_id
     # prepend new item in the beginning
+    new_id = base_encode(last_id+1, BASE_FOR_ID)
     items_list = [{
                 opts.type: {
                     'title': opts.title,
-                    'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z')
+                    'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z'),
+                    'id': new_id
                 }
             }] + items_list
     save_items(items_list)
+    info['last_id'] = new_id
+    save_info(info)
     return
 
 def clean():
@@ -76,20 +111,19 @@ def done():
     "mark an item done"
     try:
         print "will mark item %d done" % int(sys.argv[2])
-        count_done = int(sys.argv[2])
-        count = 1
+        id_done = sys.argv[2]
         items = load_items()
         for i in items:
             key = i.keys()[0]
             is_done = i[key].get("done",False)
             if not is_done and i[key].has_key('title'):
-                if count == count_done:
-                    print "%2d - %s: %s" % (count, key, i[key]['title'])
+                if i[key]['id'] == id_done:
+                    print " %s - %s: %s" % (i[key]['id'], key, i[key]['title'])
                     i[key]['done'] = True
                     i[key]['done_at'] = time.strftime('%a %b %d %H:%M:%S %Y %Z')
                     save_items(items)
                     return
-                count += 1
+        print 'did not find this id'
     except IndexError:
         print "you need to specify an item number"
     except ValueError:
@@ -205,7 +239,11 @@ def main():
         key = i.keys()[0]
         is_done = i[key].get("done",False)
         if not is_done and i[key].has_key('title'):
-            print "%2d - %s: %s" % (item_count, key, i[key]['title'])
+            if i[key].has_key('id'):
+                print " %s - %s: %s" % (i[key]['id'], key, i[key]['title'])
+            else:
+                # TODO: this is just to support old format
+                print " !!! - %s: %s" % (key, i[key]['title'])
             item_count += 1
 
 if __name__ == "__main__":

@@ -182,3 +182,33 @@ step:
     done_at: Sun Dec 26 12:34:35 2010 EET
     title: add log command, that may output only steps, tasks, goals, issues, items
         done
+---
+step:
+    added_at: Mon Jan 03 09:19:03 2011 EET
+    done: true
+    done_at: Mon Jan 03 09:23:47 2011 EET
+    title: remove added_at in html
+---
+step:
+    added_at: Mon Jan 03 09:10:27 2011 EET
+    done: true
+    done_at: Mon Jan 03 09:19:45 2011 EET
+    title: add margins to html
+---
+step:
+    added_at: Sun Dec 26 12:32:37 2010 EET
+    done: true
+    done_at: Sun Dec 26 12:46:45 2010 EET
+    title: add default item type to command add when printing
+---
+step:
+    added_at: Sun Dec 26 12:31:33 2010 EET
+    done: true
+    done_at: Sun Dec 26 12:41:37 2010 EET
+    title: describe log command in help command and in README
+---
+task:
+    done: true
+    done_at: Mon Jan 03 09:19:55 2011 EET
+    title: design on paragraph with step and tasks (red, yellow, green) - (step, task,
+        goal)
