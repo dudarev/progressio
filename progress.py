@@ -110,7 +110,7 @@ def count():
 def done():
     "mark an item done"
     try:
-        print "will mark item %d done" % int(sys.argv[2])
+        print "will mark item %s done" % sys.argv[2]
         id_done = sys.argv[2]
         items = load_items()
         for i in items:
