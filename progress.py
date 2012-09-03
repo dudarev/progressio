@@ -4,6 +4,9 @@ import yaml
 import time
 import string
 
+__version__ = '0.2dev'
+
+PROGRESS_TXT_FILE_NAME = 'progress.txt'
 PROGRESS_INFO_FILE_NAME = 'progress.info.yaml'
 BASE_FOR_ID = 36
 
@@ -30,8 +33,6 @@ def save_items(items):
     stream.close()
 
 def load_info():
-    if not os.path.exists(PROGRESS_INFO_FILE_NAME):
-        return {} 
     return yaml.load(open(PROGRESS_INFO_FILE_NAME))
 
 def save_info(info):
@@ -96,6 +97,15 @@ def clean():
 
 def convert():
     print "converting to new progress.txt format"
+    if os.path.exists(PROGRESS_TXT_FILE_NAME):
+        print '{} already exists'.format(PROGRESS_TXT_FILE_NAME)
+        return
+    with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
+        for i in load_items():
+            key = i.keys()[0]
+            is_done = i[key].get("done", False)
+            if not is_done and i[key].has_key('title') and i[key].has_key('id'):
+                f.write("%s - %s\n" % (i[key]['id'], i[key]['title']))
     return
 
 def count():
