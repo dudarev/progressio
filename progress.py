@@ -94,6 +94,10 @@ def clean():
     stream.close()
     return
 
+def convert():
+    print "converting to new progress.txt format"
+    return
+
 def count():
     count_done = 0
     count_total = 0
@@ -134,13 +138,14 @@ def help():
     "print help"
     print "usage: p [COMMAND [ARGS]]"
     print ""
-    print "  add    [-i [(step,task,issue)]] -t TITLE"
-    print "  clean  clean progress.yaml, move done items to progress.yaml.history"
-    print "  count  count items done and to be done"
-    print "  done   [n] - mark item n done"
-    print "  help   print help"
-    print "  html   generate progress.html"
-    print "  log    [-i item_type] [-d] - log items"
+    print "  add        [-i [(step,task,issue)]] -t TITLE"
+    print "  clean      clean progress.yaml, move done items to progress.yaml.history"
+    print "  convert    convert to new progress.txt format"
+    print "  count      count items done and to be done"
+    print "  done       [n] - mark item n done"
+    print "  help       print help"
+    print "  html       generate progress.html"
+    print "  log        [-i item_type] [-d] - log items"
 
 def html():
     print "creating html"
@@ -226,6 +231,10 @@ def main():
         count()
         return
 
+    if command == "convert":
+        convert()
+        return
+
     if command in ["help", "-h", "--help", "-help"]:
         help()
         return
@@ -237,7 +246,7 @@ def main():
     item_count = 1
     for i in load_items():
         key = i.keys()[0]
-        is_done = i[key].get("done",False)
+        is_done = i[key].get("done", False)
         if not is_done and i[key].has_key('title'):
             if i[key].has_key('id'):
                 print " %s - %s: %s" % (i[key]['id'], key, i[key]['title'])
