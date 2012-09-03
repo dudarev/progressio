@@ -29,5 +29,7 @@ step:
 ---
 task:
     added_at: Mon Jan 03 10:01:36 2011 EET
+    done: true
+    done_at: Mon Sep 03 13:19:46 2012 EEST
     id: '0'
     title: visualization of progress (bar diagram of steps made)
