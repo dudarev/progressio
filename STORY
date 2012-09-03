@@ -24,3 +24,5 @@ To add a substep to a ticket one make the following command:
 ```
     p add -i id.id.id -t "title of the subticket"
 ```
+
+File `progress.info.yaml` is not used. Information about last ticket id is saved into `progress.yaml` as the first item.
