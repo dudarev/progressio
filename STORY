@@ -1,0 +1,26 @@
+A user may write:
+
+```
+    p add -t "title of the step/ticket/task"
+```
+
+All tickets are collected in progress.txt.
+
+Information about them is saved in progress.yaml.
+
+When a user enters just `p` all tickets are shown in the following format:
+
+    id - title
+        id - title 
+    id - title 
+    id - title 
+        id - title 
+        id - title 
+
+Id is in alphanumeric format, automatically generated.
+
+To add a substep to a ticket one make the following command:
+
+```
+    p add -i id.id.id -t "title of the subticket"
+```
