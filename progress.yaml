@@ -21,6 +21,8 @@ step:
 ---
 step:
     added_at: Mon Sep 03 13:30:27 2012 EEST
+    done: true
+    done_at: Mon Sep 03 19:50:51 2012 EEST
     id: '6'
     title: when a ticket is added, it is added to progress.txt too
 ---
