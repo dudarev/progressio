@@ -3,6 +3,7 @@ import sys, os
 import yaml
 import time
 import string
+import re
 
 __version__ = '0.2dev'
 
@@ -10,9 +11,33 @@ PROGRESS_TXT_FILE_NAME = 'progress.txt'
 PROGRESS_INFO_FILE_NAME = 'progress.info.yaml'
 BASE_FOR_ID = 36
 
+
+class Item(object):
+
+    id = None
+    title = ''
+    subitems = []
+
+    def __init__(self, id, title):
+        self.id = id
+        self.title = title
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __repr__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return '{} - {}'.format(self.id, self.title)
+
+    def __cmp__(self, other):
+        return cmp(int(self.id, BASE_FOR_ID), int(other.id, BASE_FOR_ID))
+
+
 def base_encode(num, base, dd=False):
     """http://www.daniweb.com/forums/thread159163.html
-    to convert back  int(string, 36)
+    to convert back  int(string, BASE_FOR_ID)
     """
     if not 2 <= base <= 36:
         raise ValueError, 'The base number must be between 2 and 36.'
@@ -40,6 +65,24 @@ def save_info(info):
     dump_options = {'indent':4,'default_flow_style':False}
     yaml.dump(info,stream,**dump_options)
     stream.close()
+
+def parse_item(line):
+    item_re = re.compile('(\w+) - (.+)')
+    id, title = item_re.findall(line)[0]
+    return Item(id, title)
+
+def load_txt():
+    items = []
+    for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
+        items.append(parse_item(line))
+    return items
+
+def save_txt(items):
+    items.sort()
+    with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
+        for i in items:
+            f.write(str(i))
+            f.write('\n')
 
 def add():
     "add a step/task/goal..."
@@ -70,6 +113,11 @@ def add():
     save_items(items_list)
     info['last_id'] = new_id
     save_info(info)
+
+    txt_items = load_txt()
+    txt_items.append(Item(new_id, opts.title))
+    save_txt(txt_items)
+
     return
 
 def clean():
@@ -117,8 +165,8 @@ def count():
         is_done = i[key].get("done",False)
         if is_done:
             count_done += 1
-    print "done: ",count_done
-    print "total items: ",count_total
+    print "done: ", count_done
+    print "total items: ", count_total
     return
 
 def done():
@@ -203,6 +251,7 @@ def log():
             if opts.type=="all" or opts.type==key:
                 print "%2d - %s: %s" % (item_count, key, i[key]['title'])
                 item_count += 1
+    load_txt()
 
 def main():
     progress_file_name = 'progress.yaml'
