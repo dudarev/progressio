@@ -17,7 +17,7 @@ step:
 step:
     added_at: Mon Sep 03 13:30:42 2012 EEST
     id: '7'
-    title: info is stored in progress.yaml
+    title: info is stored in progress.yaml not in progress.info.yaml
 ---
 step:
     added_at: Mon Sep 03 13:30:27 2012 EEST
@@ -26,6 +26,8 @@ step:
 ---
 step:
     added_at: Mon Sep 03 13:23:20 2012 EEST
+    done: true
+    done_at: Mon Sep 03 14:16:30 2012 EEST
     id: '5'
     title: converter to new format
 ---
