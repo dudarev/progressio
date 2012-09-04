@@ -67,5 +67,5 @@ setup(name='p',
                       , 'License :: OSI Approved :: BSD License'
                       , 'Topic :: Utilities'
                       ],
-      scripts=['progress/progress.py'],
+      scripts=['progress/p'],
 )
