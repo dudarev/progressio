@@ -9,6 +9,8 @@ __version__ = '0.2dev'
 
 PROGRESS_TXT_FILE_NAME = 'progress.txt'
 PROGRESS_INFO_FILE_NAME = 'progress.info.yaml'
+PROGRESS_DETAILS_FILE_NAME = 'progress.yaml'
+
 BASE_FOR_ID = 36
 
 
