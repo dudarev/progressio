@@ -1,5 +1,20 @@
 ---
 step:
+    added_at: Tue Sep 04 11:30:49 2012 EEST
+    id: d
+    title: make it a package
+---
+step:
+    added_at: Tue Sep 04 11:21:45 2012 EEST
+    id: c
+    title: first simple test for adding an item, separate files need to be created
+---
+step:
+    added_at: Tue Sep 04 11:20:16 2012 EEST
+    id: b
+    title: start test.py
+---
+step:
     added_at: Mon Sep 03 13:32:30 2012 EEST
     id: a
     title: a substep may be added to step manually
