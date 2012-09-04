@@ -13,6 +13,8 @@ step:
 ---
 step:
     added_at: Tue Sep 04 11:20:16 2012 EEST
+    done: true
+    done_at: Tue Sep 04 12:37:52 2012 EEST
     id: b
     title: start test.py
 ---
