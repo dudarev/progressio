@@ -1,6 +1,8 @@
 ---
 step:
     added_at: Tue Sep 04 11:30:49 2012 EEST
+    done: true
+    done_at: Tue Sep 04 12:31:41 2012 EEST
     id: d
     title: make it a package
 ---
