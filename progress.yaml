@@ -8,6 +8,8 @@ step:
 ---
 step:
     added_at: Tue Sep 04 11:21:45 2012 EEST
+    done: true
+    done_at: Tue Sep 04 13:17:39 2012 EEST
     id: c
     title: first simple test for adding an item, separate files need to be created
 ---
