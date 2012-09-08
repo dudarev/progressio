@@ -3,6 +3,13 @@ A file-based project management and bug-tracking tool.
 Version: 0.1
 
 
+Installation
+
+pip install -e git+https://github.com/dudarev/progress.git#egg=progress
+
+
+Usage
+
 usage: p [COMMAND [ARGS]]
 
     typing just 'p' will output all items to do
