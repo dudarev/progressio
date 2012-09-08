@@ -1,6 +1,6 @@
 A file-based project management and bug-tracking tool.
 
-Version: 0.1
+Version: @VERSION@
 
 
 usage: p [COMMAND [ARGS]]
