@@ -68,4 +68,5 @@ setup(name='p',
                       , 'Topic :: Utilities'
                       ],
       scripts=['progress/p'],
+      requires=['PyYAML (>=3.10)'],
 )
