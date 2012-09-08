@@ -1,26 +1,36 @@
 ---
 step:
     added_at: Mon Sep 03 13:32:30 2012 EEST
+    done: true
+    done_at: Sat Sep 08 11:01:26 2012 EEST
     id: a
     title: a substep may be added to step manually
 ---
 step:
     added_at: Mon Sep 03 13:31:40 2012 EEST
+    done: true
+    done_at: Sat Sep 08 11:01:24 2012 EEST
     id: '9'
     title: it is possible to edit progress.txt file manually
 ---
 step:
     added_at: Mon Sep 03 13:30:57 2012 EEST
+    done: true
+    done_at: Sat Sep 08 11:01:22 2012 EEST
     id: '8'
     title: a substep may be added
 ---
 step:
     added_at: Mon Sep 03 13:30:42 2012 EEST
+    done: true
+    done_at: Sat Sep 08 11:01:21 2012 EEST
     id: '7'
     title: info is stored in progress.yaml not in progress.info.yaml
 ---
 step:
     added_at: Mon Sep 03 13:30:27 2012 EEST
+    done: true
+    done_at: Sat Sep 08 11:01:18 2012 EEST
     id: '6'
     title: when a ticket is added, it is added to progress.txt too
 ---
