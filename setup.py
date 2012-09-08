@@ -51,7 +51,7 @@ class update_version (Command):
 setup_path = os.path.dirname(__file__)
 possible_bundles = []
 
-setup(name='p',
+setup(name='progress',
       description = '',
       author='Artem Dudarev',
       author_email='dudarev@gmail.com',
