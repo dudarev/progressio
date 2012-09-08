@@ -4,9 +4,7 @@ import yaml
 import time
 import string
 
-__version__ = '0.2dev'
-
-PROGRESS_TXT_FILE_NAME = 'progress.txt'
+__version__ = '0.1'
 PROGRESS_INFO_FILE_NAME = 'progress.info.yaml'
 BASE_FOR_ID = 36
 
@@ -33,6 +31,8 @@ def save_items(items):
     stream.close()
 
 def load_info():
+    if not os.path.exists(PROGRESS_INFO_FILE_NAME):
+        return {} 
     return yaml.load(open(PROGRESS_INFO_FILE_NAME))
 
 def save_info(info):
@@ -95,19 +95,6 @@ def clean():
     stream.close()
     return
 
-def convert():
-    print "converting to new progress.txt format"
-    if os.path.exists(PROGRESS_TXT_FILE_NAME):
-        print '{} already exists'.format(PROGRESS_TXT_FILE_NAME)
-        return
-    with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
-        for i in load_items():
-            key = i.keys()[0]
-            is_done = i[key].get("done", False)
-            if not is_done and i[key].has_key('title') and i[key].has_key('id'):
-                f.write("%s - %s\n" % (i[key]['id'], i[key]['title']))
-    return
-
 def count():
     count_done = 0
     count_total = 0
@@ -148,14 +135,13 @@ def help():
     "print help"
     print "usage: p [COMMAND [ARGS]]"
     print ""
-    print "  add        [-i [(step,task,issue)]] -t TITLE"
-    print "  clean      clean progress.yaml, move done items to progress.yaml.history"
-    print "  convert    convert to new progress.txt format"
-    print "  count      count items done and to be done"
-    print "  done       [n] - mark item n done"
-    print "  help       print help"
-    print "  html       generate progress.html"
-    print "  log        [-i item_type] [-d] - log items"
+    print "  add    [-i [(step,task,issue)]] -t TITLE"
+    print "  clean  clean progress.yaml, move done items to progress.yaml.history"
+    print "  count  count items done and to be done"
+    print "  done   [n] - mark item n done"
+    print "  help   print help"
+    print "  html   generate progress.html"
+    print "  log    [-i item_type] [-d] - log items"
 
 def html():
     print "creating html"
@@ -241,10 +227,6 @@ def main():
         count()
         return
 
-    if command == "convert":
-        convert()
-        return
-
     if command in ["help", "-h", "--help", "-help"]:
         help()
         return
@@ -256,7 +238,7 @@ def main():
     item_count = 1
     for i in load_items():
         key = i.keys()[0]
-        is_done = i[key].get("done", False)
+        is_done = i[key].get("done",False)
         if not is_done and i[key].has_key('title'):
             if i[key].has_key('id'):
                 print " %s - %s: %s" % (i[key]['id'], key, i[key]['title'])
