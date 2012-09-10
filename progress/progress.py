@@ -50,6 +50,8 @@ def base_encode(num, base, dd=False):
     return base_encode(num, base, dd)+dd[rem]
 
 def load_items():
+    if not os.path.exists('progress.yaml'):
+        return []
     return [i for i in yaml.load_all(open('progress.yaml'))]
 
 def save_items(info, items):
@@ -61,6 +63,8 @@ def save_items(info, items):
     stream.close()
 
 def load_info():
+    if not os.path.exists('progress.yaml'):
+        return {}
     return yaml.load(open(PROGRESS_INFO_FILE_NAME))
 
 def save_info(info):
@@ -76,6 +80,8 @@ def parse_item(line):
 
 def load_txt():
     items = []
+    if not os.path.exists(PROGRESS_TXT_FILE_NAME):
+        return []
     for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
         items.append(parse_item(line))
     return items
