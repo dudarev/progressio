@@ -1,5 +1,29 @@
 ---
 step:
+    added_at: Mon Sep 10 12:29:12 2012 EEST
+    id: h
+    title: make tests run with no initial data
+---
+step:
+    added_at: Mon Sep 10 12:21:13 2012 EEST
+    id: g
+    title: setUp in tests cleans data
+---
+step:
+    added_at: Mon Sep 10 12:19:19 2012 EEST
+    done: true
+    done_at: Mon Sep 10 12:28:27 2012 EEST
+    id: f
+    title: make add save info into progress.yaml
+---
+step:
+    added_at: Mon Sep 10 12:18:53 2012 EEST
+    done: true
+    done_at: Mon Sep 10 12:28:36 2012 EEST
+    id: e
+    title: write a test for testing that the first item is info
+---
+step:
     added_at: Tue Sep 04 11:30:49 2012 EEST
     done: true
     done_at: Tue Sep 04 12:31:41 2012 EEST
