@@ -1,11 +1,20 @@
 ---
 step:
+    added_at: Mon Sep 10 12:42:33 2012 EEST
+    id: i
+    title: info is loaded progress.yaml
+---
+step:
     added_at: Mon Sep 10 12:29:12 2012 EEST
+    done: true
+    done_at: Mon Sep 10 12:41:53 2012 EEST
     id: h
     title: make tests run with no initial data
 ---
 step:
     added_at: Mon Sep 10 12:21:13 2012 EEST
+    done: true
+    done_at: Mon Sep 10 12:34:46 2012 EEST
     id: g
     title: setUp in tests cleans data
 ---
