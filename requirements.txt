@@ -1,1 +1,1 @@
-sudo easy_install pyyaml
+PyYAML==3.10
