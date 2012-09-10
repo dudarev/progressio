@@ -1,7 +1,7 @@
 import unittest
 import yaml
 
-import sys
+import os, sys
 sys.path.insert(0,"..")
 
 from progress.progress import add
@@ -11,6 +11,12 @@ def load_items():
 
 
 class TestAddition(unittest.TestCase):
+
+    def setUp(self):
+        """Clean up old progress files."""
+        filelist = [ f for f in os.listdir(".") if f.startswith("progress.") ]
+        for f in filelist:
+            os.remove(f)
 
     def test_addition(self):
         add('test')
