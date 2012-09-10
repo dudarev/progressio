@@ -52,11 +52,12 @@ def base_encode(num, base, dd=False):
 def load_items():
     return [i for i in yaml.load_all(open('progress.yaml'))]
 
-def save_items(items):
+def save_items(info, items):
     stream = open('progress.yaml','w')
     dump_options = {'indent':4,'default_flow_style':False, 'explicit_start':'---'}
+    yaml.dump({'info': info}, stream, **dump_options)
     for i in items:
-        yaml.dump(i,stream,**dump_options)
+        yaml.dump(i, stream, **dump_options)
     stream.close()
 
 def load_info():
@@ -120,9 +121,8 @@ def add(item_title=None):
                     'id': new_id
                 }
             }] + items_list
-    save_items(items_list)
     info['last_id'] = new_id
-    save_info(info)
+    save_items(info, items_list)
 
     txt_items = load_txt()
     txt_items.append(Item(new_id, item_title))
@@ -193,7 +193,8 @@ def done():
                     print " %s - %s: %s" % (i[key]['id'], key, i[key]['title'])
                     i[key]['done'] = True
                     i[key]['done_at'] = time.strftime('%a %b %d %H:%M:%S %Y %Z')
-                    save_items(items)
+                    info = load_info()
+                    save_items(info, items)
                     return
         print 'did not find this id'
     except IndexError:
