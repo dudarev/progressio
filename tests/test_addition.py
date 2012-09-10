@@ -18,10 +18,16 @@ class TestAddition(unittest.TestCase):
         is_added = False
         for i in items:
             print i
-            if i['step']['title'] == 'test':
+            if i.get('step', {}).get('title', '') == 'test':
                 is_added = True
                 break
         self.assertTrue(is_added)
+
+    def test_info(self):
+        """Tests that the first item is info"""
+        add('testing info')
+        items = load_items()
+        self.assertTrue(items[0].has_key('info'))
 
 
 if __name__ == '__main__':
