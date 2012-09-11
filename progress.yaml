@@ -1,5 +1,11 @@
 ---
 step:
+    added_at: Tue Sep 11 14:34:12 2012 EEST
+    id: j
+    title: all info is saved into progress.txt at the same time as progress.yaml is
+        saved
+---
+step:
     added_at: Mon Sep 10 12:42:33 2012 EEST
     done: true
     done_at: Tue Sep 11 14:31:47 2012 EEST
