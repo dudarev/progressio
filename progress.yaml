@@ -1,8 +1,10 @@
 ---
 step:
     added_at: Mon Sep 10 12:42:33 2012 EEST
+    done: true
+    done_at: Tue Sep 11 14:31:47 2012 EEST
     id: i
-    title: info is loaded progress.yaml
+    title: info is loaded from progress.yaml
 ---
 step:
     added_at: Mon Sep 10 12:29:12 2012 EEST
@@ -70,6 +72,8 @@ step:
 ---
 step:
     added_at: Mon Sep 03 13:30:42 2012 EEST
+    done: true
+    done_at: Tue Sep 11 14:31:56 2012 EEST
     id: '7'
     title: info is stored in progress.yaml not in progress.info.yaml
 ---
