@@ -1,5 +1,6 @@
 #!/usr/bin/python
-import sys, os
+import os
+import sys
 import yaml
 import time
 import string
@@ -62,10 +63,21 @@ def save_items(info, items):
         yaml.dump(i, stream, **dump_options)
     stream.close()
 
+
+def get_info(items):
+    """Get info from items.
+    By convention the global info is the first item."""
+    if 'info' in items[0]:
+        return items[0]
+    else:
+        return {'info': {}}
+
+
 def load_info():
     if not os.path.exists('progress.yaml'):
         return {}
     return yaml.load(open(PROGRESS_INFO_FILE_NAME))
+
 
 def save_info(info):
     stream = open(PROGRESS_INFO_FILE_NAME,'w')
