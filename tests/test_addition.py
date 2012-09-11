@@ -13,7 +13,6 @@ def load_items():
 
 
 class TestAddition(unittest.TestCase):
-
     def setUp(self):
         """Clean up old progress files."""
         filelist = [f for f in os.listdir(".") if f.startswith("progress.")]
