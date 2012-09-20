@@ -25,7 +25,6 @@ class TestAddition(unittest.TestCase):
         items = load_items()
         is_added = False
         for i in items:
-            print i
             if i.get('step', {}).get('title', '') == 'test':
                 is_added = True
                 break

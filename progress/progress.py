@@ -9,7 +9,6 @@ import re
 __version__ = '0.2dev'
 
 PROGRESS_TXT_FILE_NAME = 'progress.txt'
-PROGRESS_INFO_FILE_NAME = 'progress.info.yaml'
 PROGRESS_DETAILS_FILE_NAME = 'progress.yaml'
 
 BASE_FOR_ID = 36
@@ -43,17 +42,22 @@ def base_encode(num, base, dd=False):
     to convert back  int(string, BASE_FOR_ID)
     """
     if not 2 <= base <= 36:
-        raise ValueError, 'The base number must be between 2 and 36.'
+        raise ValueError('The base number must be between 2 and 36.')
     if not dd:
-        dd = dict(zip(range(36), list(string.digits+string.ascii_lowercase)))
-    if num < base: return dd[num]
+        dd = dict(zip(range(36), list(string.digits + string.ascii_lowercase)))
+    if num < base:
+        return dd[num]
     num, rem = divmod(num, base)
-    return base_encode(num, base, dd)+dd[rem]
+    return base_encode(num, base, dd) + dd[rem]
+
 
 def load_items():
+    """Returns tuple (info, items_list)"""
     if not os.path.exists('progress.yaml'):
-        return []
-    return [i for i in yaml.load_all(open('progress.yaml'))]
+        return {'last_id': -1}, []
+    l = [i for i in yaml.load_all(open('progress.yaml'))]
+    return l[0], l[1:]
+
 
 def save_items(info, items):
     stream = open('progress.yaml','w')
@@ -73,22 +77,11 @@ def get_info(items):
         return {'info': {}}
 
 
-def load_info():
-    if not os.path.exists('progress.yaml'):
-        return {}
-    return yaml.load(open(PROGRESS_INFO_FILE_NAME))
-
-
-def save_info(info):
-    stream = open(PROGRESS_INFO_FILE_NAME,'w')
-    dump_options = {'indent':4,'default_flow_style':False}
-    yaml.dump(info,stream,**dump_options)
-    stream.close()
-
 def parse_item(line):
     item_re = re.compile('(\w+) - (.+)')
     id, title = item_re.findall(line)[0]
     return Item(id, title)
+
 
 def load_txt():
     items = []
@@ -97,6 +90,7 @@ def load_txt():
     for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
         items.append(parse_item(line))
     return items
+
 
 def save_txt(items):
     items.sort()
@@ -125,12 +119,10 @@ def add(item_title=None):
     print "title:", item_title
     print "item type:", item_type
 
-    items_list = load_items()
-    info = load_info()
-    print 'info.get = ', info.get('last_id', '-1')
-    last_id = int(info.get('last_id','-1'), BASE_FOR_ID)
-    print 'last_id', last_id
+    info, items_list = load_items()
     # prepend new item in the beginning
+    print items_list
+    last_id = info['last_id']
     new_id = base_encode(last_id+1, BASE_FOR_ID)
     items_list = [{
                 item_type: {
@@ -211,8 +203,6 @@ def done():
                     print " %s - %s: %s" % (i[key]['id'], key, i[key]['title'])
                     i[key]['done'] = True
                     i[key]['done_at'] = time.strftime('%a %b %d %H:%M:%S %Y %Z')
-                    info = load_info()
-                    save_items(info, items)
                     return
         print 'did not find this id'
     except IndexError:
