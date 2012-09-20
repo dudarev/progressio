@@ -99,7 +99,7 @@ def save_txt(items):
             f.write(str(i))
             f.write('\n')
 
-def add(item_title=None):
+def add(item_title=None, item_id=None):
     "add a step/task/goal..."
 
     if not item_title:
@@ -113,19 +113,13 @@ def add(item_title=None):
             return
         item_title = opts.title
         item_type = opts.type
-    else:
-        item_type = 'step'
-
-    print "title:", item_title
-    print "item type:", item_type
 
     info, items_list = load_items()
     # prepend new item in the beginning
-    print items_list
     last_id = info['last_id']
     new_id = base_encode(last_id+1, BASE_FOR_ID)
     items_list = [{
-                item_type: {
+                new_id: {
                     'title': item_title,
                     'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z'),
                     'id': new_id
