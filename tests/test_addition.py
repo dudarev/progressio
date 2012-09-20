@@ -31,6 +31,17 @@ class TestAddition(unittest.TestCase):
                 break
         self.assertTrue(is_added)
 
+    def test_added_to_txt(self):
+        """Test that item is added to progress.txt"""
+        TEST_TEXT = 'test'
+        add(TEST_TEXT)
+        test_in_txt = False
+        for line in open('progress.txt', 'r'):
+            if TEST_TEXT in line:
+                test_in_txt = True
+                break
+        self.assertTrue(test_in_txt)
+
     def test_info(self):
         """Tests that the first item is info"""
         add('testing info')
