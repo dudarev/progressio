@@ -41,11 +41,19 @@ class TestAddition(unittest.TestCase):
                 break
         self.assertTrue(test_in_txt)
 
+    def test_add_subitem(self):
+        TEST_TEXT = 'test'
+        add(TEST_TEXT)
+        info, items = load_items()
+        add(TEST_TEXT, items[0]['id'])
+        info, items = load_items()
+        self.assertEqual(items[0]['items'][0]['title'], TEST_TEXT)
+
     def test_info(self):
         """Tests that the first item is info"""
         add('testing info')
-        items = load_items()
-        self.assertTrue('info' in items[0])
+        info, items = load_items()
+        self.assertTrue('info' in info)
 
 
 if __name__ == '__main__':
