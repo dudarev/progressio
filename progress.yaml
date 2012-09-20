@@ -1,5 +1,11 @@
 ---
 step:
+    added_at: Thu Sep 20 14:16:36 2012 EEST
+    id: k
+    title: read code of progress.py line by line, make sure you undersdand it, remove
+        what does not fit STORY
+---
+step:
     added_at: Tue Sep 11 14:34:12 2012 EEST
     done: true
     done_at: Thu Sep 20 14:08:53 2012 EEST
