@@ -38,7 +38,9 @@ class Item(object):
 
 
 def base_encode(num, base, dd=False):
-    """http://www.daniweb.com/forums/thread159163.html
+    """
+    Converts to new base.
+    http://www.daniweb.com/forums/thread159163.html
     to convert back  int(string, BASE_FOR_ID)
     """
     if not 2 <= base <= 36:
@@ -52,27 +54,29 @@ def base_encode(num, base, dd=False):
 
 
 def load_items():
-    """Returns tuple (info, items_list)"""
+    """
+    """
     if not os.path.exists('progress.yaml'):
-        return {'last_id': -1}, []
-    l = [i for i in yaml.load_all(open('progress.yaml'))]
-    return l[0], l[1:]
+        return {'info': {'last_id': '-1'}, 'items': {}}
+    l = yaml.load_all(open('progress.yaml')).next()
+    return l
 
 
-def save_items(info, items):
-    stream = open('progress.yaml','w')
-    dump_options = {'indent':4,'default_flow_style':False, 'explicit_start':'---'}
-    yaml.dump({'info': info}, stream, **dump_options)
-    for i in items:
-        yaml.dump(i, stream, **dump_options)
+def save_items(items):
+    stream = open('progress.yaml', 'w')
+    dump_options = {
+            'indent': 4, 
+            'default_flow_style': False, 
+            }
+    yaml.dump(items, stream, **dump_options)
     stream.close()
 
 
 def get_info(items):
     """Get info from items.
-    By convention the global info is the first item."""
-    if 'info' in items[0]:
-        return items[0]
+    """
+    if 'info' in items:
+        return {'info': items['info']}
     else:
         return {'info': {}}
 
@@ -109,24 +113,21 @@ def add(item_title=None, item_id=None):
         parser.add_option("-i", "--item", dest="type", default="step")
         (opts, args) = parser.parse_args(sys.argv[2:])
         if not getattr(opts,"title"):
-            print "specify title with option -t"
             return
         item_title = opts.title
         item_type = opts.type
 
-    info, items_list = load_items()
+    items = load_items()
     # prepend new item in the beginning
-    last_id = info['last_id']
-    new_id = base_encode(last_id+1, BASE_FOR_ID)
-    items_list = [{
-                new_id: {
+    last_id = items['info']['last_id']
+    new_id = base_encode(int(last_id, BASE_FOR_ID) + 1, BASE_FOR_ID)
+    items['items'][new_id] = {
                     'title': item_title,
                     'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z'),
                     'id': new_id
-                }
-            }] + items_list
-    info['last_id'] = new_id
-    save_items(info, items_list)
+                    }
+    items['info']['last_id'] = new_id
+    save_items(items)
 
     txt_items = load_txt()
     txt_items.append(Item(new_id, item_title))
