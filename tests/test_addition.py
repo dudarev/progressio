@@ -5,11 +5,7 @@ import os
 import sys
 sys.path.insert(0, "..")
 
-from progress.progress import add
-
-
-def load_items():
-    return [i for i in yaml.load_all(open('progress.yaml'))]
+from progress.progress import add, load_items
 
 
 class TestAddition(unittest.TestCase):
@@ -22,10 +18,11 @@ class TestAddition(unittest.TestCase):
     def test_addition(self):
         """Test adding one item"""
         add('test')
+        add('test2')
         items = load_items()
         is_added = False
-        for i in items:
-            if i.get('step', {}).get('title', '') == 'test':
+        for i in items['items']:
+            if items['items'][i].get('title', '') == 'test':
                 is_added = True
                 break
         self.assertTrue(is_added)
@@ -34,6 +31,7 @@ class TestAddition(unittest.TestCase):
         """Test that item is added to progress.txt"""
         TEST_TEXT = 'test'
         add(TEST_TEXT)
+        add('test2')
         test_in_txt = False
         for line in open('progress.txt', 'r'):
             if TEST_TEXT in line:
@@ -44,16 +42,17 @@ class TestAddition(unittest.TestCase):
     def test_add_subitem(self):
         TEST_TEXT = 'test'
         add(TEST_TEXT)
+        add('test2')
+        items = load_items()
+        add(TEST_TEXT, items['items']['0']['id'])
         info, items = load_items()
-        add(TEST_TEXT, items[0]['id'])
-        info, items = load_items()
-        self.assertEqual(items[0]['items'][0]['title'], TEST_TEXT)
+        self.assertEqual(items['items']['0']['items']['0']['title'], TEST_TEXT)
 
     def test_info(self):
         """Tests that the first item is info"""
         add('testing info')
-        info, items = load_items()
-        self.assertTrue('info' in info)
+        items = load_items()
+        self.assertTrue('info' in items)
 
 
 if __name__ == '__main__':
