@@ -1,6 +1,8 @@
 ---
 step:
     added_at: Thu Sep 20 14:46:44 2012 EEST
+    done: true
+    done_at: Thu Sep 20 15:39:31 2012 EEST
     id: l
     title: write a test for adding subitem
 ---
