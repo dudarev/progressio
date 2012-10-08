@@ -1,5 +1,4 @@
 import unittest
-import yaml
 
 import os
 import sys
@@ -45,8 +44,9 @@ class TestAddition(unittest.TestCase):
         add('test2')
         items = load_items()
         add(TEST_TEXT, items['items']['0']['id'])
-        info, items = load_items()
-        self.assertEqual(items['items']['0']['items']['0']['title'], TEST_TEXT)
+        data = load_items()
+        items = data['items']
+        self.assertEqual(items['0']['items']['0']['title'], TEST_TEXT)
 
     def test_info(self):
         """Tests that the first item is info"""

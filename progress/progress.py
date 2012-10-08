@@ -115,13 +115,20 @@ def add(item_title=None, item_id=None):
         if not getattr(opts,"title"):
             return
         item_title = opts.title
-        item_type = opts.type
 
     items = load_items()
     # prepend new item in the beginning
     last_id = items['info']['last_id']
     new_id = base_encode(int(last_id, BASE_FOR_ID) + 1, BASE_FOR_ID)
-    items['items'][new_id] = {
+    if item_id:
+        items['items'][item_id]['items'] = {}
+        items['items'][item_id]['items']['0'] = {
+            'title': item_title,
+            'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z'),
+            'id': new_id
+            }
+    else:
+        items['items'][new_id] = {
                     'title': item_title,
                     'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z'),
                     'id': new_id
@@ -219,6 +226,7 @@ def help():
     print "  html       generate progress.html"
     print "  log        [-i item_type] [-d] - log items"
 
+
 def html():
     print "creating html"
     
@@ -248,6 +256,7 @@ def html():
         if fields[f]:
             file.write("<br/>")
 
+
 def log():
     "log [-i item_type] [-d]"
     from optparse import OptionParser
@@ -266,6 +275,7 @@ def log():
                 print "%2d - %s: %s" % (item_count, key, i[key]['title'])
                 item_count += 1
     load_txt()
+
 
 def main():
     progress_file_name = 'progress.yaml'
