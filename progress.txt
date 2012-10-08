@@ -1,5 +1,7 @@
-6 - when a ticket is added, it is added to progress.txt too
-7 - info is stored in progress.yaml not in progress.info.yaml
-8 - a substep may be added
-9 - it is possible to edit progress.txt file manually
-a - a substep may be added to step manually
+0 - move progress tracking for this branch to new version - p2
+1 - list all steps
+2 - a substep may be added
+3 - it is possible to edit progress.txt file manually
+4 - a substep may be added to step manually
+5 - an item may be marked done
+6 - clean up git

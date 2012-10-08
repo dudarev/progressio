@@ -1,157 +1,37 @@
----
-step:
-    added_at: Mon Oct 08 13:08:05 2012 EEST
-    done: true
-    done_at: Mon Oct 08 13:19:55 2012 EEST
-    id: m
-    title: tests pass
----
-step:
-    added_at: Thu Sep 20 14:46:44 2012 EEST
-    done: true
-    done_at: Thu Sep 20 15:39:31 2012 EEST
-    id: l
-    title: write a test for adding subitem
----
-step:
-    added_at: Thu Sep 20 14:16:36 2012 EEST
-    done: true
-    done_at: Thu Sep 20 14:38:02 2012 EEST
-    id: k
-    title: read code of progress.py line by line, make sure you undersdand it, remove
-        what does not fit STORY
----
-step:
-    added_at: Tue Sep 11 14:34:12 2012 EEST
-    done: true
-    done_at: Thu Sep 20 14:08:53 2012 EEST
-    id: j
-    title: all info is saved into progress.txt at the same time as progress.yaml is
-        saved
----
-step:
-    added_at: Mon Sep 10 12:42:33 2012 EEST
-    done: true
-    done_at: Tue Sep 11 14:31:47 2012 EEST
-    id: i
-    title: info is loaded from progress.yaml
----
-step:
-    added_at: Mon Sep 10 12:29:12 2012 EEST
-    done: true
-    done_at: Mon Sep 10 12:41:53 2012 EEST
-    id: h
-    title: make tests run with no initial data
----
-step:
-    added_at: Mon Sep 10 12:21:13 2012 EEST
-    done: true
-    done_at: Mon Sep 10 12:34:46 2012 EEST
-    id: g
-    title: setUp in tests cleans data
----
-step:
-    added_at: Mon Sep 10 12:19:19 2012 EEST
-    done: true
-    done_at: Mon Sep 10 12:28:27 2012 EEST
-    id: f
-    title: make add save info into progress.yaml
----
-step:
-    added_at: Mon Sep 10 12:18:53 2012 EEST
-    done: true
-    done_at: Mon Sep 10 12:28:36 2012 EEST
-    id: e
-    title: write a test for testing that the first item is info
----
-step:
-    added_at: Tue Sep 04 11:30:49 2012 EEST
-    done: true
-    done_at: Tue Sep 04 12:31:41 2012 EEST
-    id: d
-    title: make it a package
----
-step:
-    added_at: Tue Sep 04 11:21:45 2012 EEST
-    done: true
-    done_at: Tue Sep 04 13:17:39 2012 EEST
-    id: c
-    title: first simple test for adding an item, separate files need to be created
----
-step:
-    added_at: Tue Sep 04 11:20:16 2012 EEST
-    done: true
-    done_at: Tue Sep 04 12:37:52 2012 EEST
-    id: b
-    title: start test.py
----
-step:
-    added_at: Mon Sep 03 13:32:30 2012 EEST
-    id: a
-    title: a substep may be added to step manually
----
-step:
-    added_at: Mon Sep 03 13:31:40 2012 EEST
-    id: '9'
-    title: it is possible to edit progress.txt file manually
----
-step:
-    added_at: Mon Sep 03 13:30:57 2012 EEST
-    id: '8'
-    title: a substep may be added
----
-step:
-    added_at: Mon Sep 03 13:30:42 2012 EEST
-    done: true
-    done_at: Tue Sep 11 14:31:56 2012 EEST
-    id: '7'
-    title: info is stored in progress.yaml not in progress.info.yaml
----
-step:
-    added_at: Mon Sep 03 13:30:27 2012 EEST
-    done: true
-    done_at: Mon Sep 03 19:50:51 2012 EEST
-    id: '6'
-    title: when a ticket is added, it is added to progress.txt too
----
-step:
-    added_at: Mon Sep 03 13:23:20 2012 EEST
-    done: true
-    done_at: Mon Sep 03 14:16:30 2012 EEST
-    id: '5'
-    title: converter to new format
----
-step:
-    added_at: Wed Nov 09 17:23:06 2011 FET
-    done: true
-    done_at: Wed Nov 09 17:26:21 2011 FET
-    id: '4'
-    title: requirements
----
-step:
-    added_at: Mon Jan 17 16:43:18 2011 EET
-    done: true
-    done_at: Mon Jan 17 16:49:23 2011 EET
-    id: '3'
-    title: mark done by id
----
-step:
-    added_at: Sun Jan 09 21:44:15 2011 EET
-    done: true
-    done_at: Mon Sep 03 12:37:52 2012 EEST
-    id: '2'
-    title: move title one step above step/task
----
-step:
-    added_at: Sun Jan 09 20:49:58 2011 EET
-    done: true
-    done_at: Mon Jan 17 16:48:15 2011 EET
-    id: '1'
-    title: id of step is in 0-9a-z format
----
-task:
-    added_at: Mon Jan 03 10:01:36 2011 EET
-    done: true
-    done_at: Mon Sep 03 13:19:46 2012 EEST
-    id: '0'
-    title: visualization of progress (bar diagram of steps made)
+info:
+    last_id: '6'
+items:
+    '0':
+        added_at: Mon Oct 08 13:55:56 2012 EEST
+        done: true
+        done_at: Mon Oct 08 14:35:26 2012 EEST
+        id: '0'
+        title: move progress tracking for this branch to new version - p2
+    '1':
+        added_at: Mon Oct 08 13:58:45 2012 EEST
+        done: true
+        done_at: Mon Oct 08 14:35:05 2012 EEST
+        id: '1'
+        title: list all steps
+    '2':
+        added_at: Mon Oct 08 14:07:10 2012 EEST
+        id: '2'
+        title: a substep may be added
+    '3':
+        added_at: Mon Oct 08 14:07:31 2012 EEST
+        id: '3'
+        title: it is possible to edit progress.txt file manually
+    '4':
+        added_at: Mon Oct 08 14:07:53 2012 EEST
+        id: '4'
+        title: a substep may be added to step manually
+    '5':
+        added_at: Mon Oct 08 14:08:43 2012 EEST
+        done: true
+        done_at: Mon Oct 08 14:35:42 2012 EEST
+        id: '5'
+        title: an item may be marked done
+    '6':
+        added_at: Mon Oct 08 14:37:51 2012 EEST
+        id: '6'
+        title: clean up git
