@@ -1,5 +1,12 @@
 ---
 step:
+    added_at: Mon Oct 08 13:08:05 2012 EEST
+    done: true
+    done_at: Mon Oct 08 13:19:55 2012 EEST
+    id: m
+    title: tests pass
+---
+step:
     added_at: Thu Sep 20 14:46:44 2012 EEST
     done: true
     done_at: Thu Sep 20 15:39:31 2012 EEST
