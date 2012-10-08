@@ -56,9 +56,13 @@ def base_encode(num, base, dd=False):
 def load_items():
     """
     """
+    initial_data = {'info': {'last_id': '-1'}, 'items': {}}
     if not os.path.exists('progress.yaml'):
-        return {'info': {'last_id': '-1'}, 'items': {}}
-    l = yaml.load_all(open('progress.yaml')).next()
+        return initial_data
+    try:
+        l = yaml.load_all(open('progress.yaml')).next()
+    except StopIteration:
+        return initial_data
     return l
 
 
@@ -118,7 +122,10 @@ def add(item_title=None, item_id=None):
 
     items = load_items()
     # prepend new item in the beginning
-    last_id = items['info']['last_id']
+    try:
+        last_id = items['info']['last_id']
+    except KeyError:
+        last_id = '0'
     new_id = base_encode(int(last_id, BASE_FOR_ID) + 1, BASE_FOR_ID)
     if item_id:
         items['items'][item_id]['items'] = {}
@@ -191,20 +198,24 @@ def count():
     print "total items: ", count_total
     return
 
-def done():
+def done(id_done=None):
     "mark an item done"
     try:
-        print "will mark item %s done" % sys.argv[2]
-        id_done = sys.argv[2]
-        items = load_items()
+        if id_done is None:
+            id_done = sys.argv[2]
+        print "will mark item %s done" % id_done
+        data = load_items()
+        items = data['items']
         for i in items:
-            key = i.keys()[0]
-            is_done = i[key].get("done",False)
-            if not is_done and i[key].has_key('title'):
-                if i[key]['id'] == id_done:
-                    print " %s - %s: %s" % (i[key]['id'], key, i[key]['title'])
-                    i[key]['done'] = True
-                    i[key]['done_at'] = time.strftime('%a %b %d %H:%M:%S %Y %Z')
+            is_done = items[i].get("done", False)
+            if not is_done and items[i].has_key('title'):
+                if items[i]['id'] == id_done:
+                    print " %s - %s" % (items[i]['id'], items[i]['title'])
+                    items[i]['done'] = True
+                    items[i]['done_at'] = time.strftime('%a %b %d %H:%M:%S %Y %Z')
+                    data['items'] = items
+                    print items
+                    save_items(data)
                     return
         print 'did not find this id'
     except IndexError:
@@ -327,15 +338,11 @@ def main():
         return
 
     item_count = 1
-    for i in load_items():
-        key = i.keys()[0]
-        is_done = i[key].get("done", False)
-        if not is_done and i[key].has_key('title'):
-            if i[key].has_key('id'):
-                print " %s - %s: %s" % (i[key]['id'], key, i[key]['title'])
-            else:
-                # TODO: this is just to support old format
-                print " !!! - %s: %s" % (key, i[key]['title'])
+    items = load_items()['items']
+    for i in items:
+        is_done = items[i].get("done", False)
+        if not is_done and items[i].has_key('title'):
+            print " %s - %s" % (items[i]['id'], items[i]['title'])
             item_count += 1
 
 if __name__ == "__main__":
