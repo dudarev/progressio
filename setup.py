@@ -67,6 +67,6 @@ setup(name='progress',
                       , 'License :: OSI Approved :: BSD License'
                       , 'Topic :: Utilities'
                       ],
-      scripts=['progress/p'],
+      scripts=['progress/p2'],
       requires=['PyYAML (>=3.10)'],
 )
