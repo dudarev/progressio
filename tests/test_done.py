@@ -19,10 +19,10 @@ class TestDone(unittest.TestCase):
         add('test that will be done')
         data = load_items()
         print len(data['items'].keys())
-        done()
-        # done(items.keys()[0])
-        items = load_items()
-        self.assertTrue(data['items']['0'].has_key('is_done'))
+        items = data['items']
+        done(items.keys()[0])
+        data = load_items()
+        self.assertTrue(data['items']['0'].get('done', False))
 
 
 if __name__ == '__main__':
