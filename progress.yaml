@@ -15,6 +15,8 @@ items:
         title: list all steps
     '2':
         added_at: Mon Oct 08 14:07:10 2012 EEST
+        done: true
+        done_at: Tue Oct 09 13:48:29 2012 EEST
         id: '2'
         title: a substep may be added
     '3':
@@ -33,5 +35,7 @@ items:
         title: an item may be marked done
     '6':
         added_at: Mon Oct 08 14:37:51 2012 EEST
+        done: true
+        done_at: Tue Oct 09 13:48:24 2012 EEST
         id: '6'
         title: clean up git
