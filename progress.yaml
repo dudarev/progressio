@@ -1,5 +1,5 @@
 info:
-    last_id: b
+    last_id: c
 items:
     '0':
         added_at: Mon Oct 08 13:55:56 2012 EEST
@@ -65,3 +65,8 @@ items:
         done_at: Wed Oct 10 10:15:10 2012 EEST
         id: b
         title: do not output debug text
+    c:
+        added_at: Wed Oct 10 10:19:24 2012 EEST
+        id: c
+        title: a step may be added to txt file manually, it is checked for discrepancies
+            when p is ran
