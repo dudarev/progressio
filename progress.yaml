@@ -55,9 +55,13 @@ items:
         title: several substeps maybe added
     a:
         added_at: Wed Oct 10 10:06:18 2012 EEST
+        done: true
+        done_at: Wed Oct 10 10:14:18 2012 EEST
         id: a
         title: clean git
     b:
         added_at: Wed Oct 10 10:11:53 2012 EEST
+        done: true
+        done_at: Wed Oct 10 10:15:10 2012 EEST
         id: b
         title: do not output debug text
