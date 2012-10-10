@@ -5,3 +5,8 @@
 4 - a substep may be added to step manually
 5 - an item may be marked done
 6 - clean up git
+7 - count prints correct values
+8 - progress.txt is updated when items are deleted
+9 - several substeps maybe added
+a - clean git
+b - do not output debug text

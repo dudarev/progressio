@@ -1,5 +1,5 @@
 info:
-    last_id: '6'
+    last_id: b
 items:
     '0':
         added_at: Mon Oct 08 13:55:56 2012 EEST
@@ -39,3 +39,25 @@ items:
         done_at: Tue Oct 09 13:48:24 2012 EEST
         id: '6'
         title: clean up git
+    '7':
+        added_at: Tue Oct 09 13:51:10 2012 EEST
+        id: '7'
+        title: count prints correct values
+    '8':
+        added_at: Tue Oct 09 13:59:46 2012 EEST
+        done: true
+        done_at: Wed Oct 10 10:05:55 2012 EEST
+        id: '8'
+        title: progress.txt is updated when items are deleted
+    '9':
+        added_at: Tue Oct 09 14:17:13 2012 EEST
+        id: '9'
+        title: several substeps maybe added
+    a:
+        added_at: Wed Oct 10 10:06:18 2012 EEST
+        id: a
+        title: clean git
+    b:
+        added_at: Wed Oct 10 10:11:53 2012 EEST
+        id: b
+        title: do not output debug text
