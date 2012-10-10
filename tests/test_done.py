@@ -4,7 +4,9 @@ import os
 import sys
 sys.path.insert(0, "..")
 
-from progress.progress import add, load_items, done
+from subprocess import call, Popen, PIPE
+
+from progress.progress import add, load_items, done, PROGRESS_TXT_FILE_NAME
 
 
 class TestDone(unittest.TestCase):
@@ -24,6 +26,28 @@ class TestDone(unittest.TestCase):
         data = load_items()
         self.assertTrue(data['items']['0'].get('done', False))
 
+    def test_done_not_in_txt(self):
+
+        # create progress.yaml
+        p = Popen('../progress/progress.py', stdin=PIPE)
+        p.communicate('y\n')
+
+        def progress_txt_has_text(text):
+            if not os.path.exists(PROGRESS_TXT_FILE_NAME):
+                return False
+            for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
+                if text in line:
+                    return True
+                return False
+
+        ITEM_TITLE = 'first item'
+        call('../progress/progress.py add -t "{0}"'.format(ITEM_TITLE),
+             stdout=PIPE, shell=True)
+        self.assertTrue(progress_txt_has_text('0 -'))
+
+        call('../progress/progress.py done 0', stdout=PIPE, shell=True)
+        self.assertFalse(progress_txt_has_text('0 -'),
+                         'item 0 should be done and not on the list')
 
 if __name__ == '__main__':
     unittest.main()
