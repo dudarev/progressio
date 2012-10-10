@@ -105,7 +105,6 @@ def save_txt(data):
     with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
         for i in items:
             if not items[i].get('done', False):
-                print 'save_txt', i
                 f.write(' {0} - {1}'.format(
                     i, 
                     items[i].get('title', '')))
@@ -218,7 +217,6 @@ def done(id_done=None):
                     items[i]['done'] = True
                     items[i]['done_at'] = time.strftime('%a %b %d %H:%M:%S %Y %Z')
                     data['items'] = items
-                    print items
                     save_items(data)
                     save_txt(data)
                     return
