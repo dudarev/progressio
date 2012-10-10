@@ -100,12 +100,17 @@ def load_txt():
     return items
 
 
-def save_txt(items):
-    items.sort()
+def save_txt(data):
+    items = data.get('items', {})
     with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
         for i in items:
-            f.write(str(i))
-            f.write('\n')
+            if not items[i].get('done', False):
+                print 'save_txt', i
+                f.write(' {0} - {1}'.format(
+                    i, 
+                    items[i].get('title', '')))
+                f.write('\n')
+
 
 def add(item_title=None, item_id=None):
     "add a step/task/goal..."
@@ -143,11 +148,10 @@ def add(item_title=None, item_id=None):
     items['info']['last_id'] = new_id
     save_items(items)
 
-    txt_items = load_txt()
-    txt_items.append(Item(new_id, item_title))
-    save_txt(txt_items)
+    save_txt(items)
 
     return
+
 
 def clean():
     done_list = []
@@ -216,6 +220,7 @@ def done(id_done=None):
                     data['items'] = items
                     print items
                     save_items(data)
+                    save_txt(data)
                     return
         print 'did not find this id'
     except IndexError:
