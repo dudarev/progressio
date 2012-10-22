@@ -55,6 +55,7 @@ def base_encode(num, base, dd=False):
 
 def load_items():
     """
+    Returns a dictionary with keys 'info' and 'items'.
     """
     initial_data = {'info': {'last_id': '-1'}, 'items': {}}
     if not os.path.exists('progress.yaml'):
@@ -191,10 +192,10 @@ def convert():
 def count():
     count_done = 0
     count_total = 0
-    for i in yaml.load_all(open('progress.yaml')):
+    items = load_items()['items']
+    for i in items:
         count_total += 1
-        key = i.keys()[0]
-        is_done = i[key].get("done",False)
+        is_done = items[i].get("done", False)
         if is_done:
             count_done += 1
     print "done: ", count_done
