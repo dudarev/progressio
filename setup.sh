@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo cp progress.py /usr/local/bin/p
+sudo cp progress/progress.py /usr/local/bin/p
