@@ -48,6 +48,21 @@ class TestAddition(unittest.TestCase):
         items = data['items']
         self.assertEqual(items['0']['items']['0']['title'], TEST_TEXT)
 
+    def test_add_subsubitem(self):
+        TEST_TEXT_SUBITEM = 'sub test'
+        TEST_TEXT_SUBSUBITEM = 'sub sub test'
+        add(TEST_TEXT_SUBITEM)
+        add('test2')
+        data = load_items()
+        items = data['items']
+        add(TEST_TEXT_SUBITEM, items['0']['id'])
+        data = load_items()
+        items = data['items']
+        add(TEST_TEXT_SUBSUBITEM, items['0']['items']['0']['id'])
+        data = load_items()
+        items = data['items']
+        self.assertEqual(items['0']['items']['0']['items']['0']['title'], TEST_TEXT_SUBSUBITEM)
+
     def test_info(self):
         """Tests that the first item is info"""
         add('testing info')
