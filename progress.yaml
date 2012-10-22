@@ -1,5 +1,5 @@
 info:
-    last_id: c
+    last_id: d
 items:
     '0':
         added_at: Mon Oct 08 13:55:56 2012 EEST
@@ -41,6 +41,8 @@ items:
         title: clean up git
     '7':
         added_at: Tue Oct 09 13:51:10 2012 EEST
+        done: true
+        done_at: Mon Oct 22 09:18:44 2012 EEST
         id: '7'
         title: count prints correct values
     '8':
@@ -70,3 +72,9 @@ items:
         id: c
         title: a step may be added to txt file manually, it is checked for discrepancies
             when p is ran
+    d:
+        added_at: Mon Oct 22 09:19:34 2012 EEST
+        done: true
+        done_at: Mon Oct 22 09:21:07 2012 EEST
+        id: d
+        title: make test command
