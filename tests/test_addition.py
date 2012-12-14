@@ -70,25 +70,20 @@ class TestAddition(unittest.TestCase):
         self.assertEqual(get_item(subitem_pk).title, TEST_TEXT_SUBITEM)
 
     def test_add_subsubitem(self):
+        """TODO:"""
         TEST_TEXT_SUBITEM = 'sub test'
         TEST_TEXT_SUBSUBITEM = 'sub sub test'
         add(TEST_TEXT_SUBITEM)
         add('test2')
-        data = load_items()
-        items = data['items']
-        add(TEST_TEXT_SUBITEM, items['0']['id'])
-        data = load_items()
-        items = data['items']
-        add(TEST_TEXT_SUBSUBITEM, items['0']['items']['0']['id'])
-        data = load_items()
-        items = data['items']
-        self.assertEqual(items['0']['items']['0']['items']['0']['title'], TEST_TEXT_SUBSUBITEM)
-
-    def test_info(self):
-        """Tests that the first item is info"""
-        add('testing info')
         items = load_items()
-        self.assertTrue('info' in items)
+        parent_pk = items[1].pk
+        add(TEST_TEXT_SUBITEM, parent_pk=parent_pk)
+        parent = get_item(parent_pk)
+        subitem = get_item(parent.children[0])
+        add(TEST_TEXT_SUBSUBITEM, parent_pk=subitem.pk)
+        subitem = get_item(subitem.pk)
+        subsubitem_pk = subitem.children[0]
+        self.assertEqual(get_item(subsubitem_pk).title, TEST_TEXT_SUBSUBITEM)
 
 
 if __name__ == '__main__':
