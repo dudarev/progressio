@@ -6,6 +6,3 @@ update_version:
 
 pip_update:
 	sudo pip uninstall progress && sudo pip install .
-
-test:
-	cd tests && nosetests
