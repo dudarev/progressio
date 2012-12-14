@@ -1,5 +1,5 @@
 info:
-    last_id: d
+    last_id: f
 items:
     '0':
         added_at: Mon Oct 08 13:55:56 2012 EEST
@@ -54,7 +54,7 @@ items:
     '9':
         added_at: Tue Oct 09 14:17:13 2012 EEST
         id: '9'
-        title: several substeps maybe added
+        title: several substeps maybe added on the same level
     a:
         added_at: Wed Oct 10 10:06:18 2012 EEST
         done: true
@@ -78,3 +78,15 @@ items:
         done_at: Mon Oct 22 09:21:07 2012 EEST
         id: d
         title: make test command
+    e:
+        added_at: Mon Oct 22 09:35:21 2012 EEST
+        done: true
+        done_at: Fri Dec 14 02:18:23 2012 EET
+        id: e
+        title: a subitem may be added
+    f:
+        added_at: Thu Dec 13 17:38:16 2012 EET
+        done: true
+        done_at: Fri Dec 14 01:34:36 2012 EET
+        id: f
+        title: 're-write with sqlite: first test - add one item'
