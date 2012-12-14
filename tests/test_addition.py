@@ -4,7 +4,24 @@ import os
 import sys
 sys.path.insert(0, "..")
 
-from progress.progress import add, load_items
+from progress.progress import add, load_items, get_item
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+    def disable(self):
+        self.HEADER = ''
+        self.OKBLUE = ''
+        self.OKGREEN = ''
+        self.WARNING = ''
+        self.FAIL = ''
+        self.ENDC = ''
 
 
 class TestAddition(unittest.TestCase):
@@ -16,12 +33,15 @@ class TestAddition(unittest.TestCase):
 
     def test_addition(self):
         """Test adding one item"""
-        add('test')
+        print bcolors.WARNING + "Warning: No active frommets remain. Continue?" + bcolors.ENDC
         add('test2')
+        add('test')
         items = load_items()
+        print len(items)
         is_added = False
-        for i in items['items']:
-            if items['items'][i].get('title', '') == 'test':
+        for i in items:
+            print i
+            if i.title == 'test2':
                 is_added = True
                 break
         self.assertTrue(is_added)
@@ -39,14 +59,15 @@ class TestAddition(unittest.TestCase):
         self.assertTrue(test_in_txt)
 
     def test_add_subitem(self):
-        TEST_TEXT = 'test'
+        """Test that subitem may be added to some item."""
+        TEST_TEXT = 'test3'
+        TEST_TEXT_SUBITEM = 'test33'
         add(TEST_TEXT)
-        add('test2')
         items = load_items()
-        add(TEST_TEXT, items['items']['0']['id'])
-        data = load_items()
-        items = data['items']
-        self.assertEqual(items['0']['items']['0']['title'], TEST_TEXT)
+        parent_pk = items[1].pk
+        add(TEST_TEXT_SUBITEM, parent_pk=parent_pk)
+        subitem_pk = get_item(parent_pk).children[0]
+        self.assertEqual(get_item(subitem_pk).title, TEST_TEXT_SUBITEM)
 
     def test_add_subsubitem(self):
         TEST_TEXT_SUBITEM = 'sub test'

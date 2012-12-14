@@ -1,28 +1,57 @@
 #!/usr/bin/python
+"""
+Data structure:
+
+Each task/step/ticket is an Item instance.
+
+Each item may have one parent and several children nodes.
+"""
+
 import os
 import sys
 import yaml
 import time
 import string
 import re
+import sqlite3
+
 
 __version__ = '0.2dev'
 
 PROGRESS_TXT_FILE_NAME = 'progress.txt'
-PROGRESS_DETAILS_FILE_NAME = 'progress.yaml'
+PROGRESS_DB_FILE_NAME = 'progress.db'
 
 BASE_FOR_ID = 36
 
 
 class Item(object):
+    """
+    The following fields are stored in the database:
 
-    id = None
-    title = ''
-    subitems = []
+    pk (id)     - int
+    children    - str - a list of children ids, order is important (limit of 8 items!)
+    title       - str - title
+    added_at    - datetime
+    done        - boolean
+    done_at     - datetime
 
-    def __init__(self, id, title):
-        self.id = id
+    TODO: Think about using materialized path (it is not necessary yet):
+
+    path        - str - materialized path - root, subroot, ..., grandparent, parent
+
+    It should be added if its used would seem to be required.
+    """
+
+    def __init__(self, pk, children=None, title=None, added_at=None, done=False, done_at=None):
+        self.pk = int(pk)
+        if children is not None:
+            self.children = children.split(',')
+        else:
+            self.children = []
         self.title = title
+        self.added_at = added_at
+        self.done = done
+        self.done_at = done_at
 
     def __str__(self):
         return self.__unicode__()
@@ -31,17 +60,25 @@ class Item(object):
         return self.__unicode__()
 
     def __unicode__(self):
-        return '{} - {}'.format(self.id, self.title)
+        return '{} - {}'.format(self.pk, self.title)
 
     def __cmp__(self, other):
-        return cmp(int(self.id, BASE_FOR_ID), int(other.id, BASE_FOR_ID))
+        return cmp(int(self.pk, BASE_FOR_ID), int(other.pk, BASE_FOR_ID))
 
 
 def base_encode(num, base, dd=False):
     """
-    Converts to new base.
+    Converts a number in base 10
+    to new base from 2 to 36.
+    
     http://www.daniweb.com/forums/thread159163.html
     to convert back  int(string, BASE_FOR_ID)
+
+    :param num:
+    :param base:
+    :param dd:
+
+    :returns: number in `base`
     """
     if not 2 <= base <= 36:
         raise ValueError('The base number must be between 2 and 36.')
@@ -52,25 +89,42 @@ def base_encode(num, base, dd=False):
     num, rem = divmod(num, base)
     return base_encode(num, base, dd) + dd[rem]
 
+def _create_db_if_needed():
+    """
+    Checks if db file exists. Creates it if it does not exist.
+
+    :returns: False if db file did not exist, True if it existed.
+    """
+
+    if not os.path.exists(PROGRESS_DB_FILE_NAME):
+        con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+        cur = con.cursor()
+        cur.execute("CREATE TABLE item(pk INTEGER PRIMARY KEY, children, title, added_at, done, done_at)")
+        cur.execute("INSERT INTO item(pk, children, title) values(0, '', 'root')")
+        con.commit()
+        con.close()
+        return False
+
+    return True
+
 
 def load_items():
     """
-    Returns a dictionary with keys 'info' and 'items'.
+    Returns a list with Items.
     """
-    initial_data = {'info': {'last_id': '-1'}, 'items': {}}
-    if not os.path.exists('progress.yaml'):
-        return initial_data
-    try:
-        l = yaml.load_all(open('progress.yaml')).next()
-    except StopIteration:
-        return initial_data
-    return l
+    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+    cur = con.cursor()
+    cur.execute("SELECT * FROM item")
+    items = cur.fetchall()
+    item_instances = [Item(*i) for i in items]
+    con.close()
+    return item_instances
 
 
 def save_items(items):
     stream = open('progress.yaml', 'w')
     dump_options = {
-            'indent': 4, 
+            'indent': 4,
             'default_flow_style': False, 
             }
     yaml.dump(items, stream, **dump_options)
@@ -88,8 +142,8 @@ def get_info(items):
 
 def parse_item(line):
     item_re = re.compile('(\w+) - (.+)')
-    id, title = item_re.findall(line)[0]
-    return Item(id, title)
+    pk, title = item_re.findall(line)[0]
+    return Item(pk, title)
 
 
 def load_txt():
@@ -101,19 +155,30 @@ def load_txt():
     return items
 
 
-def save_txt(data):
-    items = data.get('items', {})
+def save_txt(items):
     with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
         for i in items:
-            if not items[i].get('done', False):
-                f.write(' {0} - {1}'.format(
-                    i, 
-                    items[i].get('title', '')))
-                f.write('\n')
+            f.write(' {0} - {1}'.format(
+                i.pk, 
+                i.title))
+            f.write('\n')
 
 
-def add(item_title=None, item_id=None):
-    "add a step/task/goal..."
+def get_item(pk):
+    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+    cur = con.cursor()
+    cur.execute('SELECT * FROM item WHERE pk={}'.format(pk))
+    item = Item(*cur.fetchone())
+    con.close()
+    return item
+
+
+def add(item_title=None, item_pk=None, parent_pk=0):
+    """
+    add a step/task/goal...
+    
+    If no parent_pk is specified item is added to root (pk=0)
+    """
 
     if not item_title:
         from optparse import OptionParser
@@ -125,16 +190,35 @@ def add(item_title=None, item_id=None):
             return
         item_title = opts.title
 
+    _create_db_if_needed()
+
+    parent = get_item(parent_pk)
+
+    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+    cur = con.cursor()
+    query = "INSERT INTO item(title) values('{title}')".format(title=item_title)
+    cur.execute(query)
+    con.commit()
+    parent.children.append(cur.lastrowid)
+    children = ','.join(map(str, parent.children))
+    query = "UPDATE item SET children='{children}' WHERE pk={parent_pk}".format(
+        children=children, parent_pk=parent_pk)
+    cur.execute(query)
+    con.commit()
+    con.close()
+
     items = load_items()
-    # prepend new item in the beginning
+    save_txt(items)
+
+    """
     try:
         last_id = items['info']['last_id']
     except KeyError:
         last_id = '0'
     new_id = base_encode(int(last_id, BASE_FOR_ID) + 1, BASE_FOR_ID)
-    if item_id:
-        items['items'][item_id]['items'] = {}
-        items['items'][item_id]['items']['0'] = {
+    if item_pk:
+        items['items'][item_pk]['items'] = {}
+        items['items'][item_pk]['items']['0'] = {
             'title': item_title,
             'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z'),
             'id': new_id
@@ -148,9 +232,9 @@ def add(item_title=None, item_id=None):
     items['info']['last_id'] = new_id
     save_items(items)
 
-    save_txt(items)
 
     return
+    """
 
 
 def clean():
