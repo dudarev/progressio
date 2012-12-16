@@ -92,5 +92,7 @@ items:
         title: 're-write with sqlite: first test - add one item'
     g:
         added_at: Sun Dec 16 10:37:39 2012 EET
+        done: true
+        done_at: Sun Dec 16 11:26:25 2012 EET
         id: g
         title: fix all remaining broken tests

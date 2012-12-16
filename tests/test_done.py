@@ -18,12 +18,12 @@ class TestDone(unittest.TestCase):
 
     def test_done(self):
         """Test adding one item"""
-        add('test that will be done')
+        add('step that will be done')
         items = load_items()
-        pk = items[1].pk
+        pk = items[0].pk
         done(pk)
         i = get_item(pk)
-        self.assertTrue(i.done)
+        self.assertTrue(i.is_done)
 
     def test_done_not_in_txt(self):
 

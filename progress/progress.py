@@ -32,7 +32,7 @@ class Item(object):
     children    - str - a list of children ids, order is important (limit of 8 items!)
     title       - str - title
     added_at    - datetime
-    done        - boolean
+    is_done        - boolean
     done_at     - datetime
 
     TODO: Think about using materialized path (it is not necessary yet):
@@ -42,7 +42,7 @@ class Item(object):
     It should be added if its used would seem to be required.
     """
 
-    def __init__(self, pk, children=None, title=None, added_at=None, done=False, done_at=None):
+    def __init__(self, pk, children=None, title=None, added_at=None, is_done=False, done_at=None):
         self.pk = int(pk)
         if children is not None:
             self.children = children.split(',')
@@ -50,7 +50,7 @@ class Item(object):
             self.children = []
         self.title = title
         self.added_at = added_at
-        self.done = done
+        self.is_done = is_done
         self.done_at = done_at
 
     def __str__(self):
@@ -99,7 +99,7 @@ def _create_db_if_needed():
     if not os.path.exists(PROGRESS_DB_FILE_NAME):
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
         cur = con.cursor()
-        cur.execute("CREATE TABLE item(pk INTEGER PRIMARY KEY, children, title, added_at, done, done_at)")
+        cur.execute("CREATE TABLE item(pk INTEGER PRIMARY KEY, children, title, added_at, is_done DEFAULT FALSE, done_at)")
         cur.execute("INSERT INTO item(pk, children, title) values(0, '', 'root')")
         con.commit()
         con.close()
@@ -114,7 +114,7 @@ def load_items():
     """
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
-    cur.execute("SELECT * FROM item")
+    cur.execute("SELECT * FROM item WHERE is_done='FALSE'")
     items = cur.fetchall()
     item_instances = [Item(*i) for i in items]
     con.close()
@@ -286,30 +286,29 @@ def count():
     print "total items: ", count_total
     return
 
-def done(id_done=None):
-    "mark an item done"
+def done(pk_done=None):
+    """
+    Mark an item as done.
+    """
+
+    _create_db_if_needed()
+
     try:
-        if id_done is None:
-            id_done = sys.argv[2]
-        print "will mark item %s done" % id_done
-        data = load_items()
-        items = data['items']
-        for i in items:
-            is_done = items[i].get("done", False)
-            if not is_done and items[i].has_key('title'):
-                if items[i]['id'] == id_done:
-                    print " %s - %s" % (items[i]['id'], items[i]['title'])
-                    items[i]['done'] = True
-                    items[i]['done_at'] = time.strftime('%a %b %d %H:%M:%S %Y %Z')
-                    data['items'] = items
-                    save_items(data)
-                    save_txt(data)
-                    return
-        print 'did not find this id'
-    except IndexError:
-        print "you need to specify an item number"
-    except ValueError:
-        print "you need to specify an item number as integer"
+        if pk_done is None:
+            pk_done = sys.argv[2]
+        print "Marking item %s as done." % pk_done
+        con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+        cur = con.cursor()
+        done_at = time.strftime('%a %b %d %H:%M:%S %Y %Z')
+        query = "UPDATE item SET done_at='{done_at}', is_done='TRUE' WHERE pk={pk_done}".format(
+            done_at=done_at, pk_done=pk_done)
+        cur.execute(query)
+        con.commit()
+        con.close()
+        items = load_items()
+        save_txt(items)
+    except sqlite3.OperationalError, e:
+        print "Database error:", e
     return
 
 def help():
