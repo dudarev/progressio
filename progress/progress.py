@@ -32,7 +32,7 @@ class Item(object):
     children    - str - a list of children ids, order is important (limit of 8 items!)
     title       - str - title
     added_at    - datetime
-    is_done        - boolean
+    is_done     - boolean
     done_at     - datetime
 
     TODO: Think about using materialized path (it is not necessary yet):
@@ -89,28 +89,31 @@ def base_encode(num, base, dd=False):
     num, rem = divmod(num, base)
     return base_encode(num, base, dd) + dd[rem]
 
+
 def _create_db_if_needed():
     """
     Checks if db file exists. Creates it if it does not exist.
 
-    :returns: False if db file did not exist, True if it existed.
+    :returns: a string with message describing what happened.
     """
 
     if not os.path.exists(PROGRESS_DB_FILE_NAME):
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
         cur = con.cursor()
-        cur.execute("CREATE TABLE item(pk INTEGER PRIMARY KEY, children, title, added_at, is_done DEFAULT FALSE, done_at)")
+        cur.execute(
+            "CREATE TABLE item(" +
+            "pk INTEGER PRIMARY KEY, children, title, added_at, is_done DEFAULT FALSE, done_at)")
         cur.execute("INSERT INTO item(pk, children, title) values(0, '', 'root')")
         con.commit()
         con.close()
-        return False
+        return 'DB file did not exist and was created.'
 
-    return True
+    return 'DB file exists'
 
 
 def load_items():
     """
-    Returns a list with Items.
+    :returns: a list with Item instances that are NOT done.
     """
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
@@ -121,29 +124,19 @@ def load_items():
     return item_instances
 
 
-def save_items(items):
-    stream = open('progress.yaml', 'w')
-    dump_options = {
-            'indent': 4,
-            'default_flow_style': False, 
-            }
-    yaml.dump(items, stream, **dump_options)
-    stream.close()
-
-
-def get_info(items):
-    """Get info from items.
+def parse_item_from_string(line):
     """
-    if 'info' in items:
-        return {'info': items['info']}
-    else:
-        return {'info': {}}
+    :param line: format: pk - title
 
+    :returns: Item with such pk and title.
+    """
 
-def parse_item(line):
     item_re = re.compile('(\w+) - (.+)')
     pk, title = item_re.findall(line)[0]
     return Item(pk, title)
+
+
+# TODO: stopped refactoring here
 
 
 def load_txt():
@@ -151,7 +144,7 @@ def load_txt():
     if not os.path.exists(PROGRESS_TXT_FILE_NAME):
         return []
     for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
-        items.append(parse_item(line))
+        items.append(parse_item_from_string(line))
     return items
 
 
@@ -159,7 +152,7 @@ def save_txt(items):
     with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
         for i in items:
             f.write(' {0} - {1}'.format(
-                i.pk, 
+                i.pk,
                 i.title))
             f.write('\n')
 
@@ -186,7 +179,7 @@ def add(item_title=None, item_pk=None, parent_pk=0):
         parser.add_option("-t", "--title", dest="title")
         parser.add_option("-i", "--item", dest="type", default="step")
         (opts, args) = parser.parse_args(sys.argv[2:])
-        if not getattr(opts,"title"):
+        if not getattr(opts, "title"):
             return
         item_title = opts.title
 
@@ -242,7 +235,7 @@ def clean():
     not_done_list = []
     for i in yaml.load_all(open('progress.yaml')):
         key = i.keys()[0]
-        is_done = i[key].get("done",False)
+        is_done = i[key].get("done", False)
         if is_done and i[key].has_key('title'):
             print "%s: %s" % (key,i[key]['title'])
             done_list.append(i)
