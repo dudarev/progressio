@@ -1,5 +1,5 @@
 info:
-    last_id: f
+    last_id: g
 items:
     '0':
         added_at: Mon Oct 08 13:55:56 2012 EEST
@@ -90,3 +90,7 @@ items:
         done_at: Fri Dec 14 01:34:36 2012 EET
         id: f
         title: 're-write with sqlite: first test - add one item'
+    g:
+        added_at: Sun Dec 16 10:37:39 2012 EET
+        id: g
+        title: fix all remaining broken tests
