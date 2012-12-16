@@ -6,7 +6,7 @@ sys.path.insert(0, "..")
 
 from subprocess import call, Popen, PIPE
 
-from progress.progress import add, load_items, done, PROGRESS_TXT_FILE_NAME
+from progress.progress import add, load_items, done, PROGRESS_TXT_FILE_NAME, get_item
 
 
 class TestDone(unittest.TestCase):
@@ -19,12 +19,11 @@ class TestDone(unittest.TestCase):
     def test_done(self):
         """Test adding one item"""
         add('test that will be done')
-        data = load_items()
-        print len(data['items'].keys())
-        items = data['items']
-        done(items.keys()[0])
-        data = load_items()
-        self.assertTrue(data['items']['0'].get('done', False))
+        items = load_items()
+        pk = items[1].pk
+        done(pk)
+        i = get_item(pk)
+        self.assertTrue(i.done)
 
     def test_done_not_in_txt(self):
 
