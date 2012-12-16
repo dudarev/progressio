@@ -26,6 +26,9 @@ class TestDone(unittest.TestCase):
         self.assertTrue(i.is_done)
 
     def test_done_not_in_txt(self):
+        """
+        Tests that there is no step marked as done in txt file.
+        """
 
         # create progress.yaml
         p = Popen('../progress/progress.py', stdin=PIPE)

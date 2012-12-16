@@ -7,23 +7,6 @@ sys.path.insert(0, "..")
 from progress.progress import add, load_items, get_item
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-
-    def disable(self):
-        self.HEADER = ''
-        self.OKBLUE = ''
-        self.OKGREEN = ''
-        self.WARNING = ''
-        self.FAIL = ''
-        self.ENDC = ''
-
-
 class TestAddition(unittest.TestCase):
     def setUp(self):
         """Clean up old progress files."""
@@ -33,14 +16,11 @@ class TestAddition(unittest.TestCase):
 
     def test_addition(self):
         """Test adding one item"""
-        print bcolors.WARNING + "Warning: No active frommets remain. Continue?" + bcolors.ENDC
         add('test2')
         add('test')
         items = load_items()
-        print len(items)
         is_added = False
         for i in items:
-            print i
             if i.title == 'test2':
                 is_added = True
                 break

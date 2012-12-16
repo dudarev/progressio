@@ -1,5 +1,5 @@
 info:
-    last_id: g
+    last_id: h
 items:
     '0':
         added_at: Mon Oct 08 13:55:56 2012 EEST
@@ -96,3 +96,9 @@ items:
         done_at: Sun Dec 16 11:26:25 2012 EET
         id: g
         title: fix all remaining broken tests
+    h:
+        added_at: Sun Dec 16 11:38:24 2012 EET
+        done: true
+        done_at: Sun Dec 16 11:46:47 2012 EET
+        id: h
+        title: clean up tests output
