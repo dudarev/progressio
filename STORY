@@ -6,7 +6,7 @@ A user may write:
 
 All tickets are collected in progress.txt.
 
-Information about them is saved in progress.yaml.
+Information about them is saved in progress.db - sqlite database.
 
 When a user enters just `p` all tickets are shown in the following format:
 
@@ -22,7 +22,7 @@ Id is in alphanumeric format, automatically generated.
 To add a substep to a ticket one make the following command:
 
 ```
-    p add id.id.id -t "title of the subticket for item id.id.id, it will have id id.id.id.id"
+    p add -p id -t "title of the subticket for item id, flag -p stands for parent"
 ```
 
-File `progress.info.yaml` is not used. Information about last ticket id is saved into `progress.yaml` as the first item.
+Ids are generated based on global increment, for subitems they do not start with 1.
