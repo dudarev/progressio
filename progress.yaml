@@ -1,5 +1,5 @@
 info:
-    last_id: h
+    last_id: j
 items:
     '0':
         added_at: Mon Oct 08 13:55:56 2012 EEST
@@ -102,3 +102,11 @@ items:
         done_at: Sun Dec 16 11:46:47 2012 EET
         id: h
         title: clean up tests output
+    i:
+        added_at: Tue Dec 18 21:40:24 2012 EET
+        id: i
+        title: start using sqlite version
+    j:
+        added_at: Tue Dec 18 21:54:46 2012 EET
+        id: j
+        title: start using sqlite version
