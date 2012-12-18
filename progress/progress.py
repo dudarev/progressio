@@ -417,13 +417,11 @@ def main():
         log()
         return
 
-    item_count = 1
-    items = load_items()['items']
+    _create_db_if_needed()
+
+    items = load_items()
     for i in items:
-        is_done = items[i].get("done", False)
-        if not is_done and items[i].has_key('title'):
-            print " %s - %s" % (items[i]['id'], items[i]['title'])
-            item_count += 1
+        print i
 
 if __name__ == "__main__":
     main()
