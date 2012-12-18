@@ -1,4 +1,3 @@
  1 - implement adding subitems from command line
  2 - output subitems in tabulated form
- 3 - commit changes to git, split them into logical portions
  4 - progress.txt is generated at the same time as a new item is added
