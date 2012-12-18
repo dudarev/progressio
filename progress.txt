@@ -1,2 +1,3 @@
  1 - implement adding subitems from command line
  2 - output subitems in tabulated form
+ 6 - fix command help
