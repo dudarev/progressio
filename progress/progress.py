@@ -304,18 +304,18 @@ def done(pk_done=None):
         print "Database error:", e
     return
 
+
 def help():
-    "print help"
+    """
+    Print help.
+    """
     print "usage: p [COMMAND [ARGS]]"
     print ""
-    print "  add        [-i [(step,task,issue)]] -t TITLE"
-    print "  clean      clean progress.yaml, move done items to progress.yaml.history"
-    print "  convert    convert to new progress.txt format"
-    print "  count      count items done and to be done"
-    print "  done       [n] - mark item n done"
-    print "  help       print help"
-    print "  html       generate progress.html"
-    print "  log        [-i item_type] [-d] - log items"
+    print "  add    [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id"
+    print "  count                    - count items done and to be done"
+    print "  done   n                 - mark item with id n as done"
+    print "  help                     - print help"
+    print "  log    [-d]              - log items, flag -d for done"
 
 
 def html():
