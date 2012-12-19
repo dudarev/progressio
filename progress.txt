@@ -1,3 +1,6 @@
  1 - implement adding subitems from command line
  2 - output subitems in tabulated form
- 6 - fix command help
+ 7 - move README to Markdown
+ 8 - handle the case when n is not specified for done command
+ 9 - change command update_version to update_readme
+ 10 - commit everything
