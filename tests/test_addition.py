@@ -2,9 +2,14 @@ import unittest
 
 import os
 import sys
+import sqlite3
+from subprocess import call, Popen, PIPE
+
 sys.path.insert(0, "..")
 
-from progress.progress import add, load_items, get_item
+from progress.progress import (
+    add, load_items, get_item, PROGRESS_TXT_FILE_NAME,
+    PROGRESS_DB_FILE_NAME, Item)
 
 
 class TestAddition(unittest.TestCase):
@@ -44,7 +49,7 @@ class TestAddition(unittest.TestCase):
         TEST_TEXT_SUBITEM = 'test33'
         add(TEST_TEXT)
         items = load_items()
-        parent_pk = items[1].pk
+        parent_pk = items[0].pk
         add(TEST_TEXT_SUBITEM, parent_pk=parent_pk)
         subitem_pk = get_item(parent_pk).children[0]
         self.assertEqual(get_item(subitem_pk).title, TEST_TEXT_SUBITEM)
@@ -64,6 +69,46 @@ class TestAddition(unittest.TestCase):
         subitem = get_item(subitem.pk)
         subsubitem_pk = subitem.children[0]
         self.assertEqual(get_item(subsubitem_pk).title, TEST_TEXT_SUBSUBITEM)
+
+    def test_add_subitem_from_command_line(self):
+        """
+        Test that one can add subitem from command line.
+        """
+
+        def progress_txt_has_text(text):
+            if not os.path.exists(PROGRESS_TXT_FILE_NAME):
+                return False
+            for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
+                if text in line:
+                    return True
+            return False
+
+        # create progress.yaml
+        p = Popen('../progress/progress.py', stdin=PIPE)
+        p.communicate('y\n')
+
+        ITEM_TITLE = 'first item'
+        call(
+            '../progress/progress.py add -t "{0}"'.format(ITEM_TITLE),
+            stdout=PIPE,
+            shell=True)
+        self.assertTrue(progress_txt_has_text(ITEM_TITLE))
+
+        SUBITEM_TITLE = 'child of first item'
+        call(
+            '../progress/progress.py add -p 1 -t "{0}"'.format(SUBITEM_TITLE),
+            stdout=PIPE,
+            shell=True)
+        self.assertTrue(progress_txt_has_text(SUBITEM_TITLE))
+
+        # in database item with pk=1 has a child, it's the second item added
+        con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+        cur = con.cursor()
+        cur.execute("SELECT * FROM item WHERE pk=1")
+        items = cur.fetchall()
+        item = Item(*items[0])
+        con.close()
+        self.assertTrue(u'2' in item.children)
 
 
 if __name__ == '__main__':

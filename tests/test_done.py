@@ -40,16 +40,17 @@ class TestDone(unittest.TestCase):
             for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
                 if text in line:
                     return True
-                return False
+            return False
 
         ITEM_TITLE = 'first item'
         call('../progress/progress.py add -t "{0}"'.format(ITEM_TITLE),
              stdout=PIPE, shell=True)
-        self.assertTrue(progress_txt_has_text('0 -'))
+        self.assertTrue(progress_txt_has_text('1 -'))
 
-        call('../progress/progress.py done 0', stdout=PIPE, shell=True)
-        self.assertFalse(progress_txt_has_text('0 -'),
-                         'item 0 should be done and not on the list')
+        call('../progress/progress.py done 1', stdout=PIPE, shell=True)
+        self.assertFalse(
+            progress_txt_has_text('1 -'),
+            'item 1 should be done and not on the list')
 
 if __name__ == '__main__':
     unittest.main()

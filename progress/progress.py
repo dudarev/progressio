@@ -100,10 +100,11 @@ def _create_db_if_needed():
     if not os.path.exists(PROGRESS_DB_FILE_NAME):
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
         cur = con.cursor()
+        # root item that has pk=0 is always considered done
         cur.execute(
             "CREATE TABLE item(" +
             "pk INTEGER PRIMARY KEY, children, title, added_at, is_done DEFAULT FALSE, done_at)")
-        cur.execute("INSERT INTO item(pk, children, title) values(0, '', 'root')")
+        cur.execute("INSERT INTO item(pk, children, title, is_done) values(0, '', 'root', 1)")
         con.commit()
         con.close()
         return 'DB file did not exist and was created.'
@@ -177,11 +178,14 @@ def add(item_title=None, item_pk=None, parent_pk=0):
         from optparse import OptionParser
         parser = OptionParser()
         parser.add_option("-t", "--title", dest="title")
+        parser.add_option("-p", "--parent", dest="parent_pk")
         parser.add_option("-i", "--item", dest="type", default="step")
         (opts, args) = parser.parse_args(sys.argv[2:])
         if not getattr(opts, "title"):
             return
         item_title = opts.title
+        if opts.parent_pk:
+            parent_pk = opts.parent_pk
 
     _create_db_if_needed()
 
@@ -189,7 +193,10 @@ def add(item_title=None, item_pk=None, parent_pk=0):
 
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
-    query = "INSERT INTO item(title) values('{title}')".format(title=item_title)
+    added_at = time.strftime('%a %b %d %H:%M:%S %Y %Z')
+    query = "INSERT INTO item(title, added_at) values('{title}', '{added_at}')".format(
+        title=item_title,
+        added_at=added_at)
     cur.execute(query)
     con.commit()
     parent.children.append(cur.lastrowid)
@@ -369,16 +376,15 @@ def log():
 
 
 def main():
-    progress_file_name = 'progress.yaml'
-    if not os.path.exists(progress_file_name):
-        sys.stdout.write("progress.yaml does not exist. Create? y/n [n] ")
+    if not os.path.exists(PROGRESS_DB_FILE_NAME):
+        sys.stdout.write(
+            "{0} does not exist. Create? y/n [n] ".format(
+                PROGRESS_DB_FILE_NAME))
         choice = raw_input().lower()
         if choice == '' or choice == 'n':
             return
-        f = open(progress_file_name, 'w')
-        f.close()
-        print 'created %s file' % progress_file_name
-        return
+        _create_db_if_needed()
+        print 'created %s file' % PROGRESS_DB_FILE_NAME
 
     args = sys.argv
     command = None
@@ -416,8 +422,6 @@ def main():
     if command == "log":
         log()
         return
-
-    _create_db_if_needed()
 
     items = load_items()
     for i in items:
