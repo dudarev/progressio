@@ -1,4 +1,3 @@
  2 - output subitems in tabulated form
- 7 - move README to Markdown
  8 - handle the case when n is not specified for done command
  9 - change command update_version to update_readme

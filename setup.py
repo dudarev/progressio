@@ -29,7 +29,7 @@ class update_version (Command):
 
     # Files in the distribution that need to be rewritten when the
     # version number changes
-    files = ('README', )
+    files = ('README.md', )
 
     # The substitutions (key braced by @ signs)
     substitutions = {
