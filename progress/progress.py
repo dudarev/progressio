@@ -137,19 +137,10 @@ def parse_item_from_string(line):
     return Item(pk, title)
 
 
-# TODO: stopped refactoring here
-
-
-def load_txt():
-    items = []
-    if not os.path.exists(PROGRESS_TXT_FILE_NAME):
-        return []
-    for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
-        items.append(parse_item_from_string(line))
-    return items
-
-
 def save_txt(items):
+    """
+    Saves :param items: in default text file.
+    """
     with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
         for i in items:
             f.write(' {0} - {1}'.format(
@@ -159,13 +150,21 @@ def save_txt(items):
 
 
 def get_item(pk):
+    """
+    :returns: Item for a given :param pk:, primary key.
+    :returns: None if such item does not exist.
+    """
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
     cur.execute('SELECT * FROM item WHERE pk={}'.format(pk))
-    item = Item(*cur.fetchone())
+    item_data = cur.fetchone()
+    if item_data is None:
+        return None
+    item = Item(*item_data)
     con.close()
     return item
 
+# TODO: stopped refactoring here
 
 def add(item_title=None, item_pk=None, parent_pk=0):
     """
@@ -376,7 +375,6 @@ def log():
             if opts.type=="all" or opts.type==key:
                 print "%2d - %s: %s" % (item_count, key, i[key]['title'])
                 item_count += 1
-    load_txt()
 
 
 def main():
