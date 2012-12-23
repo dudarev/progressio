@@ -5,7 +5,9 @@ Version: 0.2-DEV
 
 Installation
 
+```
 pip install git+https://github.com/dudarev/progress.git#egg=progress
+```
 
 
 Usage
