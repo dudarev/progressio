@@ -295,7 +295,11 @@ def done(pk_done=None):
 
     try:
         if pk_done is None:
-            pk_done = sys.argv[2]
+            if len(sys.argv) > 2:
+                pk_done = sys.argv[2]
+            else:
+                print "Specify item done."
+                return
         print "Marking item %s as done." % pk_done
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
         cur = con.cursor()
