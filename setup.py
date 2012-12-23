@@ -18,7 +18,7 @@ from distutils.core import setup, Command
 
 # a command that automaticaly updates version number
 # taken from pyxb sourcecode
-class update_version (Command):
+class update_readme(Command):
     # Brief (40-50 characters) description of the command
     description = "Substitute @VERSION@ in relevant files"
 
@@ -64,7 +64,7 @@ setup(
     long_description='''
 ''',
     provides=['progress'],
-    cmdclass={'update_version': update_version},
+    cmdclass={'update_readme': update_readme},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',

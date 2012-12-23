@@ -1,7 +1,7 @@
 test:
 	cd tests && nosetests -s
 
-# updates README from README.in
+# updates README.md from README.md.in
 update_readme:
 	python setup.py update_readme
 

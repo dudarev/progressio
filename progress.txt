@@ -1,2 +1,1 @@
  2 - output subitems in tabulated form
- 9 - change command update_version to update_readme
