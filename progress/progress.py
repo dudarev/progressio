@@ -39,7 +39,7 @@ class Item(object):
         path        - str - materialized path - root, subroot, ..., grandparent, parent
     Thinking not to add it because want flexibility of making an item a children of another.
 
-    TODO: limit children to 8 items maximum. 
+    TODO: limit children to 8 items maximum.
     Think about marking an item done and removing it from children.
     But it should preserve information about its parent.
 
@@ -170,13 +170,14 @@ def get_item(pk):
     con.close()
     return item
 
-# TODO: stopped refactoring here
 
-def add(item_title=None, item_pk=None, parent_pk=0):
+def add(item_title=None, parent_pk=0):
     """
-    add a step/task/goal...
+    Adds a item - step/task/goal...
+
+    Title is obtained from sys.argv.
     
-    If no parent_pk is specified item is added to root (pk=0)
+    If no parent_pk is specified item is added to root (pk=0).
     """
 
     if not item_title:
@@ -184,13 +185,14 @@ def add(item_title=None, item_pk=None, parent_pk=0):
         parser = OptionParser()
         parser.add_option("-t", "--title", dest="title")
         parser.add_option("-p", "--parent", dest="parent_pk")
-        parser.add_option("-i", "--item", dest="type", default="step")
         (opts, args) = parser.parse_args(sys.argv[2:])
         if not getattr(opts, "title"):
             return
         item_title = opts.title
         if opts.parent_pk:
             parent_pk = opts.parent_pk
+
+    # save new item and update its parent in database
 
     _create_db_if_needed()
 
@@ -212,35 +214,13 @@ def add(item_title=None, item_pk=None, parent_pk=0):
     con.commit()
     con.close()
 
+    # update txt file
+
     items = load_items()
     save_txt(items)
 
-    """
-    try:
-        last_id = items['info']['last_id']
-    except KeyError:
-        last_id = '0'
-    new_id = base_encode(int(last_id, BASE_FOR_ID) + 1, BASE_FOR_ID)
-    if item_pk:
-        items['items'][item_pk]['items'] = {}
-        items['items'][item_pk]['items']['0'] = {
-            'title': item_title,
-            'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z'),
-            'id': new_id
-            }
-    else:
-        items['items'][new_id] = {
-                    'title': item_title,
-                    'added_at':  time.strftime('%a %b %d %H:%M:%S %Y %Z'),
-                    'id': new_id
-                    }
-    items['info']['last_id'] = new_id
-    save_items(items)
 
-
-    return
-    """
-
+# TODO: stopped refactoring here
 
 def clean():
     done_list = []
