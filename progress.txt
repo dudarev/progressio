@@ -1,1 +1,3 @@
  2 - output subitems in tabulated form
+ 11 - implement count command
+ 12 - implement log command
