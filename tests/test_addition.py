@@ -108,7 +108,7 @@ class TestAddition(unittest.TestCase):
         items = cur.fetchall()
         item = Item(*items[0])
         con.close()
-        self.assertTrue(u'2' in item.children)
+        self.assertTrue(2 in item.children)
 
 
 if __name__ == '__main__':

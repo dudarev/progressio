@@ -29,23 +29,29 @@ class Item(object):
     The following fields are stored in the database:
 
     pk (id)     - int
-    children    - str - a list of children ids, order is important (limit of 8 items!)
+    children    - str - a list of children ids, order is important
     title       - str - title
     added_at    - datetime
     is_done     - boolean
     done_at     - datetime
 
     TODO: Think about using materialized path (it is not necessary yet):
+        path        - str - materialized path - root, subroot, ..., grandparent, parent
+    Thinking not to add it because want flexibility of making an item a children of another.
 
-    path        - str - materialized path - root, subroot, ..., grandparent, parent
+    TODO: limit children to 8 items maximum. 
+    Think about marking an item done and removing it from children.
+    But it should preserve information about its parent.
 
-    It should be added if its used would seem to be required.
+    TODO: closure table implementation.
+    http://dirtsimple.org/2010/11/simplest-way-to-do-tree-based-queries.html
+
     """
 
     def __init__(self, pk, children=None, title=None, added_at=None, is_done=False, done_at=None):
         self.pk = int(pk)
         if children is not None:
-            self.children = children.split(',')
+            self.children = map(int, filter(None, children.split(',')))
         else:
             self.children = []
         self.title = title
@@ -377,6 +383,34 @@ def log():
                 item_count += 1
 
 
+def show_one_item(item, items_dict={}, tab=''):
+    """
+    Prints `item` and all its subitems that are in `items_dict`. 
+    The item is tabulated with `tab` characters.
+    """
+
+    print tab + str(item)
+    for pk in item.children:
+        if pk in items_dict:
+            show_one_item(items_dict[pk], items_dict, tab=tab+'    ')
+
+
+def show_items():
+    """
+    Shows items in terminal.
+    """
+    items = load_items()
+    # select ids that are not first level
+    not_first_level = set()
+    items_dict = {}
+    for i in items:
+        not_first_level = not_first_level.union(set(i.children))
+        items_dict[i.pk] = i
+    for i in items:
+        if not i.pk in not_first_level:
+            show_one_item(i, items_dict)
+
+
 def main():
     if not os.path.exists(PROGRESS_DB_FILE_NAME):
         sys.stdout.write(
@@ -425,9 +459,8 @@ def main():
         log()
         return
 
-    items = load_items()
-    for i in items:
-        print i
+    show_items()
+
 
 if __name__ == "__main__":
     main()
