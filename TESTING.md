@@ -11,5 +11,5 @@ For example:
 
 ```
 cd tests
-nosetests test_loading_count_logging:test_count
+nosetests test_loading_count_logging:TestLoading.test_count
 ```

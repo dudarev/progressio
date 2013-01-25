@@ -31,13 +31,13 @@ class TestLoading(unittest.TestCase):
     def test_count(self):
         add('test1')
         add('test2')
-        out, err = Popen(["../progressio/progressio.py count"], stdout=PIPE).communicate()
+        out, err = Popen(["../progressio/progressio.py", "count"], stdout=PIPE).communicate()
         self.assertTrue('done: 0' in out)
         self.assertTrue('total items: 2' in out)
         items = load_items()
         pk = items[0].pk
         done(pk)
-        out, err = Popen(["../progressio/progressio.py count"], stdout=PIPE).communicate()
+        out, err = Popen(["../progressio/progressio.py", "count"], stdout=PIPE).communicate()
         self.assertTrue('done: 1' in out)
         self.assertTrue('total items: 2' in out)
 

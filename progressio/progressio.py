@@ -118,6 +118,24 @@ def _create_db_if_needed():
     return 'DB file exists'
 
 
+def count_items():
+    """
+    :returns: a dictionary with counts in fields 'total', 'done'
+    """
+    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+    cur = con.cursor()
+    # do not count root
+    cur.execute("SELECT COUNT(*) FROM item WHERE pk<>0")
+    total = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0")
+    done = cur.fetchone()[0]
+    con.close()
+    return {
+        'done': done,
+        'total': total,
+    }
+
+
 def load_items():
     """
     :returns: a list with Item instances that are NOT done.
@@ -220,21 +238,13 @@ def add(item_title=None, parent_pk=0):
     save_txt(items)
 
 
-# TODO: stopped refactoring here
-
 def count():
-    count_done = 0
-    count_total = 0
-    items = load_items()['items']
-    for i in items:
-        count_total += 1
-        is_done = items[i].get("done", False)
-        if is_done:
-            count_done += 1
-    print "done: ", count_done
-    print "total items: ", count_total
+    counts = count_items()
+    print "done: {}".format(counts['done'])
+    print "total items: {}".format(counts['total'])
     return
 
+# TODO: stopped refactoring here
 
 def done(pk_done=None):
     """
