@@ -41,6 +41,13 @@ class TestLoading(unittest.TestCase):
         self.assertTrue('done: 1' in out)
         self.assertTrue('total items: 2' in out)
 
+    def test_log(self):
+        add('test1')
+        add('test2')
+        out, err = Popen(["../progressio/progressio.py", "log"], stdout=PIPE).communicate()
+        self.assertTrue('test1' in out)
+        self.assertTrue('test2' in out)
+
 
 if __name__ == '__main__':
     unittest.main()

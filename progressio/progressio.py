@@ -120,7 +120,7 @@ def _create_db_if_needed():
 
 def count_items():
     """
-    :returns: a dictionary with counts in fields 'total', 'done'
+    :returns: a dictionary with counts in fields 'total', 'done'.
     """
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()

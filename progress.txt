@@ -1,2 +1,1 @@
  12 - implement log command
- 16 - commit changes
