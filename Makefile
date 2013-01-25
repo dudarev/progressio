@@ -6,4 +6,4 @@ update_readme:
 	python setup.py update_readme
 
 pip_update:
-	sudo pip uninstall progress && sudo pip install .
+	sudo pip uninstall progressio && sudo pip install .
