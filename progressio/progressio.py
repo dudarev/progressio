@@ -222,42 +222,6 @@ def add(item_title=None, parent_pk=0):
 
 # TODO: stopped refactoring here
 
-def clean():
-    done_list = []
-    not_done_list = []
-    for i in yaml.load_all(open('progress.yaml')):
-        key = i.keys()[0]
-        is_done = i[key].get("done", False)
-        if is_done and i[key].has_key('title'):
-            print "%s: %s" % (key,i[key]['title'])
-            done_list.append(i)
-        else:
-            not_done_list.append(i)
-    stream = open('progress.history.yaml','a')
-    dump_options = {'indent':4,'default_flow_style':False, 'explicit_start':'---'}
-    for i in done_list:
-        yaml.dump(i,stream,**dump_options)
-    stream.close()
-    stream = open('progress.yaml','w')
-    dump_options = {'indent':4,'default_flow_style':False, 'explicit_start':'---'}
-    for i in not_done_list:
-        yaml.dump(i,stream,**dump_options)
-    stream.close()
-    return
-
-def convert():
-    print "converting to new progress.txt format"
-    if os.path.exists(PROGRESS_TXT_FILE_NAME):
-        print '{} already exists'.format(PROGRESS_TXT_FILE_NAME)
-        return
-    with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
-        for i in load_items():
-            key = i.keys()[0]
-            is_done = i[key].get("done", False)
-            if not is_done and i[key].has_key('title') and i[key].has_key('id'):
-                f.write("%s - %s\n" % (i[key]['id'], i[key]['title']))
-    return
-
 def count():
     count_done = 0
     count_total = 0
@@ -270,6 +234,7 @@ def count():
     print "done: ", count_done
     print "total items: ", count_total
     return
+
 
 def done(pk_done=None):
     """
@@ -407,10 +372,6 @@ def main():
     if len(args) > 1:
         command = args[1]
 
-    if command == 'clean':
-        clean()
-        return
-
     if command == "html":
         html()
         return
@@ -425,10 +386,6 @@ def main():
 
     if command == "count":
         count()
-        return
-
-    if command == "convert":
-        convert()
         return
 
     if command in ["help", "-h", "--help", "-help"]:
