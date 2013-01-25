@@ -1,3 +1,2 @@
  11 - implement count command
  12 - implement log command
- 13 - write a test for count command

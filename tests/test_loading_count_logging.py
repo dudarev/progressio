@@ -5,7 +5,9 @@ import os
 import sys
 sys.path.insert(0, "..")
 
-from progressio.progressio import add, get_item
+from progressio.progressio import (
+    add, get_item,
+    load_items, done,)
 
 
 class TestLoading(unittest.TestCase):
@@ -24,8 +26,20 @@ class TestLoading(unittest.TestCase):
         add('test2')
         add('subitem of test1', parent_pk=1)
         out, err = Popen(["../progressio/progressio.py"], stdout=PIPE).communicate()
-        print out
         self.assertTrue('1 - test1\n    3 - subitem of test1' in out)
+
+    def test_count(self):
+        add('test1')
+        add('test2')
+        out, err = Popen(["../progressio/progressio.py count"], stdout=PIPE).communicate()
+        self.assertTrue('done: 0' in out)
+        self.assertTrue('total items: 2' in out)
+        items = load_items()
+        pk = items[0].pk
+        done(pk)
+        out, err = Popen(["../progressio/progressio.py count"], stdout=PIPE).communicate()
+        self.assertTrue('done: 1' in out)
+        self.assertTrue('total items: 2' in out)
 
 
 if __name__ == '__main__':
