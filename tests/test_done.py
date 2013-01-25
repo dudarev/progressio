@@ -6,7 +6,7 @@ sys.path.insert(0, "..")
 
 from subprocess import call, Popen, PIPE
 
-from progress.progress import add, load_items, done, PROGRESS_TXT_FILE_NAME, get_item
+from progressio.progressio import add, load_items, done, PROGRESS_TXT_FILE_NAME, get_item
 
 
 class TestDone(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestDone(unittest.TestCase):
         """
 
         # create progress.yaml
-        p = Popen('../progress/progress.py', stdin=PIPE)
+        p = Popen('../progressio/progressio.py', stdin=PIPE)
         p.communicate('y\n')
 
         def progress_txt_has_text(text):
@@ -43,11 +43,11 @@ class TestDone(unittest.TestCase):
             return False
 
         ITEM_TITLE = 'first item'
-        call('../progress/progress.py add -t "{0}"'.format(ITEM_TITLE),
+        call('../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
              stdout=PIPE, shell=True)
         self.assertTrue(progress_txt_has_text('1 -'))
 
-        call('../progress/progress.py done 1', stdout=PIPE, shell=True)
+        call('../progressio/progressio.py done 1', stdout=PIPE, shell=True)
         self.assertFalse(
             progress_txt_has_text('1 -'),
             'item 1 should be done and not on the list')

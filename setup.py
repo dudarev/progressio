@@ -54,22 +54,22 @@ setup_path = os.path.dirname(__file__)
 possible_bundles = []
 
 setup(
-    name='progress',
+    name='progressio',
     description='',
     author='Artem Dudarev',
     author_email='dudarev@gmail.com',
-    url='https://github.com/dudarev/progress',
+    url='https://github.com/dudarev/progressio',
     version=version,
     license='New BSD License',
     long_description='''
 ''',
-    provides=['progress'],
+    provides=['progressio'],
     cmdclass={'update_readme': update_readme},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Topic :: Utilities'],
-    scripts=['progress/p2'],
+    scripts=['progressio/p2'],
     requires=[],
 )

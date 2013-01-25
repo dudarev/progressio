@@ -5,7 +5,7 @@ import os
 import sys
 sys.path.insert(0, "..")
 
-from progress.progress import add, get_item
+from progressio.progressio import add, get_item
 
 
 class TestLoading(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestLoading(unittest.TestCase):
         add('test1')
         add('test2')
         add('subitem of test1', parent_pk=1)
-        out, err = Popen(["../progress/progress.py"], stdout=PIPE).communicate()
+        out, err = Popen(["../progressio/progressio.py"], stdout=PIPE).communicate()
         print out
         self.assertTrue('1 - test1\n    3 - subitem of test1' in out)
 

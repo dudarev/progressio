@@ -7,7 +7,7 @@ from subprocess import call, Popen, PIPE
 
 sys.path.insert(0, "..")
 
-from progress.progress import (
+from progressio.progressio import (
     add, load_items, get_item, PROGRESS_TXT_FILE_NAME,
     PROGRESS_DB_FILE_NAME, Item)
 
@@ -84,19 +84,19 @@ class TestAddition(unittest.TestCase):
             return False
 
         # create progress.yaml
-        p = Popen('../progress/progress.py', stdin=PIPE)
+        p = Popen('../progressio/progressio.py', stdin=PIPE)
         p.communicate('y\n')
 
         ITEM_TITLE = 'first item'
         call(
-            '../progress/progress.py add -t "{0}"'.format(ITEM_TITLE),
+            '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
             stdout=PIPE,
             shell=True)
         self.assertTrue(progress_txt_has_text(ITEM_TITLE))
 
         SUBITEM_TITLE = 'child of first item'
         call(
-            '../progress/progress.py add -p 1 -t "{0}"'.format(SUBITEM_TITLE),
+            '../progressio/progressio.py add -p 1 -t "{0}"'.format(SUBITEM_TITLE),
             stdout=PIPE,
             shell=True)
         self.assertTrue(progress_txt_has_text(SUBITEM_TITLE))
