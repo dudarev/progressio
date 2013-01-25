@@ -5,7 +5,7 @@ Version: 0.1
 
 Installation
 
-pip install git+https://github.com/dudarev/progress.git#egg=progress
+pip install git+https://github.com/dudarev/progressio.git#egg=progressio
 
 
 Usage
