@@ -1,6 +1,6 @@
 A file-based project management and bug-tracking tool.
 
-Version: 0.2-DEV
+Version: 0.2
 
 
 ## Installation
