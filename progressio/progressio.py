@@ -136,13 +136,17 @@ def count_items():
     }
 
 
-def load_items():
+def load_items(is_done=False):
     """
     :returns: a list with Item instances that are NOT done.
     """
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
-    cur.execute("SELECT * FROM item WHERE is_done='FALSE'")
+    if is_done:
+        query = "SELECT * FROM item WHERE is_done='TRUE'"
+    else:
+        query = "SELECT * FROM item WHERE is_done='FALSE'"
+    cur.execute(query)
     items = cur.fetchall()
     item_instances = [Item(*i) for i in items]
     con.close()
@@ -320,22 +324,16 @@ def html():
 
 
 def log():
-    "log [-i item_type] [-d]"
+    """
+    log [-i item_type] [-d]
+    """
     from optparse import OptionParser
     parser = OptionParser()
-    parser.add_option("-i", "--item", dest="type", default="all")
     parser.add_option('-d', dest='print_done', default=False, action='store_true')
     (opts, args) = parser.parse_args(sys.argv[2:])
-    print "item type:", opts.type
     print "print done:", opts.print_done
-    item_count = 1
-    for i in load_items():
-        key = i.keys()[0]
-        is_done = i[key].get("done",False)
-        if is_done==opts.print_done and i[key].has_key('title'):
-            if opts.type=="all" or opts.type==key:
-                print "%2d - %s: %s" % (item_count, key, i[key]['title'])
-                item_count += 1
+    for i in load_items(opts.print_done):
+        print str(i)
 
 
 def show_one_item(item, items_dict={}, tab=''):

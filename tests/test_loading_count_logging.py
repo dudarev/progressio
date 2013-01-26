@@ -44,9 +44,20 @@ class TestLoading(unittest.TestCase):
     def test_log(self):
         add('test1')
         add('test2')
+
         out, err = Popen(["../progressio/progressio.py", "log"], stdout=PIPE).communicate()
         self.assertTrue('test1' in out)
         self.assertTrue('test2' in out)
+
+        items = load_items()
+        pk = items[0].pk
+        done(pk)
+
+        out, err = Popen(["../progressio/progressio.py", "log"], stdout=PIPE).communicate()
+        self.assertFalse(items[0].title in out)
+
+        out, err = Popen(["../progressio/progressio.py", "log", "-d"], stdout=PIPE).communicate()
+        self.assertTrue(items[0].title in out)
 
 
 if __name__ == '__main__':

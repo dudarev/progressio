@@ -1,1 +1,2 @@
- 12 - implement log command
+ 18 - commit changes
+ 19 - finish first step of refactoring
