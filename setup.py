@@ -71,5 +71,6 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Topic :: Utilities'],
     scripts=['progressio/p2'],
+    packages=['progressio'],
     requires=[],
 )

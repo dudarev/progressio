@@ -3,4 +3,6 @@
 progress.html
 tags
 build
+dist
 tests/progress.*
+MANIFEST
