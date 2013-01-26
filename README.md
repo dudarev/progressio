@@ -6,7 +6,7 @@ Version: 0.2
 ## Installation
 
 ```
-pip install git+https://github.com/dudarev/progressio.git#egg=progressio
+pip install progressio
 ```
 
 
@@ -23,7 +23,7 @@ p [COMMAND [ARGS]]
     done   [n]               - mark item with id n as done
     help                     - print help
     log    [-d]              - log items, flag -d for done
-    
+
 
 ## Inspirations
 
@@ -35,3 +35,15 @@ http://www.youtube.com/watch?v=9j2aTwNor5k&nofeather=True#t=34m44s
 
 http://ginatrapani.github.com/todo.txt-cli/
 http://code.google.com/p/todotxt/
+
+
+## Development
+
+Development is done in `dev` branch. To install code under development:
+
+```
+git clone https://github.com/dudarev/progressio.git
+cd progressio
+git checkout dev
+pip install .
+```
