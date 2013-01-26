@@ -70,7 +70,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Topic :: Utilities'],
-    scripts=['progressio/p2'],
+    scripts=['progressio/p'],
     packages=['progressio'],
     requires=[],
 )
