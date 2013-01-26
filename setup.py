@@ -55,7 +55,7 @@ possible_bundles = []
 
 setup(
     name='progressio',
-    description='',
+    description='A file-based project management and bug-tracking tool.',
     author='Artem Dudarev',
     author_email='dudarev@gmail.com',
     url='https://github.com/dudarev/progressio',
