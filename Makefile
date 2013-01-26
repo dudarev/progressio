@@ -7,3 +7,8 @@ update_readme:
 
 pip_update:
 	sudo pip uninstall progressio && sudo pip install .
+
+upload:
+	python setup.py sdist
+	python setup.py sdist upload
+
