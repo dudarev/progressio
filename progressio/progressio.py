@@ -9,19 +9,15 @@ Each item may have one parent and several children nodes.
 
 import os
 import sys
-import yaml
 import time
-import string
 import re
 import sqlite3
 
 
-__version__ = '0.2dev'
+__version__ = '0.2'
 
 PROGRESS_TXT_FILE_NAME = 'progress.txt'
 PROGRESS_DB_FILE_NAME = 'progress.db'
-
-BASE_FOR_ID = 36
 
 
 class Item(object):
@@ -69,31 +65,7 @@ class Item(object):
         return '{} - {}'.format(self.pk, self.title)
 
     def __cmp__(self, other):
-        return cmp(int(self.pk, BASE_FOR_ID), int(other.pk, BASE_FOR_ID))
-
-
-def base_encode(num, base, dd=False):
-    """
-    Converts a number in base 10
-    to new base from 2 to 36.
-    
-    http://www.daniweb.com/forums/thread159163.html
-    to convert back  int(string, BASE_FOR_ID)
-
-    :param num:
-    :param base:
-    :param dd:
-
-    :returns: number in `base`
-    """
-    if not 2 <= base <= 36:
-        raise ValueError('The base number must be between 2 and 36.')
-    if not dd:
-        dd = dict(zip(range(36), list(string.digits + string.ascii_lowercase)))
-    if num < base:
-        return dd[num]
-    num, rem = divmod(num, base)
-    return base_encode(num, base, dd) + dd[rem]
+        return cmp(int(self.pk), int(other.pk))
 
 
 def _create_db_if_needed():
@@ -246,13 +218,12 @@ def count():
     counts = count_items()
     print "done: {}".format(counts['done'])
     print "total items: {}".format(counts['total'])
-    return
 
-# TODO: stopped refactoring here
 
 def done(pk_done=None):
     """
-    Mark an item as done.
+    Mark an item `pk_done` as done.
+    If item is not specified as a variable get it from stdin.
     """
 
     _create_db_if_needed()
@@ -277,12 +248,11 @@ def done(pk_done=None):
         save_txt(items)
     except sqlite3.OperationalError, e:
         print "Database error:", e
-    return
 
 
 def help():
     """
-    Print help.
+    Prints help.
     """
     print "usage: p [COMMAND [ARGS]]"
     print ""
@@ -293,39 +263,9 @@ def help():
     print "  log    [-d]              - log items, flag -d for done"
 
 
-def html():
-    print "creating html"
-    
-    fields_list = ['step', 'issue', 'task', 'version', 'goal', 'other']
-    fields = {'step': [], 'issue': [], 'task': [], 'version': [], 'goal': [], 'other': []}
-    ignore_keys = ('added_at', 'title')
-
-    # add to fields
-    for i in yaml.load_all(open('progress.yaml')):
-        key = i.keys()[0]
-        if key in fields:
-            fields[key].append(i[key])
-        else:
-            fields['other'].append(i[key])
-
-    file = open("progress.html", "w")
-    file.write("""<style> body { padding: 1em; } </style>""")
-    for f in fields_list:
-        file.write("""<h2>%ss</h2>""" % f)
-        for i in fields[f]:
-            is_done = i.get("done",False)
-            if not is_done and i.has_key('title'):
-                file.write("%s<br/>\n" % i['title'])
-                for k in i.keys():
-                    if not k in ignore_keys:
-                        file.write("&nbsp;&nbsp;&nbsp;&nbsp;%s: %s<br/>\n" % (k,i[k]))
-        if fields[f]:
-            file.write("<br/>")
-
-
 def log():
     """
-    log [-i item_type] [-d]
+    log [-d]
     """
     from optparse import OptionParser
     parser = OptionParser()
@@ -338,14 +278,13 @@ def log():
 
 def show_one_item(item, items_dict={}, tab=''):
     """
-    Prints `item` and all its subitems that are in `items_dict`. 
+    Prints `item` and all its subitems that are in `items_dict`.
     The item is tabulated with `tab` characters.
     """
-
     print tab + str(item)
     for pk in item.children:
         if pk in items_dict:
-            show_one_item(items_dict[pk], items_dict, tab=tab+'    ')
+            show_one_item(items_dict[pk], items_dict, tab=tab + '    ')
 
 
 def show_items():
@@ -365,6 +304,7 @@ def show_items():
 
 
 def main():
+    # check if db exists and create it if confirmed
     if not os.path.exists(PROGRESS_DB_FILE_NAME):
         sys.stdout.write(
             "{0} does not exist. Create? y/n [n] ".format(
@@ -379,10 +319,6 @@ def main():
     command = None
     if len(args) > 1:
         command = args[1]
-
-    if command == "html":
-        html()
-        return
 
     if command == "add":
         add()
