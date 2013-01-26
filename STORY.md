@@ -17,7 +17,7 @@ When a user enters just `p` all tickets are shown in the following format:
         id - title 
         id - title 
 
-Id is in alphanumeric format, automatically generated.
+Id is an integer, automatically generated.
 
 To add a substep to a ticket one make the following command:
 
