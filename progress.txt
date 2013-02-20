@@ -1,0 +1,1 @@
+ 26 - simple visualization of days when the steps were made
