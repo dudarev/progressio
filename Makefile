@@ -14,3 +14,6 @@ upload:
 
 register:
 	python setup.py register
+
+ctags:
+	ctags -R .
