@@ -101,10 +101,19 @@ def count_items():
     total = cur.fetchone()[0]
     cur.execute("SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0")
     done = cur.fetchone()[0]
+    # TODO:
+    # this does not work yet because the way I insert dates
+    # do it in such a fashion that datetimes are recognized
+    # http://stackoverflow.com/questions/1829872/read-datetime-back-from-sqlite-as-a-datetime-in-python?lq=1
+    cur.execute(
+        "SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0 " +
+        "AND date(done_at)=date()")
+    done_today = cur.fetchone()[0]
     con.close()
     return {
         'done': done,
         'total': total,
+        'done_today': done_today,
     }
 
 
@@ -218,6 +227,8 @@ def count():
     counts = count_items()
     print "done: {}".format(counts['done'])
     print "total items: {}".format(counts['total'])
+    print ""
+    print "done today: {}".format(counts['done_today'])
 
 
 def done(pk_done=None):
