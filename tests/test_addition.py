@@ -3,7 +3,9 @@ import unittest
 import os
 import sys
 import sqlite3
-from subprocess import call, Popen, PIPE
+# TODO: move all method to subprocess
+from subprocess import call, check_output, Popen, PIPE, STDOUT
+import subprocess
 
 sys.path.insert(0, "..")
 
@@ -109,6 +111,22 @@ class TestAddition(unittest.TestCase):
         item = Item(*items[0])
         con.close()
         self.assertTrue(2 in item.children)
+
+    def test_error_message_if_item_is_not_added(self):
+        # create progress.yaml
+        p = Popen('../progressio/progressio.py', stdin=PIPE)
+        p.communicate('y\n')
+
+        ITEM_TITLE = 'item that will not be added'
+        # -t flag is missing
+        try:
+            check_output(
+                '../progressio/progressio.py add "{0}"'.format(ITEM_TITLE),
+                stderr=STDOUT,
+                shell=True)
+            self.fail(msg="This command exit with code 1")
+        except subprocess.CalledProcessError, e:
+            self.assertTrue('Error: no title is specified' in e.output)
 
 
 if __name__ == '__main__':

@@ -104,7 +104,8 @@ def count_items():
     # TODO:
     # this does not work yet because the way I insert dates
     # do it in such a fashion that datetimes are recognized
-    # http://stackoverflow.com/questions/1829872/read-datetime-back-from-sqlite-as-a-datetime-in-python?lq=1
+    # http://stackoverflow.com/questions/1829872/
+    # read-datetime-back-from-sqlite-as-a-datetime-in-python?lq=1
     cur.execute(
         "SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0 " +
         "AND date(done_at)=date()")
@@ -190,7 +191,8 @@ def add(item_title=None, parent_pk=0):
         parser.add_option("-p", "--parent", dest="parent_pk")
         (opts, args) = parser.parse_args(sys.argv[2:])
         if not getattr(opts, "title"):
-            return
+            sys.stderr.write('Error: no title is specified (use flag -t)\n')
+            exit(1)
         item_title = opts.title
         if opts.parent_pk:
             parent_pk = opts.parent_pk
