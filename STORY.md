@@ -4,9 +4,7 @@ A user may write:
     p add -t "title of the step/ticket/task"
 ```
 
-All current tickets are collected in progress.txt.
-
-Information about them is saved in progress.db - sqlite database.
+Information about current items is saved in progress.db - sqlite database.
 
 When a user enters just `p` all tickets are shown in the following format:
 

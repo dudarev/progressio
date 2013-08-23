@@ -10,7 +10,7 @@ import subprocess
 sys.path.insert(0, "..")
 
 from progressio.progressio import (
-    add, load_items, get_item, PROGRESS_TXT_FILE_NAME,
+    add, load_items, get_item,
     PROGRESS_DB_FILE_NAME, Item)
 
 
@@ -32,18 +32,6 @@ class TestAddition(unittest.TestCase):
                 is_added = True
                 break
         self.assertTrue(is_added)
-
-    def test_added_to_txt(self):
-        """Test that item is added to progress.txt"""
-        TEST_TEXT = 'test'
-        add(TEST_TEXT)
-        add('test2')
-        test_in_txt = False
-        for line in open('progress.txt', 'r'):
-            if TEST_TEXT in line:
-                test_in_txt = True
-                break
-        self.assertTrue(test_in_txt)
 
     def test_add_subitem(self):
         """Test that subitem may be added to some item."""
@@ -77,14 +65,6 @@ class TestAddition(unittest.TestCase):
         Test that one can add subitem from command line.
         """
 
-        def progress_txt_has_text(text):
-            if not os.path.exists(PROGRESS_TXT_FILE_NAME):
-                return False
-            for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
-                if text in line:
-                    return True
-            return False
-
         # create progress.yaml
         p = Popen('../progressio/progressio.py', stdin=PIPE)
         p.communicate('y\n')
@@ -94,14 +74,12 @@ class TestAddition(unittest.TestCase):
             '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
             stdout=PIPE,
             shell=True)
-        self.assertTrue(progress_txt_has_text(ITEM_TITLE))
 
         SUBITEM_TITLE = 'child of first item'
         call(
             '../progressio/progressio.py add -p 1 -t "{0}"'.format(SUBITEM_TITLE),
             stdout=PIPE,
             shell=True)
-        self.assertTrue(progress_txt_has_text(SUBITEM_TITLE))
 
         # in database item with pk=1 has a child, it's the second item added
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)

@@ -16,7 +16,6 @@ import sqlite3
 
 __version__ = '0.2'
 
-PROGRESS_TXT_FILE_NAME = 'progress.txt'
 PROGRESS_DB_FILE_NAME = 'progress.db'
 
 
@@ -147,18 +146,6 @@ def parse_item_from_string(line):
     return Item(pk, title)
 
 
-def save_txt(items):
-    """
-    Saves :param items: in default text file.
-    """
-    with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
-        for i in items:
-            f.write(' {0} - {1}'.format(
-                i.pk,
-                i.title))
-            f.write('\n')
-
-
 def get_item(pk):
     """
     :returns: Item for a given :param pk:, primary key.
@@ -219,11 +206,6 @@ def add(item_title=None, parent_pk=0):
     con.commit()
     con.close()
 
-    # update txt file
-
-    items = load_items()
-    save_txt(items)
-
 
 def count():
     counts = count_items()
@@ -257,8 +239,6 @@ def done(pk_done=None):
         cur.execute(query)
         con.commit()
         con.close()
-        items = load_items()
-        save_txt(items)
     except sqlite3.OperationalError, e:
         print "Database error:", e
 

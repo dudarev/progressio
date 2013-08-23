@@ -1,5 +1,5 @@
- 29 - fix tabulation in progress.txt
  30 - add to count done today, done yesterday
  31 - insert dates in different way see http://stackoverflow.com/questions/1829872/read-datetime-back-from-sqlite-as-a-datetime-in-python?lq=1
  32 - when adding show added item number
  33 - add command delete
+ 35 - add version command
