@@ -12,6 +12,10 @@ import sys
 import time
 import re
 import sqlite3
+from datetime import datetime
+
+
+DATE_FORMAT = '%a %b %d %H:%M:%S %Y %Z'
 
 
 __version__ = '0.2'
@@ -100,20 +104,20 @@ def count_items():
     total = cur.fetchone()[0]
     cur.execute("SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0")
     done = cur.fetchone()[0]
-    # TODO:
-    # this does not work yet because the way I insert dates
-    # do it in such a fashion that datetimes are recognized
-    # http://stackoverflow.com/questions/1829872/
-    # read-datetime-back-from-sqlite-as-a-datetime-in-python?lq=1
-    cur.execute(
-        "SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0 " +
-        "AND date(done_at)=date()")
-    done_today = cur.fetchone()[0]
-    con.close()
+    done_items = load_items(is_done=True)
+    done_today = 0
+    done_yesterday = 0
+    for i in done_items:
+        dt = datetime.now() - datetime.strptime(i.done_at, DATE_FORMAT)
+        if dt.days == 0:
+            done_today += 1
+        if dt.days == 1:
+            done_yesterday += 1
     return {
         'done': done,
         'total': total,
         'done_today': done_today,
+        'done_yesterday': done_yesterday,
     }
 
 
@@ -192,7 +196,7 @@ def add(item_title=None, parent_pk=0):
 
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
-    added_at = time.strftime('%a %b %d %H:%M:%S %Y %Z')
+    added_at = time.strftime(DATE_FORMAT)
     query = "INSERT INTO item(title, added_at) values('{title}', '{added_at}')".format(
         title=item_title,
         added_at=added_at)
@@ -213,6 +217,7 @@ def count():
     print "total items: {}".format(counts['total'])
     print ""
     print "done today: {}".format(counts['done_today'])
+    print "done yesterday: {}".format(counts['done_yesterday'])
 
 
 def done(pk_done=None):
@@ -233,7 +238,7 @@ def done(pk_done=None):
         print "Marking item %s as done." % pk_done
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
         cur = con.cursor()
-        done_at = time.strftime('%a %b %d %H:%M:%S %Y %Z')
+        done_at = time.strftime(DATE_FORMAT)
         query = "UPDATE item SET done_at='{done_at}', is_done='TRUE' WHERE pk={pk_done}".format(
             done_at=done_at, pk_done=pk_done)
         cur.execute(query)

@@ -45,5 +45,6 @@ Development is done in `dev` branch. To install code under development:
 git clone https://github.com/dudarev/progressio.git
 cd progressio
 git checkout dev
+pip uninstall progressio
 pip install .
 ```
