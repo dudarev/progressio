@@ -202,13 +202,18 @@ def add(item_title=None, parent_pk=0):
         added_at=added_at)
     cur.execute(query)
     con.commit()
-    parent.children.append(cur.lastrowid)
+    pk = cur.lastrowid
+    parent.children.append(pk)
     children = ','.join(map(str, parent.children))
     query = "UPDATE item SET children='{children}' WHERE pk={parent_pk}".format(
         children=children, parent_pk=parent_pk)
     cur.execute(query)
     con.commit()
     con.close()
+
+    print "Added item:"
+    item = get_item(pk)
+    print item
 
 
 def count():

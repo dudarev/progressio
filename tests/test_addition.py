@@ -33,6 +33,22 @@ class TestAddition(unittest.TestCase):
                 break
         self.assertTrue(is_added)
 
+    def test_message_when_adding(self):
+        """
+        Test that pk and message are shown when adding new item.
+        """
+        # create progress.yaml
+        p = Popen('../progressio/progressio.py', stdin=PIPE)
+        p.communicate('y\n')
+
+        ITEM_TITLE = 'item that will be added'
+        output = check_output(
+            '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
+            stderr=STDOUT,
+            shell=True)
+
+        self.assertTrue("1 - {}".format(ITEM_TITLE) in output)
+
     def test_add_subitem(self):
         """Test that subitem may be added to some item."""
         TEST_TEXT = 'test3'
