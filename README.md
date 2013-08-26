@@ -1,6 +1,6 @@
 A file-based project management and bug-tracking tool.
 
-Version: 0.2
+Version: 0.3.0-dev
 
 
 ## Installation
@@ -18,11 +18,12 @@ p [COMMAND [ARGS]]
 
     typing just 'p' will output all items to do
     
-    add    [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id
-    count                    - count items done and to be done
-    done   [n]               - mark item with id n as done
-    help                     - print help
-    log    [-d]              - log items, flag -d for done
+    add     [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id
+    count                     - count items done and to be done
+    done    [n]               - mark item with id n as done
+    help                      - print help
+    log     [-d]              - log items, flag -d for done
+    version                   - version of the program (-v and --version also work)
 
 
 ## Inspirations

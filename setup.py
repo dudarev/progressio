@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
+from progressio.progressio import __version__
+
 # The current version of the system.  Format is #.#.#[-DEV].
-version = '0.2'
+version = __version__
 
 import distutils.sysconfig
 

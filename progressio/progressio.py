@@ -18,7 +18,9 @@ from datetime import datetime
 DATE_FORMAT = '%a %b %d %H:%M:%S %Y %Z'
 
 
-__version__ = '0.2'
+__version__ = '0.3.0-dev'
+__author__ = "Artem Dudarev"
+__url__ = 'https://github.com/dudarev/progressio'
 
 PROGRESS_DB_FILE_NAME = 'progress.db'
 
@@ -264,6 +266,7 @@ def help():
     print "  done   n                 - mark item with id n as done"
     print "  help                     - print help"
     print "  log    [-d]              - log items, flag -d for done"
+    print "  version                  - version of the program (-v and --version also work)"
 
 
 def log():
@@ -306,6 +309,14 @@ def show_items():
             show_one_item(i, items_dict)
 
 
+def version():
+    """
+    Shows version of the program.
+    """
+    print 'Progressio {version}'.format(version=__version__)
+    print '<{url}>'.format(url=__url__)
+
+
 def main():
     # check if db exists and create it if confirmed
     if not os.path.exists(PROGRESS_DB_FILE_NAME):
@@ -341,6 +352,10 @@ def main():
 
     if command == "log":
         log()
+        return
+
+    if command == 'version' or command == '-v' or command == '--version':
+        version()
         return
 
     show_items()
