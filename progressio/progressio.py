@@ -255,6 +255,35 @@ def done(pk_done=None):
         print "Database error:", e
 
 
+def delete(pk_delete=None):
+    """
+    Remove item with `pk_delete` from database.
+    """
+
+    try:
+        if pk_delete is None:
+            if len(sys.argv) > 2:
+                pk_delete = sys.argv[2]
+            else:
+                print "Specify item to delete."
+                return
+        sys.stdout.write(
+            "Do you really want to delete item {}? y/n [n] ".format(pk_delete)
+        )
+        choice = raw_input().lower().strip()
+        if choice == 'y':
+            con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+            cur = con.cursor()
+            query = "DELETE FROM item WHERE pk='{pk_delete}'".format(
+                pk_delete=pk_delete)
+            cur.execute(query)
+            con.commit()
+            con.close()
+            print 'Deleted item {}'.format(pk_delete)
+    except sqlite3.OperationalError, e:
+        print "Database error:", e
+
+
 def help():
     """
     Prints help.
@@ -327,30 +356,34 @@ def main():
         if choice == '' or choice == 'n':
             return
         _create_db_if_needed()
-        print 'created %s file' % PROGRESS_DB_FILE_NAME
+        print "created %s file" % PROGRESS_DB_FILE_NAME
 
     args = sys.argv
     command = None
     if len(args) > 1:
         command = args[1]
 
-    if command == "add":
+    if command == 'add':
         add()
         return
 
-    if command == "done":
+    if command == 'done':
         done()
         return
 
-    if command == "count":
+    if command == 'delete':
+        delete()
+        return
+
+    if command == 'count':
         count()
         return
 
-    if command in ["help", "-h", "--help", "-help"]:
+    if command in ['help', '-h', '--help', '-help']:
         help()
         return
 
-    if command == "log":
+    if command == 'log':
         log()
         return
 
