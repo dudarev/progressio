@@ -72,6 +72,10 @@ class Item(object):
     def __cmp__(self, other):
         return cmp(int(self.pk), int(other.pk))
 
+    @property
+    def children_str(self):
+        return ','.join(set(map(str, self.children)))
+
 
 def _create_db_if_needed():
     """
@@ -295,6 +299,7 @@ def help():
     print "  done   n                 - mark item with id n as done"
     print "  help                     - print help"
     print "  log    [-d]              - log items, flag -d for done"
+    print "  move   n -p m            - move item n to parent m"
     print "  version                  - version of the program (-v and --version also work)"
 
 
@@ -309,6 +314,56 @@ def log():
     print "print done:", opts.print_done
     for i in load_items(opts.print_done):
         print str(i)
+
+
+def move(item_pk=None, new_parent_pk=None):
+    """
+    Move item with `item_pk` to new parent with `new_parent_pk`.
+    """
+
+    if item_pk is None:
+        if len(sys.argv) > 2:
+            try:
+                item_pk = int(sys.argv[2])
+            except ValueError:
+                print "Incorrect item value"
+                exit(1)
+        else:
+            print "Specify item to move."
+            exit(1)
+        from optparse import OptionParser
+        parser = OptionParser()
+        parser.add_option("-p", "--parent", dest="new_parent_pk")
+        (opts, args) = parser.parse_args(sys.argv[2:])
+        new_parent_pk = getattr(opts, "new_parent_pk")
+        if new_parent_pk is None:
+            sys.stderr.write('Error: no new parent is specified (use flag -p)\n')
+            exit(1)
+
+    items = load_items()
+    queries = []
+    for i in items:
+        if item_pk in i.children:
+            i.children.remove(item_pk)
+            queries.append("UPDATE item SET children='{children}' WHERE pk={old_parent_pk}".format(
+                children=i.children_str, old_parent_pk=i.pk
+            ))
+            break
+    print 'new_parent_pk', new_parent_pk
+    new_parent_item = get_item(new_parent_pk)
+    new_parent_item.children.append(item_pk)
+    print 'new_parent_imtem.children_str=', new_parent_item.children_str
+    queries.append("UPDATE item SET children='{children}' WHERE pk={new_parent_pk}".format(
+        children=new_parent_item.children_str, new_parent_pk=new_parent_pk
+    ))
+    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+    cur = con.cursor()
+    for q in queries:
+        print 'q=', q
+        cur.execute(q)
+    con.commit()
+    con.close()
+    return
 
 
 def show_one_item(item, items_dict={}, tab=''):
@@ -385,6 +440,10 @@ def main():
 
     if command == 'log':
         log()
+        return
+
+    if command == 'move':
+        move()
         return
 
     if command == 'version' or command == '-v' or command == '--version':

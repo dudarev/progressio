@@ -24,3 +24,5 @@ To add a substep to a ticket one makes the following command:
 ```
 
 Ids are generated based on global increment, for subitems they do not start with 1.
+
+An item may be moved from one parent to another.
