@@ -446,7 +446,7 @@ def main():
         move()
         return
 
-    if command == 'version' or command == '-v' or command == '--version':
+    if command in ['version', '-v', '--version']:
         version()
         return
 
