@@ -296,6 +296,7 @@ def help():
     print ""
     print "  add    [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id"
     print "  count                    - count items done and to be done"
+    print "  delete n                 - delete item with id n"
     print "  done   n                 - mark item with id n as done"
     print "  help                     - print help"
     print "  log    [-d]              - log items, flag -d for done"

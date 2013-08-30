@@ -20,7 +20,8 @@ p [COMMAND [ARGS]]
     
     add     [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id
     count                     - count items done and to be done
-    done    [n]               - mark item with id n as done
+    delete  n                 - delete item with id n
+    done    n                 - mark item with id n as done
     help                      - print help
     log     [-d]              - log items, flag -d for done
     version                   - version of the program (-v and --version also work)
