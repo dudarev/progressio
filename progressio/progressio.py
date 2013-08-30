@@ -114,10 +114,11 @@ def count_items():
     done_today = 0
     done_yesterday = 0
     for i in done_items:
-        dt = datetime.now() - datetime.strptime(i.done_at, DATE_FORMAT)
-        if dt.days == 0:
+        date_item = datetime.strptime(i.done_at, DATE_FORMAT)
+        date_now = datetime.now()
+        if date_now.date() == date_item.date():
             done_today += 1
-        if dt.days == 1:
+        if (date_now.date() - date_item.date()).days == 1:
             done_yesterday += 1
     return {
         'done': done,
