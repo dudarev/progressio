@@ -3,8 +3,6 @@ import unittest
 import os
 import sys
 import sqlite3
-# TODO: move all method to subprocess
-from subprocess import call, check_output, Popen, PIPE, STDOUT
 import subprocess
 
 sys.path.insert(0, "..")
@@ -38,13 +36,13 @@ class TestAddition(unittest.TestCase):
         Test that pk and message are shown when adding new item.
         """
         # create progress.yaml
-        p = Popen('../progressio/progressio.py', stdin=PIPE)
+        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
         p.communicate('y\n')
 
         ITEM_TITLE = 'item that will be added'
-        output = check_output(
+        output = subprocess.check_output(
             '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
-            stderr=STDOUT,
+            stderr=subprocess.STDOUT,
             shell=True)
 
         self.assertTrue("1 - {}".format(ITEM_TITLE) in output)
@@ -61,7 +59,9 @@ class TestAddition(unittest.TestCase):
         self.assertEqual(get_item(subitem_pk).title, TEST_TEXT_SUBITEM)
 
     def test_add_subsubitem(self):
-        """TODO:"""
+        """
+        Subitem to subitem can be added.
+        """
         TEST_TEXT_SUBITEM = 'sub test'
         TEST_TEXT_SUBSUBITEM = 'sub sub test'
         add(TEST_TEXT_SUBITEM)
@@ -82,19 +82,19 @@ class TestAddition(unittest.TestCase):
         """
 
         # create progress.yaml
-        p = Popen('../progressio/progressio.py', stdin=PIPE)
+        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
         p.communicate('y\n')
 
         ITEM_TITLE = 'first item'
-        call(
+        subprocess.call(
             '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
-            stdout=PIPE,
+            stdout=subprocess.PIPE,
             shell=True)
 
         SUBITEM_TITLE = 'child of first item'
-        call(
+        subprocess.call(
             '../progressio/progressio.py add -p 1 -t "{0}"'.format(SUBITEM_TITLE),
-            stdout=PIPE,
+            stdout=subprocess.PIPE,
             shell=True)
 
         # in database item with pk=1 has a child, it's the second item added
@@ -108,15 +108,15 @@ class TestAddition(unittest.TestCase):
 
     def test_error_message_if_item_is_not_added(self):
         # create progress.yaml
-        p = Popen('../progressio/progressio.py', stdin=PIPE)
+        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
         p.communicate('y\n')
 
         ITEM_TITLE = 'item that will not be added'
         # -t flag is missing
         try:
-            check_output(
+            subprocess.check_output(
                 '../progressio/progressio.py add "{0}"'.format(ITEM_TITLE),
-                stderr=STDOUT,
+                stderr=subprocess.STDOUT,
                 shell=True)
             self.fail(msg="This command exit with code 1")
         except subprocess.CalledProcessError, e:

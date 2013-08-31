@@ -35,18 +35,6 @@ class Item(object):
     added_at    - datetime
     is_done     - boolean
     done_at     - datetime
-
-    TODO: Think about using materialized path (it is not necessary yet):
-        path        - str - materialized path - root, subroot, ..., grandparent, parent
-    Thinking not to add it because want flexibility of making an item a children of another.
-
-    TODO: limit children to 8 items maximum.
-    Think about marking an item done and removing it from children.
-    But it should preserve information about its parent.
-
-    TODO: closure table implementation.
-    http://dirtsimple.org/2010/11/simplest-way-to-do-tree-based-queries.html
-
     """
 
     def __init__(self, pk, children=None, title=None, added_at=None, is_done=False, done_at=None):
