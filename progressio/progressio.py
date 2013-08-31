@@ -173,6 +173,33 @@ def get_item(pk):
     return item
 
 
+def active(pk_active=None):
+    """
+    Mark an item `pk_active` as active.
+    If item is not specified as a variable get it from stdin.
+    """
+
+    _create_db_if_needed()
+
+    try:
+        if pk_active is None:
+            if len(sys.argv) > 2:
+                pk_active = sys.argv[2]
+            else:
+                print "Specify item to make active."
+                return
+        con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+        cur = con.cursor()
+        query = "UPDATE item SET is_done='FALSE' WHERE pk={pk_active}".format(
+            pk_active=pk_active)
+        cur.execute(query)
+        con.commit()
+        con.close()
+        print "Item {} is marked as active.".format(pk_active)
+    except sqlite3.OperationalError, e:
+        print "Database error:", e
+
+
 def add(item_title=None, parent_pk=0):
     """
     Adds a item - step/task/goal...
@@ -419,6 +446,10 @@ def main():
     command = None
     if len(args) > 1:
         command = args[1]
+
+    if command == 'active':
+        active()
+        return
 
     if command == 'add':
         add()

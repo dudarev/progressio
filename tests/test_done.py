@@ -24,7 +24,7 @@ class TestDone(unittest.TestCase):
         pk = items[0].pk
         done(pk)
         i = get_item(pk)
-        self.assertTrue(i.is_done)
+        self.assertEqual(i.is_done, 'TRUE')
 
 
 if __name__ == '__main__':
