@@ -12,11 +12,16 @@ import sys
 import time
 import re
 import sqlite3
+from datetime import datetime
 
 
-__version__ = '0.2'
+DATE_FORMAT = '%a %b %d %H:%M:%S %Y %Z'
 
-PROGRESS_TXT_FILE_NAME = 'progress.txt'
+
+__version__ = '0.3.0-dev'
+__author__ = "Artem Dudarev"
+__url__ = 'https://github.com/dudarev/progressio'
+
 PROGRESS_DB_FILE_NAME = 'progress.db'
 
 
@@ -30,18 +35,6 @@ class Item(object):
     added_at    - datetime
     is_done     - boolean
     done_at     - datetime
-
-    TODO: Think about using materialized path (it is not necessary yet):
-        path        - str - materialized path - root, subroot, ..., grandparent, parent
-    Thinking not to add it because want flexibility of making an item a children of another.
-
-    TODO: limit children to 8 items maximum.
-    Think about marking an item done and removing it from children.
-    But it should preserve information about its parent.
-
-    TODO: closure table implementation.
-    http://dirtsimple.org/2010/11/simplest-way-to-do-tree-based-queries.html
-
     """
 
     def __init__(self, pk, children=None, title=None, added_at=None, is_done=False, done_at=None):
@@ -66,6 +59,10 @@ class Item(object):
 
     def __cmp__(self, other):
         return cmp(int(self.pk), int(other.pk))
+
+    @property
+    def children_str(self):
+        return ','.join(set(map(str, self.children)))
 
 
 def _create_db_if_needed():
@@ -101,19 +98,21 @@ def count_items():
     total = cur.fetchone()[0]
     cur.execute("SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0")
     done = cur.fetchone()[0]
-    # TODO:
-    # this does not work yet because the way I insert dates
-    # do it in such a fashion that datetimes are recognized
-    # http://stackoverflow.com/questions/1829872/read-datetime-back-from-sqlite-as-a-datetime-in-python?lq=1
-    cur.execute(
-        "SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0 " +
-        "AND date(done_at)=date()")
-    done_today = cur.fetchone()[0]
-    con.close()
+    done_items = load_items(is_done=True)
+    done_today = 0
+    done_yesterday = 0
+    for i in done_items:
+        date_item = datetime.strptime(i.done_at, DATE_FORMAT)
+        date_now = datetime.now()
+        if date_now.date() == date_item.date():
+            done_today += 1
+        if (date_now.date() - date_item.date()).days == 1:
+            done_yesterday += 1
     return {
         'done': done,
         'total': total,
         'done_today': done_today,
+        'done_yesterday': done_yesterday,
     }
 
 
@@ -146,18 +145,6 @@ def parse_item_from_string(line):
     return Item(pk, title)
 
 
-def save_txt(items):
-    """
-    Saves :param items: in default text file.
-    """
-    with open(PROGRESS_TXT_FILE_NAME, 'w') as f:
-        for i in items:
-            f.write(' {0} - {1}'.format(
-                i.pk,
-                i.title))
-            f.write('\n')
-
-
 def get_item(pk):
     """
     :returns: Item for a given :param pk:, primary key.
@@ -172,6 +159,33 @@ def get_item(pk):
     item = Item(*item_data)
     con.close()
     return item
+
+
+def active(pk_active=None):
+    """
+    Mark an item `pk_active` as active.
+    If item is not specified as a variable get it from stdin.
+    """
+
+    _create_db_if_needed()
+
+    try:
+        if pk_active is None:
+            if len(sys.argv) > 2:
+                pk_active = sys.argv[2]
+            else:
+                print "Specify item to make active."
+                return
+        con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+        cur = con.cursor()
+        query = "UPDATE item SET is_done='FALSE' WHERE pk={pk_active}".format(
+            pk_active=pk_active)
+        cur.execute(query)
+        con.commit()
+        con.close()
+        print "Item {} is marked as active.".format(pk_active)
+    except sqlite3.OperationalError, e:
+        print "Database error:", e
 
 
 def add(item_title=None, parent_pk=0):
@@ -190,7 +204,8 @@ def add(item_title=None, parent_pk=0):
         parser.add_option("-p", "--parent", dest="parent_pk")
         (opts, args) = parser.parse_args(sys.argv[2:])
         if not getattr(opts, "title"):
-            return
+            sys.stderr.write('Error: no title is specified (use flag -t)\n')
+            exit(1)
         item_title = opts.title
         if opts.parent_pk:
             parent_pk = opts.parent_pk
@@ -203,13 +218,14 @@ def add(item_title=None, parent_pk=0):
 
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
-    added_at = time.strftime('%a %b %d %H:%M:%S %Y %Z')
+    added_at = time.strftime(DATE_FORMAT)
     query = "INSERT INTO item(title, added_at) values('{title}', '{added_at}')".format(
         title=item_title,
         added_at=added_at)
     cur.execute(query)
     con.commit()
-    parent.children.append(cur.lastrowid)
+    pk = cur.lastrowid
+    parent.children.append(pk)
     children = ','.join(map(str, parent.children))
     query = "UPDATE item SET children='{children}' WHERE pk={parent_pk}".format(
         children=children, parent_pk=parent_pk)
@@ -217,10 +233,9 @@ def add(item_title=None, parent_pk=0):
     con.commit()
     con.close()
 
-    # update txt file
-
-    items = load_items()
-    save_txt(items)
+    print "Added item:"
+    item = get_item(pk)
+    print item
 
 
 def count():
@@ -229,6 +244,7 @@ def count():
     print "total items: {}".format(counts['total'])
     print ""
     print "done today: {}".format(counts['done_today'])
+    print "done yesterday: {}".format(counts['done_yesterday'])
 
 
 def done(pk_done=None):
@@ -249,14 +265,41 @@ def done(pk_done=None):
         print "Marking item %s as done." % pk_done
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
         cur = con.cursor()
-        done_at = time.strftime('%a %b %d %H:%M:%S %Y %Z')
+        done_at = time.strftime(DATE_FORMAT)
         query = "UPDATE item SET done_at='{done_at}', is_done='TRUE' WHERE pk={pk_done}".format(
             done_at=done_at, pk_done=pk_done)
         cur.execute(query)
         con.commit()
         con.close()
-        items = load_items()
-        save_txt(items)
+    except sqlite3.OperationalError, e:
+        print "Database error:", e
+
+
+def delete(pk_delete=None):
+    """
+    Remove item with `pk_delete` from database.
+    """
+
+    try:
+        if pk_delete is None:
+            if len(sys.argv) > 2:
+                pk_delete = sys.argv[2]
+            else:
+                print "Specify item to delete."
+                return
+        sys.stdout.write(
+            "Do you really want to delete item {}? y/n [n] ".format(pk_delete)
+        )
+        choice = raw_input().lower().strip()
+        if choice == 'y':
+            con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+            cur = con.cursor()
+            query = "DELETE FROM item WHERE pk='{pk_delete}'".format(
+                pk_delete=pk_delete)
+            cur.execute(query)
+            con.commit()
+            con.close()
+            print 'Deleted item {}'.format(pk_delete)
     except sqlite3.OperationalError, e:
         print "Database error:", e
 
@@ -269,9 +312,12 @@ def help():
     print ""
     print "  add    [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id"
     print "  count                    - count items done and to be done"
+    print "  delete n                 - delete item with id n"
     print "  done   n                 - mark item with id n as done"
     print "  help                     - print help"
     print "  log    [-d]              - log items, flag -d for done"
+    print "  move   n -p m            - move item n to parent m"
+    print "  version                  - version of the program (-v and --version also work)"
 
 
 def log():
@@ -285,6 +331,56 @@ def log():
     print "print done:", opts.print_done
     for i in load_items(opts.print_done):
         print str(i)
+
+
+def move(item_pk=None, new_parent_pk=None):
+    """
+    Move item with `item_pk` to new parent with `new_parent_pk`.
+    """
+
+    if item_pk is None:
+        if len(sys.argv) > 2:
+            try:
+                item_pk = int(sys.argv[2])
+            except ValueError:
+                print "Incorrect item value"
+                exit(1)
+        else:
+            print "Specify item to move."
+            exit(1)
+        from optparse import OptionParser
+        parser = OptionParser()
+        parser.add_option("-p", "--parent", dest="new_parent_pk")
+        (opts, args) = parser.parse_args(sys.argv[2:])
+        new_parent_pk = getattr(opts, "new_parent_pk")
+        if new_parent_pk is None:
+            sys.stderr.write('Error: no new parent is specified (use flag -p)\n')
+            exit(1)
+
+    items = load_items()
+    queries = []
+    for i in items:
+        if item_pk in i.children:
+            i.children.remove(item_pk)
+            queries.append("UPDATE item SET children='{children}' WHERE pk={old_parent_pk}".format(
+                children=i.children_str, old_parent_pk=i.pk
+            ))
+            break
+    print 'new_parent_pk', new_parent_pk
+    new_parent_item = get_item(new_parent_pk)
+    new_parent_item.children.append(item_pk)
+    print 'new_parent_imtem.children_str=', new_parent_item.children_str
+    queries.append("UPDATE item SET children='{children}' WHERE pk={new_parent_pk}".format(
+        children=new_parent_item.children_str, new_parent_pk=new_parent_pk
+    ))
+    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
+    cur = con.cursor()
+    for q in queries:
+        print 'q=', q
+        cur.execute(q)
+    con.commit()
+    con.close()
+    return
 
 
 def show_one_item(item, items_dict={}, tab=''):
@@ -314,6 +410,14 @@ def show_items():
             show_one_item(i, items_dict)
 
 
+def version():
+    """
+    Shows version of the program.
+    """
+    print 'Progressio {version}'.format(version=__version__)
+    print '<{url}>'.format(url=__url__)
+
+
 def main():
     # check if db exists and create it if confirmed
     if not os.path.exists(PROGRESS_DB_FILE_NAME):
@@ -324,31 +428,47 @@ def main():
         if choice == '' or choice == 'n':
             return
         _create_db_if_needed()
-        print 'created %s file' % PROGRESS_DB_FILE_NAME
+        print "created %s file" % PROGRESS_DB_FILE_NAME
 
     args = sys.argv
     command = None
     if len(args) > 1:
         command = args[1]
 
-    if command == "add":
+    if command == 'active':
+        active()
+        return
+
+    if command == 'add':
         add()
         return
 
-    if command == "done":
+    if command == 'done':
         done()
         return
 
-    if command == "count":
+    if command == 'delete':
+        delete()
+        return
+
+    if command == 'count':
         count()
         return
 
-    if command in ["help", "-h", "--help", "-help"]:
+    if command in ['help', '-h', '--help', '-help']:
         help()
         return
 
-    if command == "log":
+    if command == 'log':
         log()
+        return
+
+    if command == 'move':
+        move()
+        return
+
+    if command in ['version', '-v', '--version']:
+        version()
         return
 
     show_items()

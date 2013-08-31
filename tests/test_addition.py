@@ -3,12 +3,12 @@ import unittest
 import os
 import sys
 import sqlite3
-from subprocess import call, Popen, PIPE
+import subprocess
 
 sys.path.insert(0, "..")
 
 from progressio.progressio import (
-    add, load_items, get_item, PROGRESS_TXT_FILE_NAME,
+    add, load_items, get_item,
     PROGRESS_DB_FILE_NAME, Item)
 
 
@@ -31,17 +31,21 @@ class TestAddition(unittest.TestCase):
                 break
         self.assertTrue(is_added)
 
-    def test_added_to_txt(self):
-        """Test that item is added to progress.txt"""
-        TEST_TEXT = 'test'
-        add(TEST_TEXT)
-        add('test2')
-        test_in_txt = False
-        for line in open('progress.txt', 'r'):
-            if TEST_TEXT in line:
-                test_in_txt = True
-                break
-        self.assertTrue(test_in_txt)
+    def test_message_when_adding(self):
+        """
+        Test that pk and message are shown when adding new item.
+        """
+        # create progress.yaml
+        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
+        p.communicate('y\n')
+
+        ITEM_TITLE = 'item that will be added'
+        output = subprocess.check_output(
+            '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
+            stderr=subprocess.STDOUT,
+            shell=True)
+
+        self.assertTrue("1 - {}".format(ITEM_TITLE) in output)
 
     def test_add_subitem(self):
         """Test that subitem may be added to some item."""
@@ -55,7 +59,9 @@ class TestAddition(unittest.TestCase):
         self.assertEqual(get_item(subitem_pk).title, TEST_TEXT_SUBITEM)
 
     def test_add_subsubitem(self):
-        """TODO:"""
+        """
+        Subitem to subitem can be added.
+        """
         TEST_TEXT_SUBITEM = 'sub test'
         TEST_TEXT_SUBSUBITEM = 'sub sub test'
         add(TEST_TEXT_SUBITEM)
@@ -75,31 +81,21 @@ class TestAddition(unittest.TestCase):
         Test that one can add subitem from command line.
         """
 
-        def progress_txt_has_text(text):
-            if not os.path.exists(PROGRESS_TXT_FILE_NAME):
-                return False
-            for line in open(PROGRESS_TXT_FILE_NAME, 'r'):
-                if text in line:
-                    return True
-            return False
-
         # create progress.yaml
-        p = Popen('../progressio/progressio.py', stdin=PIPE)
+        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
         p.communicate('y\n')
 
         ITEM_TITLE = 'first item'
-        call(
+        subprocess.call(
             '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
-            stdout=PIPE,
+            stdout=subprocess.PIPE,
             shell=True)
-        self.assertTrue(progress_txt_has_text(ITEM_TITLE))
 
         SUBITEM_TITLE = 'child of first item'
-        call(
+        subprocess.call(
             '../progressio/progressio.py add -p 1 -t "{0}"'.format(SUBITEM_TITLE),
-            stdout=PIPE,
+            stdout=subprocess.PIPE,
             shell=True)
-        self.assertTrue(progress_txt_has_text(SUBITEM_TITLE))
 
         # in database item with pk=1 has a child, it's the second item added
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
@@ -109,6 +105,22 @@ class TestAddition(unittest.TestCase):
         item = Item(*items[0])
         con.close()
         self.assertTrue(2 in item.children)
+
+    def test_error_message_if_item_is_not_added(self):
+        # create progress.yaml
+        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
+        p.communicate('y\n')
+
+        ITEM_TITLE = 'item that will not be added'
+        # -t flag is missing
+        try:
+            subprocess.check_output(
+                '../progressio/progressio.py add "{0}"'.format(ITEM_TITLE),
+                stderr=subprocess.STDOUT,
+                shell=True)
+            self.fail(msg="This command exit with code 1")
+        except subprocess.CalledProcessError, e:
+            self.assertTrue('Error: no title is specified' in e.output)
 
 
 if __name__ == '__main__':
