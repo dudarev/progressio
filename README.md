@@ -1,6 +1,6 @@
 A file-based project management and bug-tracking tool.
 
-Version: 0.3.0-dev
+Version: 0.3.0
 
 
 ## Installation
@@ -51,3 +51,7 @@ git checkout dev
 pip uninstall progressio
 pip install .
 ```
+
+## Visualization
+
+See a simple visualization script at `./analysis`.

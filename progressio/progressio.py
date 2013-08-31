@@ -18,7 +18,7 @@ from datetime import datetime
 DATE_FORMAT = '%a %b %d %H:%M:%S %Y %Z'
 
 
-__version__ = '0.3.0-dev'
+__version__ = '0.3.0'
 __author__ = "Artem Dudarev"
 __url__ = 'https://github.com/dudarev/progressio'
 

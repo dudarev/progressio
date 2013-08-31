@@ -51,3 +51,7 @@ git checkout dev
 pip uninstall progressio
 pip install .
 ```
+
+## Visualization
+
+See a simple visualization script at `./analysis`.
