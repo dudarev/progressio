@@ -13,6 +13,7 @@ from matplotlib.dates import (
 
 from progressio.progressio import load_items
 
+
 # load data
 
 counts_done_at = {}
@@ -35,6 +36,7 @@ def get_x_y(counts):
     """
     return zip(*[(d, counts[d]) for d in counts])
 
+
 ax = plt.subplot(111)
 
 x, y = get_x_y(counts_added_at)
@@ -44,6 +46,7 @@ x, y = get_x_y(counts_done_at)
 ax.bar(x, [-i for i in y], width=1, color='r')
 
 ax.plot([min(x), max(x)], [0, 0], 'k')
+
 
 # axis are not shown since axis off below but
 # formatting is used to show x-coordinate of the mouse pointer
