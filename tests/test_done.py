@@ -1,22 +1,15 @@
 import unittest
 
-import os
 import sys
 
 sys.path.insert(0, "..")
 
 from progressio.progressio import add, load_items, done, get_item
 
+from .base import BaseCase
 
-class TestDone(unittest.TestCase):
-    def setUp(self):
-        """
-        Clean up old progress files.
-        """
-        filelist = [f for f in os.listdir(".") if f.startswith("progress.")]
-        for f in filelist:
-            os.remove(f)
 
+class TestDone(BaseCase):
     def test_done(self):
         """Test adding one item"""
         add('step that will be done')

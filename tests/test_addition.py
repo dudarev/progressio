@@ -1,6 +1,5 @@
 import unittest
 
-import os
 import sys
 import sqlite3
 import subprocess
@@ -11,16 +10,12 @@ from progressio.progressio import (
     add, load_items, get_item,
     PROGRESS_DB_FILE_NAME, Item)
 
+from .base import BaseCase
 
-class TestAddition(unittest.TestCase):
-    def setUp(self):
-        """Clean up old progress files."""
-        filelist = [f for f in os.listdir(".") if f.startswith("progress.")]
-        for f in filelist:
-            os.remove(f)
 
+class TestAddition(BaseCase):
     def test_addition(self):
-        """Test adding one item"""
+        """Test adding an item"""
         add('test2')
         add('test')
         items = load_items()
@@ -35,10 +30,6 @@ class TestAddition(unittest.TestCase):
         """
         Test that pk and message are shown when adding new item.
         """
-        # create progress.yaml
-        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
-        p.communicate('y\n')
-
         ITEM_TITLE = 'item that will be added'
         output = subprocess.check_output(
             '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
@@ -80,11 +71,6 @@ class TestAddition(unittest.TestCase):
         """
         Test that one can add subitem from command line.
         """
-
-        # create progress.yaml
-        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
-        p.communicate('y\n')
-
         ITEM_TITLE = 'first item'
         subprocess.call(
             '../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
@@ -107,11 +93,10 @@ class TestAddition(unittest.TestCase):
         self.assertTrue(2 in item.children)
 
     def test_error_message_if_item_is_not_added(self):
-        # create progress.yaml
-        p = subprocess.Popen('../progressio/progressio.py', stdin=subprocess.PIPE)
-        p.communicate('y\n')
-
-        ITEM_TITLE = 'item that will not be added'
+        """
+        Test that error message is shown if item is not added.
+        """
+        ITEM_TITLE = 'item that will not been added'
         # -t flag is missing
         try:
             subprocess.check_output(

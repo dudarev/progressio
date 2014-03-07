@@ -1,7 +1,6 @@
 import unittest
 from subprocess import Popen, PIPE
 
-import os
 import sys
 import sqlite3
 import subprocess
@@ -14,14 +13,10 @@ from progressio.progressio import (
     load_items, done,
     PROGRESS_DB_FILE_NAME, DATE_FORMAT)
 
+from .base import BaseCase
 
-class TestLoading(unittest.TestCase):
-    def setUp(self):
-        """Clean up old progress files."""
-        filelist = [f for f in os.listdir(".") if f.startswith("progress.")]
-        for f in filelist:
-            os.remove(f)
 
+class TestLoading(BaseCase):
     def test_get_non_existant_item(self):
         add('test')
         self.assertTrue(get_item(9999999) is None)
@@ -86,7 +81,6 @@ class TestLoading(unittest.TestCase):
             '../progressio/progressio.py count',
             stderr=subprocess.STDOUT,
             shell=True)
-        print output
         self.assertTrue("done yesterday: 1" in output)
         
     def test_log(self):

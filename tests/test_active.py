@@ -1,6 +1,5 @@
 import unittest
 
-import os
 import sys
 import subprocess
 
@@ -8,16 +7,10 @@ sys.path.insert(0, "..")
 
 from progressio.progressio import add, active, done, load_items, get_item
 
+from .base import BaseCase
 
-class TestActive(unittest.TestCase):
-    def setUp(self):
-        """
-        Clean up old progress files.
-        """
-        filelist = [f for f in os.listdir(".") if f.startswith("progress.")]
-        for f in filelist:
-            os.remove(f)
 
+class TestActive(BaseCase):
     def test_active(self):
         """
         Test activating one item.
@@ -42,8 +35,7 @@ class TestActive(unittest.TestCase):
             "../progressio/progressio.py active {}".format(pk),
             stderr=subprocess.STDOUT,
             shell=True)
-        print output
-        self.assertTrue("Item {} is marked as active".format(pk) in output)
+        self.assertIn("Item {} is marked as active".format(pk), output)
 
         i = get_item(pk)
         self.assertEqual(i.is_done, 'FALSE')

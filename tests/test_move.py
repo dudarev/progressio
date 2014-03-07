@@ -1,9 +1,8 @@
 import unittest
 
-import os
 import sys
 import sqlite3
-from subprocess import call, Popen, PIPE
+from subprocess import call, PIPE
 
 sys.path.insert(0, "..")
 
@@ -12,20 +11,15 @@ from progressio.progressio import (
 
 
 class TestMove(unittest.TestCase):
-    def setUp(self):
-        """Clean up old progress files."""
-        filelist = [f for f in os.listdir(".") if f.startswith("progress.")]
-        for f in filelist:
-            os.remove(f)
-
     def test_move_subitem(self):
         """
         Test that subitem can be moved.
         """
 
-        # create progress.yaml
-        p = Popen('../progressio/progressio.py', stdin=PIPE)
-        p.communicate('y\n')
+        # add one item - 1
+        # add a subitem to it - 2
+        # add another item - 3
+        # move subitem of item 1 to item 3
 
         call(
             '../progressio/progressio.py add -t "1st item"',
