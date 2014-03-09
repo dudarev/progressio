@@ -30,5 +30,3 @@ convert it to base 32,
 reverse order of the digits.
 
 An item may be moved from one parent to another.
-
-An order of items may be changed.

@@ -1,3 +1,6 @@
+test_unit:
+	cd tests/unit && nosetests -s
+
 test:
 	cd tests && nosetests -s
 

@@ -6,3 +6,5 @@ build
 dist
 tests/progress.*
 MANIFEST
+.progressio
+progress.db

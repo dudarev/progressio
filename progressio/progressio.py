@@ -18,11 +18,12 @@ from datetime import datetime
 DATE_FORMAT = '%a %b %d %H:%M:%S %Y %Z'
 
 
-__version__ = '0.3.0'
+__version__ = '0.4.0-dev'
 __author__ = "Artem Dudarev"
 __url__ = 'https://github.com/dudarev/progressio'
 
 PROGRESS_DB_FILE_NAME = 'progress.db'
+PROGRESSIO_DIR = '.progressio'
 
 
 class Item(object):
@@ -120,16 +121,8 @@ def load_items(is_done=False):
     """
     :returns: a list with Item instances that are NOT done.
     """
-    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
-    cur = con.cursor()
-    if is_done:
-        query = "SELECT * FROM item WHERE is_done='TRUE'"
-    else:
-        query = "SELECT * FROM item WHERE is_done='FALSE'"
-    cur.execute(query)
-    items = cur.fetchall()
-    item_instances = [Item(*i) for i in items]
-    con.close()
+    for dirpath, dirnames, filenames in os.walk(PROGRESSIO_DIR):
+        item_instances = filenames
     return item_instances
 
 
