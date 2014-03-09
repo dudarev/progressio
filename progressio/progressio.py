@@ -8,10 +8,10 @@ Each item may have one parent and several children nodes.
 """
 
 import os
-import sys
-import time
 import re
 import sqlite3
+import sys
+import time
 from datetime import datetime
 
 
@@ -86,6 +86,11 @@ def _create_db_if_needed():
         return 'DB file did not exist and was created.'
 
     return 'DB file exists'
+
+
+def _create_dir_if_needed():
+    if not os.path.exists(PROGRESSIO_DIR):
+        os.makedirs(PROGRESSIO_DIR)
 
 
 def count_items():

@@ -4,28 +4,15 @@ import sys
 import sqlite3
 import subprocess
 
-sys.path.insert(0, "..")
+sys.path.insert(0, "../..")
 
 from progressio.progressio import (
-    add, load_items, get_item,
     PROGRESS_DB_FILE_NAME, Item)
 
 from .base import BaseCase
 
 
 class TestAddition(BaseCase):
-    def test_addition(self):
-        """Test adding an item"""
-        add('test2')
-        add('test')
-        items = load_items()
-        is_added = False
-        for i in items:
-            if i.title == 'test2':
-                is_added = True
-                break
-        self.assertTrue(is_added)
-
     def test_message_when_adding(self):
         """
         Test that pk and message are shown when adding new item.
@@ -37,35 +24,6 @@ class TestAddition(BaseCase):
             shell=True)
 
         self.assertTrue("1 - {}".format(ITEM_TITLE) in output)
-
-    def test_add_subitem(self):
-        """Test that subitem may be added to some item."""
-        TEST_TEXT = 'test3'
-        TEST_TEXT_SUBITEM = 'test33'
-        add(TEST_TEXT)
-        items = load_items()
-        parent_pk = items[0].pk
-        add(TEST_TEXT_SUBITEM, parent_pk=parent_pk)
-        subitem_pk = get_item(parent_pk).children[0]
-        self.assertEqual(get_item(subitem_pk).title, TEST_TEXT_SUBITEM)
-
-    def test_add_subsubitem(self):
-        """
-        Subitem to subitem can be added.
-        """
-        TEST_TEXT_SUBITEM = 'sub test'
-        TEST_TEXT_SUBSUBITEM = 'sub sub test'
-        add(TEST_TEXT_SUBITEM)
-        add('test2')
-        items = load_items()
-        parent_pk = items[1].pk
-        add(TEST_TEXT_SUBITEM, parent_pk=parent_pk)
-        parent = get_item(parent_pk)
-        subitem = get_item(parent.children[0])
-        add(TEST_TEXT_SUBSUBITEM, parent_pk=subitem.pk)
-        subitem = get_item(subitem.pk)
-        subsubitem_pk = subitem.children[0]
-        self.assertEqual(get_item(subsubitem_pk).title, TEST_TEXT_SUBSUBITEM)
 
     def test_add_subitem_from_command_line(self):
         """

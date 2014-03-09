@@ -1,11 +1,16 @@
+.PHONY: test_unit  test pip_update upload \
+    register
+
 test_unit:
 	cd tests/unit && nosetests -s
 
-test:
-	cd tests && nosetests -s
+test_functional:
+	cd tests/functional && nosetests -s
+
+test: test_unit test_functional
 
 # updates README.md from README.md.in
-update_readme:
+readme:
 	python setup.py update_readme
 
 pip_update:
@@ -18,5 +23,5 @@ upload:
 register:
 	python setup.py register
 
-ctags:
+tags:
 	ctags -R .
