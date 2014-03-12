@@ -3,12 +3,20 @@ import shutil
 import sys
 from unittest import TestCase, main
 
+import mock
+
 sys.path.insert(0, "../..")
 
 from progressio.progressio import (
     _create_dir_if_needed,
     add, load_items, get_item, PROGRESSIO_DIR)
     
+
+class MockedDateTime(object):
+    "A fake replacement for date that can be mocked for testing."
+    def __new__(cls, *args, **kwargs):
+        return object.__new__(object, *args, **kwargs)
+
 
 class TestAddition(TestCase):
     def test_create_dir_if_needed(self):
@@ -32,11 +40,19 @@ class TestAddition(TestCase):
         """Test adding two items"""
         add('test1')
         add('test2')
-        # load them
         items = load_items()
         self.assertEqual(len(items), 2)
 
+    @mock.patch('progressio.progressio.datetime', MockedDateTime)
     def test_content(self):
+        from datetime import datetime
+        mocked_now = datetime(2014, 3, 20)
+        MockedDateTime.now = classmethod(lambda cls: mocked_now)
+        title = 'test title'
+        add(title)
+        items = load_items()
+        self.assertEqual(items[0].title, title)
+        self.assertEqual(items[0].added_at, mocked_now)
         pass
 
     def test_add_subitem(self):
