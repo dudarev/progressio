@@ -1,15 +1,28 @@
-from unittest import TestCase
-
+from datetime import datetime
 import os
 import sys
+import unittest
 
 sys.path.insert(0, "../..")
 
 from progressio.progressio import (
-    load_items, PROGRESSIO_DIR)
+    load_items, _parse_item, PROGRESSIO_DIR)
 
 
-class TestLoad(TestCase):
+TEST_ITEM_TITLE = "Test item"
+TEST_ITEM_ADDED_AT = datetime(2014, 03, 13, 12, 55, 14)
+TEST_ITEM_FILE_CONTENT = """---
+title: {title}
+added_at: {added_at_str}
+done_at: 2014-03-13T12:55:15
+---
+Some extra text
+""".format(
+    title=TEST_ITEM_TITLE,
+    added_at_str=TEST_ITEM_ADDED_AT.isoformat())
+
+
+class TestLoad(unittest.TestCase):
     """
     Tests for loading items.
     """
@@ -41,3 +54,8 @@ class TestLoad(TestCase):
         # load them
         items = load_items()
         self.assertEqual(len(items), 3)
+
+    def test_parse_item(self):
+        item = _parse_item(TEST_ITEM_FILE_CONTENT)
+        self.assertEqual(item.title, TEST_ITEM_TITLE)
+        self.assertEqual(item.added_at, TEST_ITEM_ADDED_AT)

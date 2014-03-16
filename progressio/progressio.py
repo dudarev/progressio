@@ -93,6 +93,17 @@ def _create_dir_if_needed():
         os.makedirs(PROGRESSIO_DIR)
 
 
+def _parse_item(s):
+    """Parses an item for a string.
+
+    :param s: a string with item data
+    :returns item: `Item` instance
+    """
+    item = Item(1)
+
+    return item
+
+
 def count_items():
     """
     :returns: a dictionary with counts in fields 'total', 'done'.
@@ -194,6 +205,7 @@ def add(item_title=None, parent_pk=0):
     
     If no parent_pk is specified item is added to root (pk=0).
     """
+    return
 
     if not item_title:
         from optparse import OptionParser
