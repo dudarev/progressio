@@ -6,20 +6,13 @@ import unittest
 sys.path.insert(0, "../..")
 
 from progressio.progressio import (
-    load_items, _parse_item, PROGRESSIO_DIR)
+    _create_dir_if_needed, _parse_file,
+    load_items, PROGRESSIO_DIR)
 
 
-TEST_ITEM_TITLE = "Test item"
+TEST_FILENAME = "20140313125514"
 TEST_ITEM_ADDED_AT = datetime(2014, 03, 13, 12, 55, 14)
-TEST_ITEM_FILE_CONTENT = """---
-title: {title}
-added_at: {added_at_str}
-done_at: 2014-03-13T12:55:15
----
-Some extra text
-""".format(
-    title=TEST_ITEM_TITLE,
-    added_at_str=TEST_ITEM_ADDED_AT.isoformat())
+TEST_TITLE = "Test title"
 
 
 class TestLoad(unittest.TestCase):
@@ -32,9 +25,7 @@ class TestLoad(unittest.TestCase):
         Creates N files that represent items.
         """
 
-        # create the directory
-        if not os.path.exists(PROGRESSIO_DIR):
-            os.makedirs(PROGRESSIO_DIR)
+        _create_dir_if_needed()
 
         # create N files in it
         for i in xrange(N):
@@ -42,6 +33,14 @@ class TestLoad(unittest.TestCase):
                 PROGRESSIO_DIR,
                 '2014030912{i:04d}'.format(i=i))
             open(filename, 'a').close()
+
+    def _create_file(self):
+        _create_dir_if_needed()
+        filename = os.path.join(
+            PROGRESSIO_DIR,
+            TEST_FILENAME)
+        with open(filename, 'w') as f:
+            f.write(TEST_TITLE)
 
     def test_load_count(self):
         """
@@ -55,7 +54,8 @@ class TestLoad(unittest.TestCase):
         items = load_items()
         self.assertEqual(len(items), 3)
 
-    def test_parse_item(self):
-        item = _parse_item(TEST_ITEM_FILE_CONTENT)
-        self.assertEqual(item.title, TEST_ITEM_TITLE)
+    def test_parse_file(self):
+        self._create_file()
+        item = _parse_file(TEST_FILENAME)
+        self.assertEqual(item.title, TEST_TITLE)
         self.assertEqual(item.added_at, TEST_ITEM_ADDED_AT)

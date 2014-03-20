@@ -93,14 +93,14 @@ def _create_dir_if_needed():
         os.makedirs(PROGRESSIO_DIR)
 
 
-def _parse_item(s):
+def _parse_file(filename):
     """Parses an item for a string.
 
-    :param s: a string with item data
-    :returns item: `Item` instance
+    :param filename: name of the file to parse
+    :type filename: str
+    :rtype: Item
     """
     item = Item(1)
-
     return item
 
 

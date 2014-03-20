@@ -43,6 +43,7 @@ class TestAddition(TestCase):
         items = load_items()
         self.assertEqual(len(items), 2)
 
+    # TODO: implement
     @mock.patch('progressio.progressio.datetime', MockedDateTime)
     def test_content(self):
         from datetime import datetime
@@ -55,6 +56,7 @@ class TestAddition(TestCase):
         self.assertEqual(items[0].added_at, mocked_now)
         pass
 
+    # TODO: rewrite
     def test_add_subitem(self):
         """Test that subitem may be added to some item."""
         TEST_TEXT = 'test3'
@@ -66,6 +68,7 @@ class TestAddition(TestCase):
         subitem_pk = get_item(parent_pk).children[0]
         self.assertEqual(get_item(subitem_pk).title, TEST_TEXT_SUBITEM)
 
+    # TODO: rewrite
     def test_add_subsubitem(self):
         """
         Subitem to subitem can be added.
