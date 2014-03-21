@@ -16,6 +16,7 @@ from datetime import datetime
 
 
 DATE_FORMAT = '%a %b %d %H:%M:%S %Y %Z'
+DATE_FORMAT = '%Y%m%d%H%M%S'
 
 
 __version__ = '0.4.0-dev'
@@ -101,6 +102,10 @@ def _parse_file(filename):
     :rtype: Item
     """
     item = Item(1)
+    basename = os.path.basename(filename)
+    with open(filename, 'r') as f:
+        item.title = f.readline()
+        item.added_at = datetime.strptime(basename, DATE_FORMAT)
     return item
 
 

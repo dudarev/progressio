@@ -35,10 +35,9 @@ class TestLoad(unittest.TestCase):
             open(filename, 'a').close()
 
     def _create_file(self):
+        print 'inside _create_file'
         _create_dir_if_needed()
-        filename = os.path.join(
-            PROGRESSIO_DIR,
-            TEST_FILENAME)
+        filename = os.path.join(PROGRESSIO_DIR, TEST_FILENAME)
         with open(filename, 'w') as f:
             f.write(TEST_TITLE)
 
@@ -56,6 +55,7 @@ class TestLoad(unittest.TestCase):
 
     def test_parse_file(self):
         self._create_file()
-        item = _parse_file(TEST_FILENAME)
+        filename = os.path.join(PROGRESSIO_DIR, TEST_FILENAME)
+        item = _parse_file(filename)
         self.assertEqual(item.title, TEST_TITLE)
         self.assertEqual(item.added_at, TEST_ITEM_ADDED_AT)
