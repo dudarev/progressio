@@ -1,7 +1,6 @@
 from datetime import datetime
 import os
 import sys
-import unittest
 
 sys.path.insert(0, "../..")
 
@@ -9,13 +8,15 @@ from progressio.progressio import (
     _create_dir_if_needed, _parse_file,
     load_items, PROGRESSIO_DIR)
 
+from .base import BaseUnitCase
+
 
 TEST_FILENAME = "20140313125514"
 TEST_ITEM_ADDED_AT = datetime(2014, 03, 13, 12, 55, 14)
 TEST_TITLE = "Test title"
 
 
-class TestLoad(unittest.TestCase):
+class TestLoad(BaseUnitCase):
     """
     Tests for loading items.
     """
