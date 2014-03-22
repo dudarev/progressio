@@ -143,8 +143,13 @@ def load_items(is_done=False):
     :returns: a list with Item instances that are NOT done.
     """
     for dirpath, dirnames, filenames in os.walk(PROGRESSIO_DIR):
-        item_instances = filenames
-    return item_instances
+        items = [
+            _parse_file(
+                os.path.join(PROGRESSIO_DIR, f)
+            )
+            for f in filenames
+        ]
+    return items
 
 
 def parse_item_from_string(line):
