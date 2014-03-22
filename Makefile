@@ -3,7 +3,7 @@
 
 # working on now
 test_now:
-	cd tests/unit && nosetests test_load.py:TestLoad.test_parse_file -s
+	cd tests/unit && nosetests test_load.py:TestLoad.test_load_ids -s
 
 test_unit:
 	cd tests/unit && nosetests -s
