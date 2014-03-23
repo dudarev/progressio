@@ -9,13 +9,13 @@ Each item may have one parent and several children nodes.
 
 import os
 import re
+import string
 import sqlite3
 import sys
 import time
 from datetime import datetime
 
 
-DATE_FORMAT = '%a %b %d %H:%M:%S %Y %Z'
 DATE_FORMAT = '%Y%m%d%H%M%S'
 
 
@@ -109,10 +109,16 @@ def _parse_file(filename):
     return item
 
 
-def _get_filename(title):
-    """Returns file name based on current time. It is incremented until such id is not taken.
+def _get_filename(s):
+    """Returns file name based on current time.
+    It is incremented until such id is not taken.
     """
-    return title
+    allowed_characters = string.ascii_lowercase + string.digits + ' '
+    # leave only allowed characters
+    s_filtered = ''.join([l for l in s.lower() if l in allowed_characters])
+    # timestamp to prepend
+    utcnow = datetime.utcnow().strftime(DATE_FORMAT)
+    return utcnow + '-' + '-'.join(s_filtered.split())
 
 
 def count_items():

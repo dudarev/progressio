@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import mock
 import shutil
@@ -40,9 +42,13 @@ class TestAddition(BaseUnitCase):
     def test_generate_filename(self):
         from datetime import datetime
         mocked_now = datetime(2014, 3, 20, 12, 0, 0)
-        MockedDateTime.now = classmethod(lambda cls: mocked_now)
-        filename = _get_filename('Test title')
+        MockedDateTime.utcnow = classmethod(lambda cls: mocked_now)
+        filename = _get_filename('Test  title')
         self.assertEqual(filename, '20140320120000-test-title')
+        filename = _get_filename(u'Test title 1234 абв')
+        self.assertEqual(filename, '20140320120000-test-title-1234')
+        filename = _get_filename(u'   ')
+        self.assertEqual(filename, '20140320120000-')
 
     # TODO: implement
     def test_generate_filename_if_id_exists(self):
