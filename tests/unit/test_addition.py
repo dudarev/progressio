@@ -1,14 +1,13 @@
 import os
+import mock
 import shutil
 import sys
-from unittest import TestCase, main
-
-import mock
+from .base import BaseUnitCase
 
 sys.path.insert(0, "../..")
 
 from progressio.progressio import (
-    _create_dir_if_needed,
+    _create_dir_if_needed, _get_filename,
     add, load_items, get_item, PROGRESSIO_DIR)
     
 
@@ -18,7 +17,7 @@ class MockedDateTime(object):
         return object.__new__(object, *args, **kwargs)
 
 
-class TestAddition(TestCase):
+class TestAddition(BaseUnitCase):
     def test_create_dir_if_needed(self):
         """
         Tests function _create_dir_if_needed
@@ -36,6 +35,20 @@ class TestAddition(TestCase):
         _create_dir_if_needed()
         self.assertTrue(os.path.exists(PROGRESSIO_DIR))
 
+    # TODO: implement
+    @mock.patch('progressio.progressio.datetime', MockedDateTime)
+    def test_generate_filename(self):
+        from datetime import datetime
+        mocked_now = datetime(2014, 3, 20, 12, 0, 0)
+        MockedDateTime.now = classmethod(lambda cls: mocked_now)
+        filename = _get_filename('Test title')
+        self.assertEqual(filename, '20140320120000-test-title')
+
+    # TODO: implement
+    def test_generate_filename_if_id_exists(self):
+        assert False
+
+    # TODO: implement
     def test_count(self):
         """Test adding two items"""
         add('test1')
@@ -86,7 +99,3 @@ class TestAddition(TestCase):
         subitem = get_item(subitem.pk)
         subsubitem_pk = subitem.children[0]
         self.assertEqual(get_item(subsubitem_pk).title, TEST_TEXT_SUBSUBITEM)
-
-
-if __name__ == '__main__':
-    main()

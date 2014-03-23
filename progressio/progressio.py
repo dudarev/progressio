@@ -109,6 +109,12 @@ def _parse_file(filename):
     return item
 
 
+def _get_filename(title):
+    """Returns file name based on current time. It is incremented until such id is not taken.
+    """
+    return title
+
+
 def count_items():
     """
     :returns: a dictionary with counts in fields 'total', 'done'.
@@ -208,13 +214,18 @@ def active(pk_active=None):
 
 
 def add(item_title=None, parent_pk=0):
-    """
-    Adds a item - step/task/goal...
+    """Adds a item - step/task/goal...
 
     Title is obtained from sys.argv.
     
     If no parent_pk is specified item is added to root (pk=0).
     """
+
+    _create_dir_if_needed()
+
+    # with open(filename, 'w') as f:
+    #     f.write(TEST_TITLE)
+
     return
 
     if not item_title:
