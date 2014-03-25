@@ -3,7 +3,7 @@
 
 # working on now
 test_now:
-	cd tests/unit && nosetests test_addition.py:TestAddition.test_generate_filename -s
+	cd tests/unit && nosetests test_addition.py:TestAddition.test_generate_filename_if_timestamp_exists -s
 
 test_unit:
 	cd tests/unit && nosetests -s

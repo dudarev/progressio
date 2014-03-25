@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+from functools import wraps
 import os
 import mock
 import shutil
 import sys
+
 from .base import BaseUnitCase
 
 sys.path.insert(0, "../..")
@@ -11,7 +14,10 @@ sys.path.insert(0, "../..")
 from progressio.progressio import (
     _create_dir_if_needed, _get_filename,
     add, load_items, get_item, PROGRESSIO_DIR)
-    
+
+TEST_DATETIME = datetime(2014, 3, 20, 12, 0, 0)
+TEST_TIMESTAMP = '20140320120000'
+
 
 class MockedDateTime(object):
     "A fake replacement for date that can be mocked for testing."
@@ -19,10 +25,19 @@ class MockedDateTime(object):
         return object.__new__(object, *args, **kwargs)
 
 
+def fixed_utcnow(func):
+    @wraps(func)
+    @mock.patch('progressio.progressio.datetime', MockedDateTime)
+    def wrapped_function(*args, **kwargs):
+        mocked_now = TEST_DATETIME
+        MockedDateTime.utcnow = classmethod(lambda cls: mocked_now)
+        return func(*args, **kwargs)
+    return wrapped_function
+
+
 class TestAddition(BaseUnitCase):
     def test_create_dir_if_needed(self):
-        """
-        Tests function _create_dir_if_needed
+        """Tests function _create_dir_if_needed
         """
 
         # remove PROGRESSIO_DIR check that function creates it
@@ -37,12 +52,8 @@ class TestAddition(BaseUnitCase):
         _create_dir_if_needed()
         self.assertTrue(os.path.exists(PROGRESSIO_DIR))
 
-    # TODO: implement
-    @mock.patch('progressio.progressio.datetime', MockedDateTime)
+    @fixed_utcnow
     def test_generate_filename(self):
-        from datetime import datetime
-        mocked_now = datetime(2014, 3, 20, 12, 0, 0)
-        MockedDateTime.utcnow = classmethod(lambda cls: mocked_now)
         filename = _get_filename('Test  title')
         self.assertEqual(filename, '20140320120000-test-title')
         filename = _get_filename(u'Test title 1234 абв')
@@ -50,8 +61,15 @@ class TestAddition(BaseUnitCase):
         filename = _get_filename(u'   ')
         self.assertEqual(filename, '20140320120000-')
 
-    # TODO: implement
-    def test_generate_filename_if_id_exists(self):
+    @fixed_utcnow
+    def test_generate_filename_if_timestamp_exists(self):
+        # create file with name that corresponding to current time (TEST_DATETIME)
+        filename = os.path.join(PROGRESSIO_DIR, TEST_TIMESTAMP)
+        with open(filename, 'w') as f:
+            f.write('Some test title')
+        # timestamp is incremented
+        filename = _get_filename('Test  title')
+        self.assertEqual(filename, '20140320120001-test-title')
         assert False
 
     # TODO: implement
@@ -63,16 +81,13 @@ class TestAddition(BaseUnitCase):
         self.assertEqual(len(items), 2)
 
     # TODO: implement
-    @mock.patch('progressio.progressio.datetime', MockedDateTime)
+    @fixed_utcnow
     def test_content(self):
-        from datetime import datetime
-        mocked_now = datetime(2014, 3, 20)
-        MockedDateTime.now = classmethod(lambda cls: mocked_now)
         title = 'test title'
         add(title)
         items = load_items()
         self.assertEqual(items[0].title, title)
-        self.assertEqual(items[0].added_at, mocked_now)
+        self.assertEqual(items[0].added_at, TEST_DATETIME)
         pass
 
     # TODO: rewrite
