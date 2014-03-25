@@ -11,7 +11,7 @@ from progressio.progressio import (
 from .base import BaseUnitCase
 
 
-TEST_FILENAME = "20140313125514"
+TEST_FILENAME = "20140313125514-test-title"
 TEST_ITEM_ADDED_AT = datetime(2014, 03, 13, 12, 55, 14)
 TEST_TITLE = "Test title"
 

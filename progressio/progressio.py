@@ -105,7 +105,9 @@ def _parse_file(filename):
     basename = os.path.basename(filename)
     with open(filename, 'r') as f:
         item.title = f.readline()
-        item.added_at = datetime.strptime(basename, DATE_FORMAT)
+        item.added_at = datetime.strptime(
+            basename.split('-')[0],
+            DATE_FORMAT)
     return item
 
 
@@ -237,8 +239,6 @@ def add(item_title=None, parent_pk=0):
     # with open(filename, 'w') as f:
     #     f.write(TEST_TITLE)
 
-    return
-
     if not item_title:
         from optparse import OptionParser
         parser = OptionParser()
@@ -252,6 +252,13 @@ def add(item_title=None, parent_pk=0):
         if opts.parent_pk:
             parent_pk = opts.parent_pk
 
+    filename = os.path.join(PROGRESSIO_DIR, _get_filename(item_title))
+    with open(filename, 'w') as f:
+        f.write(item_title)
+
+    return
+
+    # TODO: remove
     # save new item and update its parent in database
 
     _create_db_if_needed()
