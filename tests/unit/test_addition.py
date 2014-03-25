@@ -31,6 +31,7 @@ def fixed_utcnow(func):
     def wrapped_function(*args, **kwargs):
         mocked_now = TEST_DATETIME
         MockedDateTime.utcnow = classmethod(lambda cls: mocked_now)
+        MockedDateTime.strptime = datetime.strptime
         return func(*args, **kwargs)
     return wrapped_function
 
@@ -70,7 +71,6 @@ class TestAddition(BaseUnitCase):
         # timestamp is incremented
         filename = _get_filename('Test  title')
         self.assertEqual(filename, '20140320120001-test-title')
-        assert False
 
     # TODO: implement
     def test_count(self):

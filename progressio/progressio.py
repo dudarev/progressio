@@ -13,7 +13,7 @@ import string
 import sqlite3
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 DATE_FORMAT = '%Y%m%d%H%M%S'
@@ -111,14 +111,19 @@ def _parse_file(filename):
 
 def _get_filename(s):
     """Returns file name based on current time.
-    It is incremented until such id is not taken.
+    It is incremented until such timestamp is not taken.
     """
     allowed_characters = string.ascii_lowercase + string.digits + ' '
     # leave only allowed characters
     s_filtered = ''.join([l for l in s.lower() if l in allowed_characters])
     # timestamp to prepend
-    utcnow = datetime.utcnow().strftime(DATE_FORMAT)
-    return utcnow + '-' + '-'.join(s_filtered.split())
+    items = load_items()
+    added_at_list = [i.added_at for i in items]
+    utcnow = datetime.utcnow()
+    while utcnow in added_at_list:
+        utcnow += timedelta(seconds=1)
+    # filename always has '-' after timestamp
+    return utcnow.strftime(DATE_FORMAT) + '-' + '-'.join(s_filtered.split())
 
 
 def count_items():
