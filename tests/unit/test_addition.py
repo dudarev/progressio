@@ -17,6 +17,7 @@ from progressio.progressio import (
 
 TEST_DATETIME = datetime(2014, 3, 20, 12, 0, 0)
 TEST_TIMESTAMP = '20140320120000'
+TEST_DATETIME_HASH = '06n0A45ai'
 
 
 class MockedDateTime(object):
@@ -72,7 +73,6 @@ class TestAddition(BaseUnitCase):
         filename = _get_filename('Test  title')
         self.assertEqual(filename, '20140320120001-test-title')
 
-    # TODO: implement
     def test_count(self):
         """Test adding two items"""
         add('test1')
@@ -80,7 +80,6 @@ class TestAddition(BaseUnitCase):
         items = load_items()
         self.assertEqual(len(items), 2)
 
-    # TODO: implement
     @fixed_utcnow
     def test_content(self):
         title = 'test title'
@@ -90,17 +89,26 @@ class TestAddition(BaseUnitCase):
         self.assertEqual(items[0].added_at, TEST_DATETIME)
         pass
 
-    # TODO: rewrite
+    @fixed_utcnow
+    def test_item_hash(self):
+        title = 'test title'
+        add(title)
+        item = load_items()[0]
+        self.assertEqual(hash(item), TEST_DATETIME_HASH)
+
     def test_add_subitem(self):
         """Test that subitem may be added to some item."""
-        TEST_TEXT = 'test3'
-        TEST_TEXT_SUBITEM = 'test33'
-        add(TEST_TEXT)
+        item_title = 'test3'
+        subitem_title = 'test33'
+
+        add(item_title)
         items = load_items()
-        parent_pk = items[0].pk
-        add(TEST_TEXT_SUBITEM, parent_pk=parent_pk)
-        subitem_pk = get_item(parent_pk).children[0]
-        self.assertEqual(get_item(subitem_pk).title, TEST_TEXT_SUBITEM)
+
+        item_hash = hash(items[0])
+        add(subitem_title, parent_hash=item_hash)
+
+        subitem_hash = hash(get_item(item_hash).children[0])
+        self.assertEqual(get_item(subitem_hash).title, subitem_title)
 
     # TODO: rewrite
     def test_add_subsubitem(self):
