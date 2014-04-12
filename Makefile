@@ -3,7 +3,7 @@
 
 # working on now
 test_now:
-	cd tests/unit && nosetests test_addition.py:TestAddition.test_count -s
+	cd tests/unit && nosetests test_addition.py:TestAddition.test_item_hash -s
 
 test_unit:
 	cd tests/unit && nosetests -s

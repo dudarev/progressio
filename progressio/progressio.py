@@ -15,16 +15,28 @@ import sys
 import time
 from datetime import datetime, timedelta
 
-
-DATE_FORMAT = '%Y%m%d%H%M%S'
-
-
 __version__ = '0.4.0-dev'
 __author__ = "Artem Dudarev"
 __url__ = 'https://github.com/dudarev/progressio'
 
+DATE_FORMAT = '%Y%m%d%H%M%S'
 PROGRESS_DB_FILE_NAME = 'progress.db'
 PROGRESSIO_DIR = '.progressio'
+BASE_FOR_HASH = 36
+
+
+def base_encode(num, base, dd=False):
+    """http://www.daniweb.com/forums/thread159163.html
+    to convert back  int(string, 36)
+    """
+    if not 2 <= base <= 36:
+        raise ValueError('The base number must be between 2 and 36.')
+    if not dd:
+        dd = dict(zip(range(36), list(string.digits + string.ascii_lowercase)))
+    if num < base:
+        return dd[num]
+    num, rem = divmod(num, base)
+    return base_encode(num, base, dd) + dd[rem]
 
 
 class Item(object):
@@ -61,6 +73,14 @@ class Item(object):
 
     def __cmp__(self, other):
         return cmp(int(self.pk), int(other.pk))
+
+    def __hash__(self):
+        return int(self.added_at.strftime(DATE_FORMAT))
+
+    @property
+    def hash_str(self):
+        # reversed string in BASE_FOR_HASH corresponding to hash
+        return ''.join(reversed(base_encode(hash(self), BASE_FOR_HASH)))
 
     @property
     def children_str(self):
@@ -111,7 +131,7 @@ def _parse_file(filename):
     return item
 
 
-def _get_filename(s):
+def _get_filename(s, parent_hash=0):
     """Returns file name based on current time.
     It is incremented until such timestamp is not taken.
     """
@@ -226,7 +246,7 @@ def active(pk_active=None):
         print "Database error:", e
 
 
-def add(item_title=None, parent_pk=0):
+def add(item_title=None, parent_hash=0):
     """Adds a item - step/task/goal...
 
     Title is obtained from sys.argv.
@@ -252,7 +272,7 @@ def add(item_title=None, parent_pk=0):
         if opts.parent_pk:
             parent_pk = opts.parent_pk
 
-    filename = os.path.join(PROGRESSIO_DIR, _get_filename(item_title))
+    filename = os.path.join(PROGRESSIO_DIR, _get_filename(item_title, parent_hash))
     with open(filename, 'w') as f:
         f.write(item_title)
 
