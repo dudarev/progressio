@@ -1,6 +1,6 @@
 A file-based project management and bug-tracking tool.
 
-Version: 0.3.0
+Version: 0.4.0-dev
 
 
 ## Installation
@@ -38,6 +38,9 @@ http://www.youtube.com/watch?v=9j2aTwNor5k&nofeather=True#t=34m44s
 
 http://ginatrapani.github.com/todo.txt-cli/
 http://code.google.com/p/todotxt/
+
+http://taskwarrior.org/
+http://www.iawriter.com/
 
 
 ## Development

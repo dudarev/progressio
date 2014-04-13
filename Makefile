@@ -14,7 +14,7 @@ test_functional:
 test: test_unit test_functional
 
 # updates README.md from README.md.in
-readme:
+README.md:
 	python setup.py update_readme
 
 pip_update:
