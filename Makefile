@@ -3,7 +3,7 @@
 
 # working on now
 test_now:
-	cd tests/unit && nosetests test_addition.py:TestAddition.test_item_hash -s
+	cd tests/unit && nosetests test_addition.py:TestAddition.test_add_subitem -s
 
 test_unit:
 	cd tests/unit && nosetests -s

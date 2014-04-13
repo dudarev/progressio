@@ -17,7 +17,6 @@ from progressio.progressio import (
 
 TEST_DATETIME = datetime(2014, 3, 20, 12, 0, 0)
 TEST_TIMESTAMP = '20140320120000'
-TEST_DATETIME_HASH = 'oyal2c057'
 
 
 class MockedDateTime(object):
@@ -89,14 +88,6 @@ class TestAddition(BaseUnitCase):
         self.assertEqual(items[0].added_at, TEST_DATETIME)
         pass
 
-    @fixed_utcnow
-    def test_item_hash(self):
-        title = 'test title'
-        add(title)
-        item = load_items()[0]
-        self.assertEqual(hash(item), int(TEST_TIMESTAMP))
-        self.assertEqual(item.hash_str, TEST_DATETIME_HASH)
-
     def test_add_subitem(self):
         """Test that subitem may be added to some item."""
         item_title = 'test3'
@@ -104,12 +95,9 @@ class TestAddition(BaseUnitCase):
 
         add(item_title)
         items = load_items()
+        add(subitem_title, parent_path_id=items[0].path_id)
 
-        item_hash = hash(items[0])
-        add(subitem_title, parent_hash=item_hash)
-
-        subitem_hash = hash(get_item(item_hash).children[0])
-        self.assertEqual(get_item(subitem_hash).title, subitem_title)
+        self.assertEqual(get_item('11').title, subitem_title)
 
     # TODO: rewrite
     def test_add_subsubitem(self):
