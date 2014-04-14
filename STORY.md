@@ -12,10 +12,12 @@ When a user enters just `p` all tickets are shown in the following format:
         11 - title 
     2 - title 
     3 - title 
-        31 - title 
-        32 - title 
+        3-1 - title 
+        3-2 - title 
+            3-2-1 subsubitem title
 
-Id is an numeric, it encodes the full pass to it from parent.
+Id is an numeric, it encodes the full pass to it from parent. Path changes for different listing of tasks. 
+It stays the same until the tasks are shown.
 
 To add a substep to a ticket one makes the following command:
 

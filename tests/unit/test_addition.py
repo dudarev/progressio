@@ -79,6 +79,14 @@ class TestAddition(BaseUnitCase):
         items = load_items()
         self.assertEqual(len(items), 2)
 
+    def test_path_id(self):
+        add('test1')
+        item = load_items()[0]
+        self.assertEqual(item.path_id, '1')
+        add('test2')
+        item = load_items()[1]
+        self.assertEqual(item.path_id, '2')
+
     @fixed_utcnow
     def test_content(self):
         title = 'test title'
