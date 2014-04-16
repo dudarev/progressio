@@ -98,14 +98,14 @@ class TestAddition(BaseUnitCase):
 
     def test_add_subitem(self):
         """Test that subitem may be added to some item."""
-        item_title = 'test3'
-        subitem_title = 'test33'
+        item_title = 'test1'
+        subitem_title = 'test11'
 
         add(item_title)
         items = load_items()
         add(subitem_title, parent_path_id=items[0].path_id)
 
-        self.assertEqual(get_item('11').title, subitem_title)
+        self.assertEqual(get_item('1/1').title, subitem_title)
 
     # TODO: rewrite
     def test_add_subsubitem(self):

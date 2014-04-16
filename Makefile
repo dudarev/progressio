@@ -3,7 +3,7 @@
 
 # working on now
 test_now:
-	cd tests/unit && nosetests test_addition.py:TestAddition.test_path_id -s
+	cd tests/unit && nosetests test_load.py:TestLoad.test_get_item -s
 
 test_unit:
 	cd tests/unit && nosetests -s

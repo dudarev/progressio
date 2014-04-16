@@ -215,14 +215,14 @@ def parse_item_from_string(line):
     return Item(pk, title)
 
 
-def get_item(pk):
+def get_item(path):
     """
-    :returns: Item for a given :param pk:, primary key.
+    :returns: Item for a given :param path:, path to it.
     :returns: None if such item does not exist.
     """
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
-    cur.execute('SELECT * FROM item WHERE pk={}'.format(pk))
+    cur.execute('SELECT * FROM item WHERE pk={}'.format(path))
     item_data = cur.fetchone()
     if item_data is None:
         return None
@@ -258,7 +258,7 @@ def active(pk_active=None):
         print "Database error:", e
 
 
-def add(item_title=None, parent_hash=0):
+def add(item_title=None, parent_path_id=0):
     """Adds a item - step/task/goal...
 
     Title is obtained from sys.argv.
@@ -284,7 +284,7 @@ def add(item_title=None, parent_hash=0):
         if opts.parent_pk:
             parent_pk = opts.parent_pk
 
-    filename = os.path.join(PROGRESSIO_DIR, _get_filename(item_title, parent_hash))
+    filename = os.path.join(PROGRESSIO_DIR, _get_filename(item_title, parent_path_id))
     with open(filename, 'w') as f:
         f.write(item_title)
 

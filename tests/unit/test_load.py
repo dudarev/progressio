@@ -6,7 +6,7 @@ sys.path.insert(0, "../..")
 
 from progressio.progressio import (
     _create_dir_if_needed, _parse_file,
-    load_items, PROGRESSIO_DIR)
+    add, get_item, load_items, PROGRESSIO_DIR)
 
 from .base import BaseUnitCase
 
@@ -73,3 +73,11 @@ class TestLoad(BaseUnitCase):
 
         for i in items:
             self.assertIn(i.added_at, dt_list)
+
+    def test_get_item(self):
+        """Tests getting item based on its path.
+        """
+        item_title = 'test1'
+        add(item_title)
+        item = get_item('1')
+        self.assertEqual(item.title, item_title)
