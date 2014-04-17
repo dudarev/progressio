@@ -192,14 +192,16 @@ def load_items(is_done=False):
     :returns: a list with Item instances that are NOT done.
     """
     for dirpath, dirnames, filenames in os.walk(PROGRESSIO_DIR):
-        items = [
+        items_list = [
             _parse_file(
                 os.path.join(PROGRESSIO_DIR, f)
             )
             for f in filenames
         ]
-    for j, item in enumerate(items):
+    items = {}
+    for j, item in enumerate(items_list):
         item.path_id = j + 1
+        items[str(j + 1)] = item
     return items
 
 
@@ -220,15 +222,8 @@ def get_item(path):
     :returns: Item for a given :param path:, path to it.
     :returns: None if such item does not exist.
     """
-    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
-    cur = con.cursor()
-    cur.execute('SELECT * FROM item WHERE pk={}'.format(path))
-    item_data = cur.fetchone()
-    if item_data is None:
-        return None
-    item = Item(*item_data)
-    con.close()
-    return item
+    items = load_items()
+    return items[path]
 
 
 def active(pk_active=None):
@@ -487,7 +482,7 @@ def show_items():
         not_first_level = not_first_level.union(set(i.children))
         items_dict[i.pk] = i
     for i in items:
-        if not i.pk in not_first_level:
+        if i.pk not in not_first_level:
             show_one_item(i, items_dict)
 
 
