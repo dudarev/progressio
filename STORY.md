@@ -26,3 +26,7 @@ To add a substep to a ticket one makes the following command:
 ```
 
 An item may be moved from one parent to another.
+
+File name of an item encodes item id and partially its title, for example: '1-title-in-lowercase-with-dashes'.
+
+No dates are saved for now.
