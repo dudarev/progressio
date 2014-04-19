@@ -13,7 +13,7 @@ sys.path.insert(0, "../..")
 
 from progressio.progressio import (
     _create_dir_if_needed, _get_filename,
-    add, load_items, get_item, PROGRESSIO_DIR)
+    add, load_items_list, get_item, PROGRESSIO_DIR)
 
 TEST_DATETIME = datetime(2014, 3, 20, 12, 0, 0)
 TEST_TIMESTAMP = '20140320120000'
@@ -76,22 +76,22 @@ class TestAddition(BaseUnitCase):
         """Test adding two items"""
         add('test1')
         add('test2')
-        items = load_items()
+        items = load_items_list()
         self.assertEqual(len(items), 2)
 
     def test_path_id(self):
         add('test1')
-        item = load_items()[0]
+        item = load_items_list()[0]
         self.assertEqual(item.path_id, '1')
         add('test2')
-        item = load_items()[1]
+        item = load_items_list()[1]
         self.assertEqual(item.path_id, '2')
 
     @fixed_utcnow
     def test_content(self):
         title = 'test title'
         add(title)
-        items = load_items()
+        items = load_items_list()
         self.assertEqual(items[0].title, title)
         self.assertEqual(items[0].added_at, TEST_DATETIME)
         pass
@@ -102,7 +102,7 @@ class TestAddition(BaseUnitCase):
         subitem_title = 'test11'
 
         add(item_title)
-        items = load_items()
+        items = load_items_list()
         add(subitem_title, parent_path_id=items[0].path_id)
 
         self.assertEqual(get_item('1/1').title, subitem_title)
@@ -116,7 +116,7 @@ class TestAddition(BaseUnitCase):
         TEST_TEXT_SUBSUBITEM = 'sub sub test'
         add(TEST_TEXT_SUBITEM)
         add('test2')
-        items = load_items()
+        items = load_items_list()
         parent_pk = items[1].pk
         add(TEST_TEXT_SUBITEM, parent_pk=parent_pk)
         parent = get_item(parent_pk)

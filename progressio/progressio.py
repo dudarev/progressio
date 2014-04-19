@@ -149,7 +149,7 @@ def _get_filename(s, parent_hash=0):
     # leave only allowed characters
     s_filtered = ''.join([l for l in s.lower() if l in allowed_characters])
     # timestamp to prepend
-    items = load_items()
+    items = load_items_list()
     added_at_list = [i.added_at for i in items]
     utcnow = datetime.utcnow()
     while utcnow in added_at_list:
@@ -169,7 +169,7 @@ def count_items():
     total = cur.fetchone()[0]
     cur.execute("SELECT COUNT(*) FROM item WHERE is_done='TRUE' AND pk<>0")
     done = cur.fetchone()[0]
-    done_items = load_items(is_done=True)
+    done_items = load_items_list(is_done=True)
     done_today = 0
     done_yesterday = 0
     for i in done_items:
@@ -187,7 +187,7 @@ def count_items():
     }
 
 
-def load_items(is_done=False):
+def load_items_list(is_done=False):
     """
     :returns: a list with Item instances that are NOT done.
     """
@@ -198,7 +198,15 @@ def load_items(is_done=False):
             )
             for f in filenames
         ]
+    return items_list
+
+
+def load_items_dict(is_done=False):
+    """
+    :returns: a dict with Item instances that are NOT done.
+    """
     items = {}
+    items_list = load_items_list()
     for j, item in enumerate(items_list):
         item.path_id = j + 1
         items[str(j + 1)] = item
@@ -222,7 +230,7 @@ def get_item(path):
     :returns: Item for a given :param path:, path to it.
     :returns: None if such item does not exist.
     """
-    items = load_items()
+    items = load_items_dict()
     return items[path]
 
 
@@ -405,7 +413,7 @@ def log():
     parser.add_option('-d', dest='print_done', default=False, action='store_true')
     (opts, args) = parser.parse_args(sys.argv[2:])
     print "print done:", opts.print_done
-    for i in load_items(opts.print_done):
+    for i in load_items_list(opts.print_done):
         print str(i)
 
 
@@ -433,7 +441,7 @@ def move(item_pk=None, new_parent_pk=None):
             sys.stderr.write('Error: no new parent is specified (use flag -p)\n')
             exit(1)
 
-    items = load_items()
+    items = load_items_list()
     queries = []
     for i in items:
         if item_pk in i.children:
@@ -474,7 +482,7 @@ def show_items():
     """
     Shows items in terminal.
     """
-    items = load_items()
+    items = load_items_list()
     # select ids that are not first level
     not_first_level = set()
     items_dict = {}

@@ -6,7 +6,7 @@ sys.path.insert(0, "../..")
 
 from progressio.progressio import (
     _create_dir_if_needed, _parse_file,
-    add, get_item, load_items, PROGRESSIO_DIR)
+    add, get_item, load_items_list, PROGRESSIO_DIR)
 
 from .base import BaseUnitCase
 
@@ -59,7 +59,7 @@ class TestLoad(BaseUnitCase):
         self._create_items(3)
 
         # load them
-        items = load_items()
+        items = load_items_list()
         self.assertEqual(len(items), 3)
 
     def test_load_ids(self):
@@ -68,7 +68,7 @@ class TestLoad(BaseUnitCase):
         self._create_items(3)
         
         # get list of items and a list of expected created_at datetimes
-        items = load_items()
+        items = load_items_list()
         dt_list = self._datetimes_from_create_items(3)
 
         for i in items:
