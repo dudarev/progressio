@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from functools import wraps
 import os
-import mock
 import shutil
 import sys
 
@@ -25,17 +23,6 @@ class MockedDateTime(object):
         return object.__new__(object, *args, **kwargs)
 
 
-def fixed_utcnow(func):
-    @wraps(func)
-    @mock.patch('progressio.progressio.datetime', MockedDateTime)
-    def wrapped_function(*args, **kwargs):
-        mocked_now = TEST_DATETIME
-        MockedDateTime.utcnow = classmethod(lambda cls: mocked_now)
-        MockedDateTime.strptime = datetime.strptime
-        return func(*args, **kwargs)
-    return wrapped_function
-
-
 class TestAddition(BaseUnitCase):
     def test_create_dir_if_needed(self):
         """Tests function _create_dir_if_needed
@@ -53,24 +40,21 @@ class TestAddition(BaseUnitCase):
         _create_dir_if_needed()
         self.assertTrue(os.path.exists(PROGRESSIO_DIR))
 
-    @fixed_utcnow
     def test_generate_filename(self):
         filename = _get_filename('Test  title')
-        self.assertEqual(filename, '20140320120000-test-title')
+        self.assertEqual(filename, '1-test-title')
         filename = _get_filename(u'Test title 1234 абв')
-        self.assertEqual(filename, '20140320120000-test-title-1234')
+        self.assertEqual(filename, '1-test-title-1234')
         filename = _get_filename(u'   ')
-        self.assertEqual(filename, '20140320120000-')
+        self.assertEqual(filename, '1-')
 
-    @fixed_utcnow
-    def test_generate_filename_if_timestamp_exists(self):
-        # create file with name that corresponding to current time (TEST_DATETIME)
-        filename = os.path.join(PROGRESSIO_DIR, TEST_TIMESTAMP)
+    def test_generate_filename_if_id_exists(self):
+        filename = os.path.join(PROGRESSIO_DIR, '1-')
         with open(filename, 'w') as f:
             f.write('Some test title')
-        # timestamp is incremented
+        # count is incremented
         filename = _get_filename('Test  title')
-        self.assertEqual(filename, '20140320120001-test-title')
+        self.assertEqual(filename, '2-test-title')
 
     def test_count(self):
         """Test adding two items"""
@@ -87,13 +71,11 @@ class TestAddition(BaseUnitCase):
         item = load_items_list()[1]
         self.assertEqual(item.path_id, '2')
 
-    @fixed_utcnow
     def test_content(self):
         title = 'test title'
         add(title)
         items = load_items_list()
         self.assertEqual(items[0].title, title)
-        self.assertEqual(items[0].added_at, TEST_DATETIME)
         pass
 
     def test_add_subitem(self):
