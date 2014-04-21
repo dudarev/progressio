@@ -13,7 +13,7 @@ import string
 import sqlite3
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
 __version__ = '0.4.0-dev'
 __author__ = "Artem Dudarev"
@@ -135,9 +135,7 @@ def _parse_file(filename):
     basename = os.path.basename(filename)
     with open(filename, 'r') as f:
         item.title = f.readline()
-        item.added_at = datetime.strptime(
-            basename.split('-')[0],
-            DATE_FORMAT)
+        item.path = basename.split('-')[0]
     return item
 
 
@@ -150,8 +148,12 @@ def _get_filename(s, parent_hash=0):
     s_filtered = ''.join([l for l in s.lower() if l in allowed_characters])
     # timestamp to prepend
     items = load_items_list()
+    paths_taken = [int(i.path) for i in items]
+    path = 1
+    while path in paths_taken:
+        path += 1
     # filename always has '-' after timestamp
-    return '1' + '-' + '-'.join(s_filtered.split())
+    return str(path) + '-' + '-'.join(s_filtered.split())
 
 
 def count_items():
