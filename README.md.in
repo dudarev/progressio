@@ -18,7 +18,6 @@ p [COMMAND [ARGS]]
 
     typing just 'p' will output all items to do
     
-    active  n                 - mark item as active (not done)
     add     [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id
     count                     - count items done and to be done
     delete  n                 - delete item with id n
