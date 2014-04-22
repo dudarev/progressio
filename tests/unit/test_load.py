@@ -1,4 +1,3 @@
-from datetime import datetime
 import os
 import sys
 
@@ -11,19 +10,19 @@ from progressio.progressio import (
 from .base import BaseUnitCase
 
 
-TEST_FILENAME = "20140313125514-test-title"
-TEST_ITEM_ADDED_AT = datetime(2014, 03, 13, 12, 55, 14)
+TEST_FILENAME = "1-test-title"
 TEST_TITLE = "Test title"
+TEST_ITEM_PATH = "1"
 
 
 class TestLoad(BaseUnitCase):
     """Tests for loading items.
     """
 
-    def _datetimes_from_create_items(self, N):
+    def _paths_from_create_items(self, N):
         """Creates N datetime instances that correspond to ids created by
         self._create_items"""
-        return [datetime(2014, 3, 9, 12, 0, i) for i in xrange(N)]
+        return [str(i) for i in xrange(N)]
 
     def _create_items(self, N):
         """Creates N files that represent items.
@@ -32,10 +31,10 @@ class TestLoad(BaseUnitCase):
         _create_dir_if_needed()
 
         # create N files in it
-        for i in xrange(N):
+        for i in xrange(1, N):
             filename = os.path.join(
                 PROGRESSIO_DIR,
-                '2014030912{i:04d}'.format(i=i))
+                '{i:d}'.format(i=i))
             open(filename, 'a').close()
 
     def _create_file(self):
@@ -49,7 +48,7 @@ class TestLoad(BaseUnitCase):
         filename = os.path.join(PROGRESSIO_DIR, TEST_FILENAME)
         item = _parse_file(filename)
         self.assertEqual(item.title, TEST_TITLE)
-        self.assertEqual(item.added_at, TEST_ITEM_ADDED_AT)
+        self.assertEqual(item.path, TEST_ITEM_PATH)
 
     def test_load_count(self):
         """Tests that loaded items are counted correctly.
@@ -69,10 +68,10 @@ class TestLoad(BaseUnitCase):
         
         # get list of items and a list of expected created_at datetimes
         items = load_items_list()
-        dt_list = self._datetimes_from_create_items(3)
+        paths_list = self._paths_from_create_items(3)
 
         for i in items:
-            self.assertIn(i.added_at, dt_list)
+            self.assertIn(i.path, paths_list)
 
     def test_get_item(self):
         """Tests getting item based on its path.

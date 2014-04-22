@@ -44,7 +44,7 @@ class Item(object):
     The following fields are stored in the database:
 
     pk (id)     - int
-    path_id     - str - a string that represents order for its parent
+    path        - str - a string that represents order for its parent
     children    - str - a list of children ids, order is important
     title       - str - title
     added_at    - datetime
@@ -52,9 +52,9 @@ class Item(object):
     done_at     - datetime
     """
 
-    def __init__(self, path_id, children=None,
+    def __init__(self, path, children=None,
                  title=None, added_at=None, is_done=False, done_at=None):
-        self.path_id = path_id
+        self.path = path
         if children is not None:
             self.children = map(int, filter(None, children.split(',')))
         else:
@@ -64,13 +64,13 @@ class Item(object):
         self.is_done = is_done
         self.done_at = done_at
 
-    def get_path_id(self):
-        return self._path_id
+    def get_path(self):
+        return self._path
 
-    def set_path_id(self, val):
-        self._path_id = str(val)
+    def set_path(self, val):
+        self._path = str(val)
 
-    path_id = property(get_path_id, set_path_id)
+    path = property(get_path, set_path)
 
     def __str__(self):
         return self.__unicode__()
