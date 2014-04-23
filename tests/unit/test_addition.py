@@ -66,10 +66,10 @@ class TestAddition(BaseUnitCase):
     def test_path_id(self):
         add('test1')
         item = load_items_list()[0]
-        self.assertEqual(item.path_id, '1')
+        self.assertEqual(item.path, '1')
         add('test2')
         item = load_items_list()[1]
-        self.assertEqual(item.path_id, '2')
+        self.assertEqual(item.path, '2')
 
     def test_content(self):
         title = 'test title'
