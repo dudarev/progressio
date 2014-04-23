@@ -22,7 +22,7 @@ class TestLoad(BaseUnitCase):
     def _paths_from_create_items(self, N):
         """Creates N datetime instances that correspond to ids created by
         self._create_items"""
-        return [str(i) for i in xrange(N)]
+        return [str(i) for i in xrange(1, N + 1)]
 
     def _create_items(self, N):
         """Creates N files that represent items.
@@ -31,7 +31,7 @@ class TestLoad(BaseUnitCase):
         _create_dir_if_needed()
 
         # create N files in it
-        for i in xrange(1, N):
+        for i in xrange(1, N + 1):
             filename = os.path.join(
                 PROGRESSIO_DIR,
                 '{i:d}'.format(i=i))
