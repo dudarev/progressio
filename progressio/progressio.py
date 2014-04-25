@@ -189,6 +189,7 @@ def load_items_list(is_done=False):
     """
     :returns: a list with Item instances that are NOT done.
     """
+    items_list = []
     for dirpath, dirnames, filenames in os.walk(PROGRESSIO_DIR):
         items_list = [
             _parse_file(
@@ -232,7 +233,7 @@ def get_item(path):
     return items[path]
 
 
-def add(item_title=None, parent_path_id=0):
+def add(item_title=None, parent_path=0):
     """Adds a item - step/task/goal...
 
     Title is obtained from sys.argv.
@@ -258,7 +259,7 @@ def add(item_title=None, parent_path_id=0):
         if opts.parent_pk:
             parent_pk = opts.parent_pk
 
-    filename = os.path.join(PROGRESSIO_DIR, _get_filename(item_title, parent_path_id))
+    filename = os.path.join(PROGRESSIO_DIR, _get_filename(item_title, parent_path))
     with open(filename, 'w') as f:
         f.write(item_title)
 

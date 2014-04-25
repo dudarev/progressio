@@ -85,7 +85,7 @@ class TestAddition(BaseUnitCase):
 
         add(item_title)
         items = load_items_list()
-        add(subitem_title, parent_path_id=items[0].path_id)
+        add(subitem_title, parent_path=items[0].path)
 
         self.assertEqual(get_item('1/1').title, subitem_title)
 

@@ -9,14 +9,14 @@ Information about current items is saved in .progressio - directory where progre
 When a user enters just `p` all tickets are shown in the following format:
 
     1 - title
-        11 - title 
+        1/1 - title 
     2 - title 
     3 - title 
-        3-1 - title 
-        3-2 - title 
-            3-2-1 subsubitem title
+        3/1 - subitem title 
+        3/2 - subitem title 
+            3/2/1 subsubitem title
 
-Id is an numeric, it encodes the full pass to it from parent. Path changes for different listing of tasks. 
+Id is an numeric, it encodes the path to it from the parent. The path changes for different listing of tasks. 
 It stays the same until the tasks are shown.
 
 To add a substep to a ticket one makes the following command:
