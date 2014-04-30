@@ -23,6 +23,8 @@ DATE_FORMAT = '%Y%m%d%H%M%S'
 PROGRESS_DB_FILE_NAME = 'progress.db'
 PROGRESSIO_DIR = '.progressio'
 BASE_FOR_HASH = 36
+PROGRESS_FILE = os.path.join(PROGRESSIO_DIR, 'progress.txt')
+DONE_FILE = os.path.join(PROGRESSIO_DIR, 'done.txt')
 
 
 def base_encode(num, base, dd=False):
@@ -233,65 +235,40 @@ def get_item(path):
     return items[path]
 
 
-def add(item_title=None, parent_path=0):
-    """Adds a item - step/task/goal...
+def add(item_title=None, parent_path=None):
+    """Adds a item - step/task/goal.
 
-    Title is obtained from sys.argv.
+    Title is obtained from `sys.argv`.
     
-    If no parent_pk is specified item is added to root (pk=0).
+    If no `parent_path` is specified item is added to root.
+
+    :param item_title: Title of the item. If `None` it is read from `sys.argv`.
+        If it is specified it is probably a test.
+    :type item_title: str or None
+    :param parent_path: Path to parent, specified as for example as "3/1/2".
+        If `None` a check of command line arguments is made.
+    :type parent_path: str or None
     """
 
     _create_dir_if_needed()
 
-    # with open(filename, 'w') as f:
-    #     f.write(TEST_TITLE)
-
     if not item_title:
-        from optparse import OptionParser
-        parser = OptionParser()
-        parser.add_option("-t", "--title", dest="title")
-        parser.add_option("-p", "--parent", dest="parent_pk")
-        (opts, args) = parser.parse_args(sys.argv[2:])
-        if not getattr(opts, "title"):
+        from argparse import ArgumentParser
+        parser = ArgumentParser()
+        parser.add_argument('-t', '--title', dest='item_title', default=None)
+        parser.add_argument('-p', '--parent', dest='parent_path', default=None)
+        args = parser.parse_args(sys.argv[2:])
+        item_title = args.item_title
+        if item_title is None:
             sys.stderr.write('Error: no title is specified (use flag -t)\n')
             exit(1)
-        item_title = opts.title
-        if opts.parent_pk:
-            parent_pk = opts.parent_pk
 
-    filename = os.path.join(PROGRESSIO_DIR, _get_filename(item_title, parent_path))
-    with open(filename, 'w') as f:
-        f.write(item_title)
-
-    return
-
-    # TODO: remove
-    # save new item and update its parent in database
-
-    _create_db_if_needed()
-
-    parent = get_item(parent_pk)
-
-    con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
-    cur = con.cursor()
-    added_at = time.strftime(DATE_FORMAT)
-    query = "INSERT INTO item(title, added_at) values('{title}', '{added_at}')".format(
-        title=item_title,
-        added_at=added_at)
-    cur.execute(query)
-    con.commit()
-    pk = cur.lastrowid
-    parent.children.append(pk)
-    children = ','.join(map(str, parent.children))
-    query = "UPDATE item SET children='{children}' WHERE pk={parent_pk}".format(
-        children=children, parent_pk=parent_pk)
-    cur.execute(query)
-    con.commit()
-    con.close()
+    with open(PROGRESS_FILE, 'a') as f:
+        print 'item_title=', item_title
+        f.write(item_title + '\n')
 
     print "Added item:"
-    item = get_item(pk)
-    print item
+    print args.item_title
 
 
 def count():
