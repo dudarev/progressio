@@ -22,9 +22,11 @@ __url__ = 'https://github.com/dudarev/progressio'
 DATE_FORMAT = '%Y%m%d%H%M%S'
 PROGRESS_DB_FILE_NAME = 'progress.db'
 PROGRESSIO_DIR = '.progressio'
+PROGRESS_FILENAME = 'progress.txt'
+FULL_PROGRESS_FILENAME = os.path.join(PROGRESSIO_DIR, PROGRESS_FILENAME)
+DONE_FILENAME = 'done.txt'
 BASE_FOR_HASH = 36
-PROGRESS_FILE = os.path.join(PROGRESSIO_DIR, 'progress.txt')
-DONE_FILE = os.path.join(PROGRESSIO_DIR, 'done.txt')
+ITEM_TAB = 2 * ' '
 
 
 def base_encode(num, base, dd=False):
@@ -54,9 +56,8 @@ class Item(object):
     done_at     - datetime
     """
 
-    def __init__(self, path, children=None,
+    def __init__(self, children=None,
                  title=None, added_at=None, is_done=False, done_at=None):
-        self.path = path
         if children is not None:
             self.children = map(int, filter(None, children.split(',')))
         else:
@@ -65,6 +66,7 @@ class Item(object):
         self.added_at = added_at
         self.is_done = is_done
         self.done_at = done_at
+        self.level = 0
 
     def get_path(self):
         return self._path
@@ -81,7 +83,7 @@ class Item(object):
         return self.__unicode__()
 
     def __unicode__(self):
-        return '{} - {}'.format(self.path_id, self.title)
+        return '{}'.format(self.title)
 
     def __cmp__(self, other):
         return cmp(int(self.pk), int(other.pk))
@@ -97,6 +99,9 @@ class Item(object):
     @property
     def children_str(self):
         return ','.join(set(map(str, self.children)))
+
+    def show(self):
+        print self.level * ITEM_TAB + str(self)
 
 
 def _create_db_if_needed():
@@ -138,6 +143,11 @@ def _parse_file(filename):
     with open(filename, 'r') as f:
         item.title = f.readline()
         item.path = basename.split('-')[0]
+    return item
+
+
+def _parse_line(line):
+    item = Item(title=line.strip())
     return item
 
 
@@ -192,13 +202,8 @@ def load_items_list(is_done=False):
     :returns: a list with Item instances that are NOT done.
     """
     items_list = []
-    for dirpath, dirnames, filenames in os.walk(PROGRESSIO_DIR):
-        items_list = [
-            _parse_file(
-                os.path.join(PROGRESSIO_DIR, f)
-            )
-            for f in filenames
-        ]
+    with open(FULL_PROGRESS_FILENAME, 'r') as f:
+        items_list = [_parse_line(line) for line in f]
     return items_list
 
 
@@ -263,7 +268,7 @@ def add(item_title=None, parent_path=None):
             sys.stderr.write('Error: no title is specified (use flag -t)\n')
             exit(1)
 
-    with open(PROGRESS_FILE, 'a') as f:
+    with open(FULL_PROGRESS_FILENAME, 'a') as f:
         print 'item_title=', item_title
         f.write(item_title + '\n')
 
@@ -432,15 +437,8 @@ def show_items():
     Shows items in terminal.
     """
     items = load_items_list()
-    # select ids that are not first level
-    not_first_level = set()
-    items_dict = {}
     for i in items:
-        not_first_level = not_first_level.union(set(i.children))
-        items_dict[i.pk] = i
-    for i in items:
-        if i.pk not in not_first_level:
-            show_one_item(i, items_dict)
+        i.show()
 
 
 def version():
