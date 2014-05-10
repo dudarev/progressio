@@ -225,10 +225,20 @@ def load_items(text=None):
         line_iterator = open(FULL_PROGRESS_FILENAME, 'r')
     root = Item(path=None)
     current_parent = root
+    last_item = root
+    current_level = 0
     items = {None: root}
     for line in line_iterator:
-        item = _parse_line(line)
-        current_parent.add_child(item)
+        level = _find_line_level(line)
+        if level > current_level:
+            current_parent = last_item
+            current_level = current_level + 1
+        if level < current_level:
+            for i in range(current_level - level):
+                current_parent = current_parent.parent
+            current_level = level
+        last_item = _parse_line(line)
+        current_parent.add_child(last_item)
     return items
 
 

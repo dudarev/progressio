@@ -13,7 +13,8 @@ from .base import BaseUnitCase
 LOAD_TEST = """item 1
     item 2
     item 3
-item 4
+        item 4
+item 5
 """
 
 
@@ -39,6 +40,8 @@ class TestLoading(BaseUnitCase):
     def test_loading(self):
         items = load_items(LOAD_TEST)
         self.assertEqual(items[None].children[0].title, 'item 1')
-        self.assertEqual(items[None].children[1].title, 'item 4')
         self.assertEqual(items[None].children[0].children[0].title, 'item 2')
-        self.assertEqual(items[None].children[1].children[0].title, 'item 3')
+        self.assertEqual(items[None].children[0].children[1].title, 'item 3')
+        self.assertEqual(
+            items[None].children[0].children[1].children[0].title, 'item 4')
+        self.assertEqual(items[None].children[1].title, 'item 5')

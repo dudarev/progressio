@@ -3,7 +3,7 @@
 
 # working on now
 test_now:
-	cd tests/unit && nosetests test_loading.py:TestLoading.test_line_level -s
+	cd tests/unit && nosetests test_loading.py:TestLoading.test_loading -s
 
 test_unit:
 	cd tests/unit && nosetests -s
