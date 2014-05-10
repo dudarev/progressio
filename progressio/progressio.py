@@ -49,6 +49,7 @@ class Item(object):
 
     pk (id)     - int
     path        - str - a string that represents order for its parent
+    parent      - parent of the item
     children    - str - a list of children ids, order is important
     title       - str - title
     added_at    - datetime
@@ -56,25 +57,28 @@ class Item(object):
     done_at     - datetime
     """
 
-    def __init__(self, children=None,
+    def __init__(self, path=None, children=None, parent=None,
                  title=None, added_at=None, is_done=False, done_at=None):
+        self.path = path
         if children is not None:
             self.children = map(int, filter(None, children.split(',')))
         else:
             self.children = []
+        self.parent = parent
         self.title = title
         self.added_at = added_at
         self.is_done = is_done
         self.done_at = done_at
         self.level = 0
 
-    def get_path(self):
-        return self._path
+    def add_child(self, child):
+        self.children.append(child)
+        child.parent = self
 
-    def set_path(self, val):
-        self._path = str(val)
-
-    path = property(get_path, set_path)
+    def remove_from_children(self):
+        if self.parent:
+            self.parent.children.remove(self)
+            self.parent = None
 
     def __str__(self):
         return self.__unicode__()
@@ -269,7 +273,6 @@ def add(item_title=None, parent_path=None):
             exit(1)
 
     with open(FULL_PROGRESS_FILENAME, 'a') as f:
-        print 'item_title=', item_title
         f.write(item_title + '\n')
 
     print "Added item:"
