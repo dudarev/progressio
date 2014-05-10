@@ -5,11 +5,11 @@ import os
 import shutil
 import sys
 
+from .base import BaseUnitCase
+
 sys.path.insert(0, "../..")
 
 from progressio.progressio import _create_dir_if_needed, PROGRESSIO_DIR
-from .base import BaseUnitCase
-
 
 TEST_DATETIME = datetime(2014, 3, 20, 12, 0, 0)
 TEST_TIMESTAMP = '20140320120000'

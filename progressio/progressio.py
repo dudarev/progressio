@@ -26,7 +26,7 @@ PROGRESS_FILENAME = 'progress.txt'
 FULL_PROGRESS_FILENAME = os.path.join(PROGRESSIO_DIR, PROGRESS_FILENAME)
 DONE_FILENAME = 'done.txt'
 BASE_FOR_HASH = 36
-ITEM_TAB = 2 * ' '
+ITEM_TAB = 4 * ' '
 
 
 def base_encode(num, base, dd=False):
@@ -155,6 +155,10 @@ def _parse_line(line):
     return item
 
 
+def _find_line_level(line):
+    return (len(line) - len(line.lstrip())) / len(ITEM_TAB)
+
+
 def _get_filename(s, parent_hash=0):
     """Returns file with count prepended.
     It is incremented until such count does not exist.
@@ -211,15 +215,20 @@ def load_items_list(is_done=False):
     return items_list
 
 
-def load_items_dict(is_done=False):
+def load_items(text=None):
     """
     :returns: a dict with Item instances that are NOT done.
     """
-    items = {}
-    items_list = load_items_list()
-    for j, item in enumerate(items_list):
-        item.path_id = j + 1
-        items[str(j + 1)] = item
+    if text is not None:
+        line_iterator = iter(text.splitlines())
+    else:
+        line_iterator = open(FULL_PROGRESS_FILENAME, 'r')
+    root = Item(path=None)
+    current_parent = root
+    items = {None: root}
+    for line in line_iterator:
+        item = _parse_line(line)
+        current_parent.add_child(item)
     return items
 
 
@@ -240,7 +249,7 @@ def get_item(path):
     :returns: Item for a given :param path:, path to it.
     :returns: None if such item does not exist.
     """
-    items = load_items_dict()
+    items = load_items()
     return items[path]
 
 
@@ -276,7 +285,7 @@ def add(item_title=None, parent_path=None):
         f.write(item_title + '\n')
 
     print "Added item:"
-    print args.item_title
+    print item_title
 
 
 def count():
