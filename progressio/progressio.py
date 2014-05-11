@@ -117,6 +117,19 @@ class Item(object):
     def show(self):
         print self.level * ITEM_TAB + str(self)
 
+    @classmethod
+    def from_string(cls, line):
+        item_re = re.compile('(\w+) - (.+)')
+        try:
+            path, title = item_re.findall(line)[0]
+            path = path.strip()
+            line = line.strip()
+        except IndexError:
+            path = None
+            title = line
+        item = Item(title=title, path=path)
+        return item
+
 
 class ItemsDict(dict):
     def __init__(self, text=None):
@@ -141,7 +154,7 @@ class ItemsDict(dict):
                 for i in range(current_level - level):
                     current_parent = current_parent.parent
                 current_level = level
-            last_item = _parse_line(line)
+            last_item = Item.from_string(line)
             self[last_item.path] = last_item
             current_parent.add_child(last_item)
         print 'root=', root
@@ -187,11 +200,6 @@ def _parse_file(filename):
     with open(filename, 'r') as f:
         item.title = f.readline()
         item.path = basename.split('-')[0]
-    return item
-
-
-def _parse_line(line):
-    item = Item(title=line.strip())
     return item
 
 
@@ -251,7 +259,7 @@ def load_items_list(is_done=False):
     """
     items_list = []
     with open(FULL_PROGRESS_FILENAME, 'r') as f:
-        items_list = [_parse_line(line) for line in f]
+        items_list = [Item.from_string(line) for line in f]
     return items_list
 
 

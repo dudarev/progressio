@@ -6,24 +6,24 @@ sys.path.insert(0, "../..")
 
 from progressio.progressio import (
     ITEM_TAB,
-    _find_line_level, _parse_line,
-    load_items)
+    _find_line_level,
+    Item, load_items)
 from .base import BaseUnitCase
 
 LOAD_TEST = """1 - item 1
     1/1 - item 2
     1/2 - item 3
-        1/2/3 - item 4
+        1/2/1 - item 4
 2 - item 5
 """
 
 
 class TestLoading(BaseUnitCase):
-    def test_parse_line(self):
+    def test_from_string(self):
         """Tests function for parsing a line
         """
         line = 'title'
-        item = _parse_line(line)
+        item = Item.from_string(line)
         self.assertEqual(item.title, line)
 
     def test_line_level(self):
@@ -51,3 +51,7 @@ class TestLoading(BaseUnitCase):
         items = load_items(LOAD_TEST)
         item = items['1']
         self.assertEqual(item.next_child_path, 3)
+        item = items['2']
+        self.assertEqual(item.next_child_path, 1)
+        item = items['1/2']
+        self.assertEqual(item.next_child_path, 2)
