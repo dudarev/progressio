@@ -82,8 +82,12 @@ class Item(object):
     def add_child(self, child):
         self.children.append(child)
         child.parent = self
+        print 'child.local_path=', child.local_path
+        print 'self.next_child_path', self.next_child_path
+        print 'self: ', self
         if child.local_path >= self.next_child_path:
-            self.next_child_path = child.local_path
+            print 'inside if'
+            self.next_child_path = child.local_path + 1
 
     def remove_from_children(self):
         if self.parent:
@@ -119,9 +123,9 @@ class Item(object):
 
     @classmethod
     def from_string(cls, line):
-        item_re = re.compile('(\w+) - (.+)')
+        item_re = re.compile('(\S+) - (.+)')
         try:
-            path, title = item_re.findall(line)[0]
+            path, title = item_re.findall(line.strip())[0]
             path = path.strip()
             line = line.strip()
         except IndexError:

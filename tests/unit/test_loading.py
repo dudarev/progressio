@@ -25,6 +25,10 @@ class TestLoading(BaseUnitCase):
         line = 'title'
         item = Item.from_string(line)
         self.assertEqual(item.title, line)
+        line = '        1/2/1 - item 4'
+        item = Item.from_string(line)
+        self.assertEqual(item.path, '1/2/1')
+        self.assertEqual(item.title, 'item 4')
 
     def test_line_level(self):
         line = 'test line'
@@ -50,6 +54,8 @@ class TestLoading(BaseUnitCase):
         """Test that next_child_path field is added."""
         items = load_items(LOAD_TEST)
         item = items['1']
+        print 'item =', item
+        print 'item.path =', item.path
         self.assertEqual(item.next_child_path, 3)
         item = items['2']
         self.assertEqual(item.next_child_path, 1)
