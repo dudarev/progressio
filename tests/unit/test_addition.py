@@ -9,7 +9,9 @@ from .base import BaseUnitCase
 
 sys.path.insert(0, "../..")
 
-from progressio.progressio import _create_dir_if_needed, PROGRESSIO_DIR
+from progressio.progressio import (
+    _create_dir_if_needed, PROGRESSIO_DIR,
+    add, load_items, )
 
 TEST_DATETIME = datetime(2014, 3, 20, 12, 0, 0)
 TEST_TIMESTAMP = '20140320120000'
@@ -37,13 +39,6 @@ class TestAddition(BaseUnitCase):
         # check that it runs well when it already exists
         _create_dir_if_needed()
         self.assertTrue(os.path.exists(PROGRESSIO_DIR))
-
-    # def test_count(self):
-    #     """Test adding two items"""
-    #     add('test1')
-    #     add('test2')
-    #     items = load_items_list()
-    #     self.assertEqual(len(items), 2)
 
     # def test_path_id(self):
     #     add('test1')

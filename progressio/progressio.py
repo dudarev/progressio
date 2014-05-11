@@ -70,10 +70,20 @@ class Item(object):
         self.is_done = is_done
         self.done_at = done_at
         self.level = 0
+        self.next_child_path = 1
+
+    @property
+    def local_path(self):
+        if self.path:
+            return int(self.path.split('/')[-1])
+        else:
+            return 0
 
     def add_child(self, child):
         self.children.append(child)
         child.parent = self
+        if child.local_path >= self.next_child_path:
+            self.next_child_path = child.local_path
 
     def remove_from_children(self):
         if self.parent:
@@ -87,7 +97,7 @@ class Item(object):
         return self.__unicode__()
 
     def __unicode__(self):
-        return '{}'.format(self.title)
+        return '<Item: path={}, title={}>'.format(self.path, self.title)
 
     def __cmp__(self, other):
         return cmp(int(self.pk), int(other.pk))
@@ -106,6 +116,36 @@ class Item(object):
 
     def show(self):
         print self.level * ITEM_TAB + str(self)
+
+
+class ItemsDict(dict):
+    def __init__(self, text=None):
+        super(ItemsDict, self).__init__()
+        if text is not None:
+            line_iterator = iter(text.splitlines())
+        else:
+            line_iterator = open(FULL_PROGRESS_FILENAME, 'r')
+        print 'in ItemsDict, text=', text
+        root = Item(path=None)
+        current_parent = root
+        last_item = root
+        current_level = 0
+        self['root'] = root
+        print 'self=', self
+        for line in line_iterator:
+            level = _find_line_level(line)
+            if level > current_level:
+                current_parent = last_item
+                current_level = current_level + 1
+            if level < current_level:
+                for i in range(current_level - level):
+                    current_parent = current_parent.parent
+                current_level = level
+            last_item = _parse_line(line)
+            self[last_item.path] = last_item
+            current_parent.add_child(last_item)
+        print 'root=', root
+        print 'self at the end=', self
 
 
 def _create_db_if_needed():
@@ -219,26 +259,8 @@ def load_items(text=None):
     """
     :returns: a dict with Item instances that are NOT done.
     """
-    if text is not None:
-        line_iterator = iter(text.splitlines())
-    else:
-        line_iterator = open(FULL_PROGRESS_FILENAME, 'r')
-    root = Item(path=None)
-    current_parent = root
-    last_item = root
-    current_level = 0
-    items = {None: root}
-    for line in line_iterator:
-        level = _find_line_level(line)
-        if level > current_level:
-            current_parent = last_item
-            current_level = current_level + 1
-        if level < current_level:
-            for i in range(current_level - level):
-                current_parent = current_parent.parent
-            current_level = level
-        last_item = _parse_line(line)
-        current_parent.add_child(last_item)
+    items = ItemsDict(text)
+    print 'items=', items
     return items
 
 
