@@ -9,6 +9,11 @@ from .base import BaseUnitCase
 
 
 class TestItem(BaseUnitCase):
+    def test_local_path(self):
+        i1 = Item(path='1/2/3')
+        self.assertEqual(i1.path, '1/2/3')
+        self.assertEqual(i1.local_path, 3)
+
     def test_adding_child(self):
         item1_title = 'item 1'
         item2_title = 'item 2'
