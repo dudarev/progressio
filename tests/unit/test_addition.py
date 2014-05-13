@@ -11,6 +11,7 @@ sys.path.insert(0, "../..")
 
 from progressio.progressio import (
     _create_dir_if_needed, PROGRESSIO_DIR,
+    FULL_PROGRESS_FILENAME,
     add, load_items, )
 
 TEST_DATETIME = datetime(2014, 3, 20, 12, 0, 0)
@@ -39,6 +40,18 @@ class TestAddition(BaseUnitCase):
         # check that it runs well when it already exists
         _create_dir_if_needed()
         self.assertTrue(os.path.exists(PROGRESSIO_DIR))
+
+    def test_add_path_id(self):
+        """Test that added item starts with path_id"""
+        add('test 1')
+        add('test 2')
+        with open(FULL_PROGRESS_FILENAME, 'r') as f:
+            line1 = f.readline()
+            line2 = f.readline()
+            print 'line1:', line1
+            print 'line2:', line2
+            self.assertTrue(line1.startswith('1'))
+            self.assertTreu(line2.startswith('2'))
 
     # def test_path_id(self):
     #     add('test1')
