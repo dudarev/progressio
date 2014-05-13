@@ -4,7 +4,9 @@ import sys
 
 sys.path.insert(0, "../..")
 
-from progressio.progressio import Item
+from progressio.progressio import (
+    FULL_PROGRESS_FILENAME,
+    Item, ItemsDict)
 from .base import BaseUnitCase
 
 
@@ -34,3 +36,18 @@ class TestItem(BaseUnitCase):
         self.assertTrue(i2.parent is None)
         i1.remove_from_children()
         self.assertTrue(i2.parent is None)
+
+
+class TestItemsDict(BaseUnitCase):
+    def test_save(self):
+        item1 = Item(title='test 1')
+        item2 = Item(title='test 2')
+        items = ItemsDict()
+        items['root'].add_child(item1)
+        items['root'].add_child(item2)
+        items.save()
+        with open(FULL_PROGRESS_FILENAME, 'r') as f:
+            line1 = f.readline()
+            line2 = f.readline()
+            self.assertEqual(line1.strip(), '1 - test 1')
+            self.assertEqual(line2.strip(), '2 - test 2')

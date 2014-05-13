@@ -51,7 +51,7 @@ class TestAddition(BaseUnitCase):
             print 'line1:', line1
             print 'line2:', line2
             self.assertTrue(line1.startswith('1'))
-            self.assertTreu(line2.startswith('2'))
+            self.assertTrue(line2.startswith('2'))
 
     # def test_path_id(self):
     #     add('test1')

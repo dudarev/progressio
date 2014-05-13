@@ -74,8 +74,9 @@ class Item(object):
 
     @property
     def local_path(self):
+        print 'self.path', self.path
         if self.path:
-            return int(self.path.split('/')[-1])
+            return int(self.path[-1])
         else:
             return 0
 
@@ -85,6 +86,7 @@ class Item(object):
         print 'child.local_path=', child.local_path
         print 'self.next_child_path', self.next_child_path
         print 'self: ', self
+        child.path = (self.next_child_path, )
         if child.local_path >= self.next_child_path:
             print 'inside if'
             self.next_child_path = child.local_path + 1
@@ -141,6 +143,7 @@ class ItemsDict(dict):
         if text is not None:
             line_iterator = iter(text.splitlines())
         else:
+            _create_dir_if_needed()
             line_iterator = open(FULL_PROGRESS_FILENAME, 'r')
         print 'in ItemsDict, text=', text
         root = Item(path=None)
@@ -163,6 +166,14 @@ class ItemsDict(dict):
             current_parent.add_child(last_item)
         print 'root=', root
         print 'self at the end=', self
+
+    def save(self):
+        with open(FULL_PROGRESS_FILENAME, 'w') as f:
+            for i in self['root'].children:
+                if i.path:
+                    f.write("{} - {}\n".format(i.local_path, i.title))
+                else:
+                    f.write("{}\n".format(i.title))
 
 
 def _create_db_if_needed():
@@ -190,6 +201,9 @@ def _create_db_if_needed():
 def _create_dir_if_needed():
     if not os.path.exists(PROGRESSIO_DIR):
         os.makedirs(PROGRESSIO_DIR)
+    if not os.path.exists(FULL_PROGRESS_FILENAME):
+        with open(FULL_PROGRESS_FILENAME, 'w') as f:
+            f.write('')
 
 
 def _parse_file(filename):
@@ -325,8 +339,10 @@ def add(item_title=None, parent_path=None):
             sys.stderr.write('Error: no title is specified (use flag -t)\n')
             exit(1)
 
-    with open(FULL_PROGRESS_FILENAME, 'a') as f:
-        f.write(item_title + '\n')
+    item = Item(title=item_title)
+    items_dict = ItemsDict()
+    items_dict['root'].add_child(item)
+    items_dict.save()
 
     print "Added item:"
     print item_title
