@@ -19,7 +19,7 @@ class TestItem(BaseUnitCase):
     def test_adding_child(self):
         item1_title = 'item 1'
         item2_title = 'item 2'
-        i1 = Item(title=item1_title)
+        i1 = Item(title=item1_title, path=(1, ))
         i2 = Item(title=item2_title)
         i1.add_child(i2)
         self.assertEqual(i1.children[0].title, item2_title)
@@ -28,8 +28,8 @@ class TestItem(BaseUnitCase):
     def test_removing_from_children(self):
         item1_title = 'item 1'
         item2_title = 'item 2'
-        i1 = Item(title=item1_title)
-        i2 = Item(title=item2_title, path='1/1')
+        i1 = Item(title=item1_title, path=(1, ))
+        i2 = Item(title=item2_title)
         i1.add_child(i2)
         i2.remove_from_children()
         self.assertFalse(i2 in i1.children)
@@ -43,8 +43,8 @@ class TestItemsDict(BaseUnitCase):
         item1 = Item(title='test 1')
         item2 = Item(title='test 2')
         items = ItemsDict()
-        items['root'].add_child(item1)
-        items['root'].add_child(item2)
+        items[()].add_child(item1)
+        items[()].add_child(item2)
         items.save()
         with open(FULL_PROGRESS_FILENAME, 'r') as f:
             line1 = f.readline()

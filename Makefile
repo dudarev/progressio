@@ -3,7 +3,8 @@
 
 # working on now
 test_now:
-	cd tests/unit && nosetests test_item.py:TestItemsDict.test_save -s
+	# cd tests/unit && nosetests test_item.py:TestItemsDict.test_save -s
+	cd tests/unit && nosetests test_loading.py:TestLoading.test_next_child_path -s
 
 test_unit:
 	cd tests/unit && nosetests -s

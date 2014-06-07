@@ -86,7 +86,7 @@ class Item(object):
         print 'child.local_path=', child.local_path
         print 'self.next_child_path', self.next_child_path
         print 'self: ', self
-        child.path = (self.next_child_path, )
+        child.path = child.parent.path + (self.next_child_path, )
         if child.local_path >= self.next_child_path:
             print 'inside if'
             self.next_child_path = child.local_path + 1
@@ -146,11 +146,11 @@ class ItemsDict(dict):
             _create_dir_if_needed()
             line_iterator = open(FULL_PROGRESS_FILENAME, 'r')
         print 'in ItemsDict, text=', text
-        root = Item(path=None)
+        root = Item(path=())
         current_parent = root
         last_item = root
         current_level = 0
-        self['root'] = root
+        self[()] = root
         print 'self=', self
         for line in line_iterator:
             level = _find_line_level(line)
@@ -162,14 +162,14 @@ class ItemsDict(dict):
                     current_parent = current_parent.parent
                 current_level = level
             last_item = Item.from_string(line)
-            self[last_item.path] = last_item
             current_parent.add_child(last_item)
+            self[last_item.path] = last_item
         print 'root=', root
         print 'self at the end=', self
 
     def save(self):
         with open(FULL_PROGRESS_FILENAME, 'w') as f:
-            for i in self['root'].children:
+            for i in self[()].children:
                 if i.path:
                     f.write("{} - {}\n".format(i.local_path, i.title))
                 else:
@@ -341,7 +341,7 @@ def add(item_title=None, parent_path=None):
 
     item = Item(title=item_title)
     items_dict = ItemsDict()
-    items_dict['root'].add_child(item)
+    items_dict[()].add_child(item)
     items_dict.save()
 
     print "Added item:"

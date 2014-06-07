@@ -11,9 +11,9 @@ from progressio.progressio import (
 from .base import BaseUnitCase
 
 LOAD_TEST = """1 - item 1
-    1/1 - item 2
-    1/2 - item 3
-        1/2/1 - item 4
+    1 - item 2
+    2 - item 3
+        1 - item 4
 2 - item 5
 """
 
@@ -43,21 +43,22 @@ class TestLoading(BaseUnitCase):
 
     def test_loading(self):
         items = load_items(LOAD_TEST)
-        self.assertEqual(items['root'].children[0].title, 'item 1')
-        self.assertEqual(items['root'].children[0].children[0].title, 'item 2')
-        self.assertEqual(items['root'].children[0].children[1].title, 'item 3')
+        self.assertEqual(items[()].children[0].title, 'item 1')
+        self.assertEqual(items[()].children[0].children[0].title, 'item 2')
+        self.assertEqual(items[()].children[0].children[1].title, 'item 3')
         self.assertEqual(
-            items['root'].children[0].children[1].children[0].title, 'item 4')
-        self.assertEqual(items['root'].children[1].title, 'item 5')
+            items[()].children[0].children[1].children[0].title, 'item 4')
+        self.assertEqual(items[()].children[1].title, 'item 5')
 
     def test_next_child_path(self):
         """Test that next_child_path field is added."""
         items = load_items(LOAD_TEST)
-        item = items['1']
+        print 'items inside test=', items
+        item = items[(1, )]
         print 'item =', item
         print 'item.path =', item.path
         self.assertEqual(item.next_child_path, 3)
-        item = items['2']
+        item = items[(2, )]
         self.assertEqual(item.next_child_path, 1)
-        item = items['1/2']
+        item = items[(1, 2)]
         self.assertEqual(item.next_child_path, 2)
