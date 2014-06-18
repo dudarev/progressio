@@ -74,7 +74,6 @@ class Item(object):
 
     @property
     def local_path(self):
-        print 'self.path', self.path
         if self.path:
             return int(self.path[-1])
         else:
@@ -83,12 +82,8 @@ class Item(object):
     def add_child(self, child):
         self.children.append(child)
         child.parent = self
-        print 'child.local_path=', child.local_path
-        print 'self.next_child_path', self.next_child_path
-        print 'self: ', self
         child.path = child.parent.path + (self.next_child_path, )
         if child.local_path >= self.next_child_path:
-            print 'inside if'
             self.next_child_path = child.local_path + 1
 
     def remove_from_children(self):
@@ -121,7 +116,7 @@ class Item(object):
         return ','.join(set(map(str, self.children)))
 
     def show(self):
-        print self.level * ITEM_TAB + str(self)
+        print self.level * ITEM_TAB + self.path + ' - ' + self.title
 
     @classmethod
     def from_string(cls, line):
@@ -145,13 +140,11 @@ class ItemsDict(dict):
         else:
             _create_dir_if_needed()
             line_iterator = open(FULL_PROGRESS_FILENAME, 'r')
-        print 'in ItemsDict, text=', text
         root = Item(path=())
         current_parent = root
         last_item = root
         current_level = 0
         self[()] = root
-        print 'self=', self
         for line in line_iterator:
             level = _find_line_level(line)
             if level > current_level:
@@ -164,8 +157,6 @@ class ItemsDict(dict):
             last_item = Item.from_string(line)
             current_parent.add_child(last_item)
             self[last_item.path] = last_item
-        print 'root=', root
-        print 'self at the end=', self
 
     def save(self):
         with open(FULL_PROGRESS_FILENAME, 'w') as f:
@@ -286,7 +277,6 @@ def load_items(text=None):
     :returns: a dict with Item instances that are NOT done.
     """
     items = ItemsDict(text)
-    print 'items=', items
     return items
 
 
@@ -343,6 +333,7 @@ def add(item_title=None, parent_path=None):
     items_dict = ItemsDict()
     items_dict[()].add_child(item)
     items_dict.save()
+    show_items()
 
     print "Added item:"
     print item_title
@@ -522,17 +513,6 @@ def version():
 
 
 def main():
-    # check if db exists and create it if confirmed
-    if not os.path.exists(PROGRESS_DB_FILE_NAME):
-        sys.stdout.write(
-            "{0} does not exist. Create? y/n [n] ".format(
-                PROGRESS_DB_FILE_NAME))
-        choice = raw_input().lower()
-        if choice == '' or choice == 'n':
-            return
-        _create_db_if_needed()
-        print "created %s file" % PROGRESS_DB_FILE_NAME
-
     args = sys.argv
     command = None
     if len(args) > 1:
