@@ -33,7 +33,7 @@ p [COMMAND [ARGS]]
 "A journey of a thousand miles begins with a single step." 
 -- Confucius 
 
-A research published in Harvard Bussiness Review found that "making progress in one's work" is the biggest motivator.
+A research published in Harvard Business Review found that "making progress in one's work" is the biggest motivator.
 http://www.youtube.com/watch?v=9j2aTwNor5k&nofeather=True#t=34m44s
 
 http://ginatrapani.github.com/todo.txt-cli/
