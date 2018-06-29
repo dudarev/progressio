@@ -144,7 +144,7 @@ class ItemsDict(dict):
         current_parent = root
         last_item = root
         current_level = 0
-        self[()] = root
+        self[''] = root
         for line in line_iterator:
             level = _find_line_level(line)
             if level > current_level:
@@ -266,6 +266,7 @@ def load_items_list(is_done=False):
     """
     :returns: a list with Item instances that are NOT done.
     """
+    print 'load_items_list'
     items_list = []
     with open(FULL_PROGRESS_FILENAME, 'r') as f:
         items_list = [Item.from_string(line) for line in f]
