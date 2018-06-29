@@ -3,8 +3,6 @@
 Data structure:
 
 Each task/step/ticket is an Item instance.
-
-Each item may have one parent and several children nodes.
 """
 
 import os
@@ -21,8 +19,8 @@ __url__ = 'https://github.com/dudarev/progressio'
 
 DATE_FORMAT = '%Y%m%d%H%M%S'
 PROGRESS_DB_FILE_NAME = 'progress.db'
-PROGRESSIO_DIR = '.progressio'
-PROGRESS_FILENAME = 'progress.txt'
+PROGRESSIO_DIR = '.'
+PROGRESS_FILENAME = 'TASKS.md'
 FULL_PROGRESS_FILENAME = os.path.join(PROGRESSIO_DIR, PROGRESS_FILENAME)
 DONE_FILENAME = 'done.txt'
 BASE_FOR_HASH = 36
@@ -57,19 +55,22 @@ class Item(object):
     done_at     - datetime
     """
 
-    def __init__(self, path=None, children=None, parent=None,
-                 title=None, added_at=None, is_done=False, done_at=None):
-        self.path = path
+    @staticmethod
+    def _get_str_level(s):
+        return (len(s) - len(s.lstrip())) / len(ITEM_TAB)
+
+    def __init__(self, children=None, parent=None,
+                 title=None, level=0, added_at=None, is_done=False, done_at=None):
         if children is not None:
             self.children = map(int, filter(None, children.split(',')))
         else:
             self.children = []
         self.parent = parent
-        self.title = title
+        self.title = title.strip() if title else ''
         self.added_at = added_at
         self.is_done = is_done
         self.done_at = done_at
-        self.level = 0
+        self.level = level
         self.next_child_path = 1
 
     @property
@@ -82,9 +83,6 @@ class Item(object):
     def add_child(self, child):
         self.children.append(child)
         child.parent = self
-        child.path = child.parent.path + (self.next_child_path, )
-        if child.local_path >= self.next_child_path:
-            self.next_child_path = child.local_path + 1
 
     def remove_from_children(self):
         if self.parent:
@@ -116,19 +114,13 @@ class Item(object):
         return ','.join(set(map(str, self.children)))
 
     def show(self):
-        print self.level * ITEM_TAB + self.path + ' - ' + self.title
+        print self.level * ITEM_TAB + self.title
 
     @classmethod
     def from_string(cls, line):
-        item_re = re.compile('(\S+) - (.+)')
-        try:
-            path, title = item_re.findall(line.strip())[0]
-            path = path.strip()
-            line = line.strip()
-        except IndexError:
-            path = None
-            title = line
-        item = Item(title=title, path=path)
+        title = line.strip()
+        level = cls._get_str_level(line)
+        item = Item(title=title, level=level)
         return item
 
 
@@ -140,7 +132,7 @@ class ItemsDict(dict):
         else:
             _create_dir_if_needed()
             line_iterator = open(FULL_PROGRESS_FILENAME, 'r')
-        root = Item(path=())
+        root = Item()
         current_parent = root
         last_item = root
         current_level = 0
@@ -156,15 +148,12 @@ class ItemsDict(dict):
                 current_level = level
             last_item = Item.from_string(line)
             current_parent.add_child(last_item)
-            self[last_item.path] = last_item
+            self[last_item.title] = last_item
 
     def save(self):
         with open(FULL_PROGRESS_FILENAME, 'w') as f:
-            for i in self[()].children:
-                if i.path:
-                    f.write("{} - {}\n".format(i.local_path, i.title))
-                else:
-                    f.write("{}\n".format(i.title))
+            for i in self[''].children:
+                f.write("{}\n".format(i.title))
 
 
 def _create_db_if_needed():
@@ -266,7 +255,6 @@ def load_items_list(is_done=False):
     """
     :returns: a list with Item instances that are NOT done.
     """
-    print 'load_items_list'
     items_list = []
     with open(FULL_PROGRESS_FILENAME, 'r') as f:
         items_list = [Item.from_string(line) for line in f]
@@ -306,7 +294,7 @@ def add(item_title=None, parent_path=None):
     """Adds a item - step/task/goal.
 
     Title is obtained from `sys.argv`.
-    
+
     If no `parent_path` is specified item is added to root.
 
     :param item_title: Title of the item. If `None` it is read from `sys.argv`.
@@ -332,7 +320,7 @@ def add(item_title=None, parent_path=None):
 
     item = Item(title=item_title)
     items_dict = ItemsDict()
-    items_dict[()].add_child(item)
+    items_dict[''].add_child(item)
     items_dict.save()
     show_items()
 
