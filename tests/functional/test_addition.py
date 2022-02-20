@@ -23,7 +23,7 @@ class TestAddition(unittest.TestCase):
             '../../progressio/progressio.py add -t "{0}"'.format(ITEM_TITLE),
             stderr=subprocess.STDOUT,
             shell=True)
-        print 'output=', output
+        print('output=', output)
         self.assertTrue("1 - {}".format(ITEM_TITLE) in output)
 
     # def test_add_subitem(self):

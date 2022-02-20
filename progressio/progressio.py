@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Data structure:
 
@@ -25,6 +25,10 @@ FULL_PROGRESS_FILENAME = os.path.join(PROGRESSIO_DIR, PROGRESS_FILENAME)
 DONE_FILENAME = 'done.txt'
 BASE_FOR_HASH = 36
 ITEM_TAB = 4 * ' '
+
+
+def cmp(a, b):
+    return (a > b) - (a < b)
 
 
 def base_encode(num, base, dd=False):
@@ -57,12 +61,12 @@ class Item(object):
 
     @staticmethod
     def _get_str_level(s):
-        return (len(s) - len(s.lstrip())) / len(ITEM_TAB)
+        return (len(s) - len(s.lstrip())) // len(ITEM_TAB)
 
-    def __init__(self, children=None, parent=None,
+    def __init__(self, children=None, parent=None, path=None,
                  title=None, level=0, added_at=None, is_done=False, done_at=None):
         if children is not None:
-            self.children = map(int, filter(None, children.split(',')))
+            self.children = list(map(int, filter(None, children.split(','))))
         else:
             self.children = []
         self.parent = parent
@@ -71,6 +75,7 @@ class Item(object):
         self.is_done = is_done
         self.done_at = done_at
         self.level = level
+        self.path = path
         self.next_child_path = 1
 
     @property
@@ -114,7 +119,7 @@ class Item(object):
         return ','.join(set(map(str, self.children)))
 
     def show(self):
-        print self.level * ITEM_TAB + self.title
+        print(self.level * ITEM_TAB + self.title)
 
     @classmethod
     def from_string(cls, line):
@@ -202,7 +207,7 @@ def _parse_file(filename):
 
 
 def _find_line_level(line):
-    return (len(line) - len(line.lstrip())) / len(ITEM_TAB)
+    return (len(line) - len(line.lstrip())) // len(ITEM_TAB)
 
 
 def _get_filename(s, parent_hash=0):
@@ -324,17 +329,17 @@ def add(item_title=None, parent_path=None):
     items_dict.save()
     show_items()
 
-    print "Added item:"
-    print item_title
+    print("Added item:")
+    print(item_title)
 
 
 def count():
     counts = count_items()
-    print "done: {}".format(counts['done'])
-    print "total items: {}".format(counts['total'])
-    print ""
-    print "done today: {}".format(counts['done_today'])
-    print "done yesterday: {}".format(counts['done_yesterday'])
+    print("done: {}".format(counts['done']))
+    print("total items: {}".format(counts['total']))
+    print("")
+    print("done today: {}".format(counts['done_today']))
+    print("done yesterday: {}".format(counts['done_yesterday']))
 
 
 def done(pk_done=None):
@@ -350,9 +355,9 @@ def done(pk_done=None):
             if len(sys.argv) > 2:
                 pk_done = sys.argv[2]
             else:
-                print "Specify item done."
+                print("Specify item done.")
                 return
-        print "Marking item %s as done." % pk_done
+        print("Marking item %s as done." % pk_done)
         con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
         cur = con.cursor()
         done_at = time.strftime(DATE_FORMAT)
@@ -361,8 +366,8 @@ def done(pk_done=None):
         cur.execute(query)
         con.commit()
         con.close()
-    except sqlite3.OperationalError, e:
-        print "Database error:", e
+    except sqlite3.OperationalError as e:
+        print("Database error:", e)
 
 
 def delete(pk_delete=None):
@@ -375,12 +380,12 @@ def delete(pk_delete=None):
             if len(sys.argv) > 2:
                 pk_delete = sys.argv[2]
             else:
-                print "Specify item to delete."
+                print("Specify item to delete.")
                 return
         sys.stdout.write(
             "Do you really want to delete item {}? y/n [n] ".format(pk_delete)
         )
-        choice = raw_input().lower().strip()
+        choice = input().lower().strip()
         if choice == 'y':
             con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
             cur = con.cursor()
@@ -389,25 +394,25 @@ def delete(pk_delete=None):
             cur.execute(query)
             con.commit()
             con.close()
-            print 'Deleted item {}'.format(pk_delete)
-    except sqlite3.OperationalError, e:
-        print "Database error:", e
+            print('Deleted item {}'.format(pk_delete))
+    except sqlite3.OperationalError as e:
+        print("Database error:", e)
 
 
 def help():
     """
     Prints help.
     """
-    print "usage: p [COMMAND [ARGS]]"
-    print ""
-    print "  add    [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id"
-    print "  count                    - count items done and to be done"
-    print "  delete n                 - delete item with id n"
-    print "  done   n                 - mark item with id n as done"
-    print "  help                     - print help"
-    print "  log    [-d]              - log items, flag -d for done"
-    print "  move   n -p m            - move item n to parent m"
-    print "  version                  - version of the program (-v and --version also work)"
+    print("usage: p [COMMAND [ARGS]]")
+    print("")
+    print("  add    [-p id] -t TITLE  - add an item with TITLE, flag -p points to parent id")
+    print("  count                    - count items done and to be done")
+    print("  delete n                 - delete item with id n")
+    print("  done   n                 - mark item with id n as done")
+    print("  help                     - print help")
+    print("  log    [-d]              - log items, flag -d for done")
+    print("  move   n -p m            - move item n to parent m")
+    print("  version                  - version of the program (-v and --version also work)")
 
 
 def log():
@@ -418,9 +423,9 @@ def log():
     parser = OptionParser()
     parser.add_option('-d', dest='print_done', default=False, action='store_true')
     (opts, args) = parser.parse_args(sys.argv[2:])
-    print "print done:", opts.print_done
+    print("print done:", opts.print_done)
     for i in load_items_list(opts.print_done):
-        print str(i)
+        print(str(i))
 
 
 def move(item_pk=None, new_parent_pk=None):
@@ -433,10 +438,10 @@ def move(item_pk=None, new_parent_pk=None):
             try:
                 item_pk = int(sys.argv[2])
             except ValueError:
-                print "Incorrect item value"
+                print("Incorrect item value")
                 exit(1)
         else:
-            print "Specify item to move."
+            print("Specify item to move.")
             exit(1)
         from optparse import OptionParser
         parser = OptionParser()
@@ -456,17 +461,17 @@ def move(item_pk=None, new_parent_pk=None):
                 children=i.children_str, old_parent_pk=i.pk
             ))
             break
-    print 'new_parent_pk', new_parent_pk
+    print('new_parent_pk', new_parent_pk)
     new_parent_item = get_item(new_parent_pk)
     new_parent_item.children.append(item_pk)
-    print 'new_parent_imtem.children_str=', new_parent_item.children_str
+    print('new_parent_imtem.children_str=', new_parent_item.children_str)
     queries.append("UPDATE item SET children='{children}' WHERE pk={new_parent_pk}".format(
         children=new_parent_item.children_str, new_parent_pk=new_parent_pk
     ))
     con = sqlite3.connect(PROGRESS_DB_FILE_NAME)
     cur = con.cursor()
     for q in queries:
-        print 'q=', q
+        print('q=', q)
         cur.execute(q)
     con.commit()
     con.close()
@@ -478,7 +483,7 @@ def show_one_item(item, items_dict={}, tab=''):
     Prints `item` and all its subitems that are in `items_dict`.
     The item is tabulated with `tab` characters.
     """
-    print tab + str(item)
+    print(tab + str(item))
     for pk in item.children:
         if pk in items_dict:
             show_one_item(items_dict[pk], items_dict, tab=tab + '    ')
@@ -497,8 +502,8 @@ def version():
     """
     Shows version of the program.
     """
-    print 'Progressio {version}'.format(version=__version__)
-    print '<{url}>'.format(url=__url__)
+    print('Progressio {version}'.format(version=__version__))
+    print('<{url}>'.format(url=__url__))
 
 
 def main():

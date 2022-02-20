@@ -32,8 +32,8 @@ class TestList(unittest.TestCase):
             '../../progressio/progressio.py',
             stderr=subprocess.STDOUT,
             shell=True)
-        print 'output=', output
-        self.assertEquals(output, SAMPLE_TASKS)
+        print('output=', output)
+        self.assertEqual(output, SAMPLE_TASKS)
 
 
 if __name__ == '__main__':
