@@ -53,10 +53,10 @@ class TestLoading(BaseUnitCase):
     def test_next_child_path(self):
         """Test that next_child_path field is added."""
         items = load_items(LOAD_TEST)
-        print 'items inside test=', items
+        print('items inside test=', items)
         item = items[(1, )]
-        print 'item =', item
-        print 'item.path =', item.path
+        print('item =', item)
+        print('item.path =', item.path)
         self.assertEqual(item.next_child_path, 3)
         item = items[(2, )]
         self.assertEqual(item.next_child_path, 1)

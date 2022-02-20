@@ -34,7 +34,7 @@ def get_x_y(counts):
     """
     Returns x, y tuple (two lists).
     """
-    return zip(*[(d, counts[d]) for d in counts])
+    return list(zip(*[(d, counts[d]) for d in counts]))
 
 
 ax = plt.subplot(111)

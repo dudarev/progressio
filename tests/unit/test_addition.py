@@ -48,8 +48,8 @@ class TestAddition(BaseUnitCase):
         with open(FULL_PROGRESS_FILENAME, 'r') as f:
             line1 = f.readline()
             line2 = f.readline()
-            print 'line1:', line1
-            print 'line2:', line2
+            print('line1:', line1)
+            print('line2:', line2)
             self.assertTrue(line1.startswith('1'))
             self.assertTrue(line2.startswith('2'))
 
